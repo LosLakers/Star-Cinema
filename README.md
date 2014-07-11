@@ -1,2 +1,4 @@
-StarCinema
-==========
+Star_Cinema
+===========
+
+University Project
