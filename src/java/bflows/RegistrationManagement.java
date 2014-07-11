@@ -36,6 +36,7 @@ public class RegistrationManagement implements Serializable {
         }
     }
 
+    // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username
      *
@@ -143,4 +144,6 @@ public class RegistrationManagement implements Serializable {
     public void setCreditcard(String creditcard) {
         this.creditcard = creditcard;
     }
+
+    // </editor-fold>
 }

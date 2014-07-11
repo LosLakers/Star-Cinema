@@ -19,9 +19,10 @@ public class FilmModel {
 
     private String locandina;
 
+    // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public FilmModel() {
         this.setTitolo("");
-        this.setDurata("00:00");
+        this.setDurata("00:00:00");
         this.setDescrizione("");
         this.setTrailer("");
         this.setLocandina("");
@@ -36,19 +37,18 @@ public class FilmModel {
     }
     
     public FilmModel(ResultSet result) {
-        try
-        {
+        try {
             this.setTitolo(result.getString("titolo"));
             this.setDurata(result.getString("durata"));
             this.setDescrizione(result.getString("descrizione"));
             this.setTrailer(result.getString("trailer"));
             this.setLocandina(result.getString("locandina"));
-        }
-        catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             /* nessun valore deve essere null */
         }
     }
+
+    // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
@@ -84,6 +84,8 @@ public class FilmModel {
      * @param durata new value of durata
      */
     public void setDurata(String durata) {
+        if (durata.length() == 5)
+            durata = durata + ":00";
         this.durata = durata;
     }
 

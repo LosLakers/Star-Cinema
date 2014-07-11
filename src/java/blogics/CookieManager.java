@@ -8,10 +8,11 @@ import javax.servlet.http.*;
  */
 public class CookieManager {
 
+    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     public static Cookie[] add(String[] property, String... properties) {
         Cookie[] cookies = new Cookie[properties.length];
         int i = 0;
-
+        
         for (String temp : properties) {
             cookies[i] = new Cookie(property[i], temp);
             i++;
@@ -21,8 +22,9 @@ public class CookieManager {
     }
     
     public static void delete(Cookie... cookies) {
-        for (int i = 0; i < cookies.length; i++)
+        for (int i = 0; i < cookies.length; i++) {
             cookies[i].setMaxAge(0);
+        }
     }
     
     public static String getValue(String name, Cookie[] cookies) {
@@ -34,4 +36,6 @@ public class CookieManager {
         
         return "";
     }
+
+    // </editor-fold>
 }

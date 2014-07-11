@@ -8,7 +8,16 @@
 <%
     Cookie[] cookies = null;
     cookies = request.getCookies();
+    boolean isAdmin = false;
+    String profile ="#";
 
+    if (cookies != null) {
+        loginManagement.setCookies(cookies);
+        if (loginManagement.getCookieValue("admin").equals("true")) {
+            isAdmin = true;
+        }
+    }
+    
     boolean loggedIn = (cookies != null);
 
     int i;
@@ -29,6 +38,7 @@
             }
             cookies = loginManagement.getCookies();
             loggedIn = true;
+            isAdmin = loginManagement.getCookieValue("admin").equals("true") ? true : false;
         }
     }
 
@@ -42,6 +52,12 @@
 
             loggedIn = false;
         }
+    }
+    
+    if (isAdmin) {
+        profile = "admin_page.jsp?name=" + loginManagement.getName() +
+                "&surname=" + loginManagement.getSurname() +
+                "&email=" + loginManagement.getEmail();
     }
     
     /* gestione pagina corrente */
@@ -77,7 +93,7 @@
                         <a href="home.jsp">Home</a>
                     </li>
                     <li>
-                        <a href="#about">Programmazione</a>
+                        <a href="#">Programmazione</a>
                     </li>
                 </ul>
                 <%if (!loggedIn) {%>
@@ -93,8 +109,8 @@
                     <a href="registration.jsp" class="btn btn-primary">Registrati</a>
                 </form>
                 <%} else {%>
-                <form name="logoutForm" class="navbar-form navbar-right" action="<%=pageName%>" method="post">
-                    <a href="#" class="btn btn-primary"><%=loginManagement.getCookieValue("username")%></a>
+                <form name="logoutForm" class="navbar-form navbar-right" action="home.jsp" method="post">
+                    <a href="<%=profile%>" class="btn btn-primary"><%=loginManagement.getCookieValue("username")%></a>
                     <input type="hidden" name="status" value="logout"/>
                     <button type="submit" class="btn btn-warning">Disconnetti</button>
                 </form>

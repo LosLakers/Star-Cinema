@@ -8,6 +8,13 @@
     <div class="row">
         <div class="col-sm-offset-1 col-lg-5">
             <h1><%=filmManagement.getTitolo()%></h1>
+            <% if (isAdmin) {%>
+            <form id="adminForm" action="addedit_film.jsp">
+                <input type="hidden" name="titolo" value="<%=filmManagement.getTitolo()%>"/>
+                <input type="hidden" name="status" value="edit"/>
+                <button type="submit" class="btn btn-success">Modifica</button>
+            </form>
+            <%}%>    
         </div>
         <div class="col-lg-6">
             <h2>Programmazione</h2>

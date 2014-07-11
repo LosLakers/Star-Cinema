@@ -24,9 +24,10 @@ public class UserModel {
     /* valore per distinguere un semplice utente da un admin */
     private Boolean admin;
 
+    // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public UserModel() {
     }
-
+    
     public UserModel(String username, String password, String name, String surname, String email, String creditcard) {
         this.setUsername(username);
         this.setPassword(password);
@@ -35,7 +36,7 @@ public class UserModel {
         this.setEmail(email);
         this.setCreditcard(creditcard);
     }
-
+    
     public UserModel(ResultSet result) {
         try {
             this.setUsername(result.getString("username"));
@@ -49,6 +50,9 @@ public class UserModel {
         }
     }
 
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username
      *
@@ -156,12 +160,14 @@ public class UserModel {
     public void setCreditcard(String creditcard) {
         this.creditcard = creditcard;
     }
-
+    
     public void setAdmin(Boolean admin) {
         this.admin = admin;
     }
-
+    
     public Boolean isAdmin() {
         return this.admin;
     }
+
+    // </editor-fold>
 }

@@ -31,7 +31,6 @@ public class FilmManager {
             }
 
             /* aggiungo il film al database */
-            film.setDurata(film.getDurata() + ":00");
             sql = "INSERT INTO `film` " +
                     "(`titolo`, `trailer`, `descrizione`, `durata`, `locandina`) " +
                     "VALUES " +
@@ -58,7 +57,7 @@ public class FilmManager {
                         "SET " +
                         "`trailer`='" + util.Conversion.getDatabaseString(film.getTrailer()) + "'," +
                         "`descrizione`='" + util.Conversion.getDatabaseString(film.getDescrizione()) + "'," +
-                        "`durata`='" + util.Conversion.getDatabaseString(film.getDurata()) + "'," +
+                        "`durata`='" + film.getDurata() + "'," +
                         "`locandina`='" + util.Conversion.getDatabaseString(film.getLocandina()) + "' " +
                         "WHERE `titolo`='" + util.Conversion.getDatabaseString(film.getTitolo()) + "';" ;
             database.modify(sql);
@@ -70,7 +69,18 @@ public class FilmManager {
     }
     
     public static void delete(String titolo) {
-        
+        try {
+            DataBase database = DBService.getDataBase();
+            
+            /* elimino il film dal database */
+            String sql = "DELETE FROM `film` " +
+                        "WHERE `titolo`='" + util.Conversion.getDatabaseString(titolo) + "';";
+            database.modify(sql);
+            database.commit();
+            database.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /* metodo per ottenere un film dal titolo */

@@ -7,20 +7,32 @@
     String submit = "Aggiungi";
     String hidden = "aggiungi";
 
+    boolean delete = false;
+
     if (status == null) {
         hidden = "aggiungi";
         submit = "Aggiungi";
     } else if (status.equals("aggiungi")) {
+        hidden = "aggiornato";
+        submit = "Aggiorna";
+        filmManagement.addFilm();
+    } else if (status.equals("aggiornato")) {
+        hidden = "aggiornato";
+        submit = "Aggiorna";
+        delete = true;
+        filmManagement.updateFilm();
+    } else if (status.equals("edit")) {
         submit = "Aggiorna";
         hidden = "aggiornato";
-        filmManagement.addFilm();
-    } else if(status.equals("aggiornato")) {
-        hidden ="aggiornato";
-        submit = "Aggiorna";
-        filmManagement.updateFilm();
+        delete = true;
+    } else if (status.equals("delete")) {
+        hidden = "aggiungi";
+        submit = "Aggiungi";
+        filmManagement.deleteFilm();
+        filmManagement.setTitolo("");
     }
 
-    String titolo = filmManagement.getTitolo() != null ? filmManagement.getTitolo() : "";
+   String titolo = filmManagement.getTitolo() != null ? filmManagement.getTitolo() : "";
     filmManagement.getFilm();
 
 %>
@@ -45,8 +57,8 @@
                     </div>
                     <div class="col-xs-4">
                         <span class="label label-info">Inserisci Durata Film</span>
-                        <input type="time" class="form-control" name="durata" placeholder="Durata" 
-                               required="required" value="<%=filmManagement.getDurata()%>" />
+                        <input type="time" class="form-control" name="durata" required="required" 
+                               value="<%=filmManagement.getDurata()%>" />
                     </div>
                 </div>  
                 <br/>
@@ -68,12 +80,18 @@
                         <textarea form="filmForm" class="form-control" name="descrizione" required="required"><%=filmManagement.getDescrizione()%></textarea>
                     </div>
                 </div>
-                <input type="submit" class="btn btn-primary" value="<%=submit%>"></input>
+                <input type="submit" form="filmForm" class="btn btn-primary" value="<%=submit%>"/>
                 <a href="#" class="btn btn-warning">Torna al Profilo</a>
                 <input type="hidden" name="status" value="<%=hidden%>"/>
             </form>
+            <br/>
+            <% if (delete) {%>
+            <form id="deleteFilm" class="inline-form" method="post" action="addedit_film.jsp">
+                <input type="submit" form="deleteFilm" class="btn btn-danger" value="Elimina Film"/>
+                <input type="hidden" name="status" value="delete"/>
+                <input type="hidden" name="titolo" value="<%=filmManagement.getTitolo()%>"/>
+            </form>
+            <%}%>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

@@ -4,6 +4,7 @@ package bflows;
 import blogics.*;
 import java.beans.*;
 import java.io.Serializable;
+import java.sql.*;
 
 /**
  *
@@ -41,7 +42,7 @@ public class FilmManagement implements Serializable {
                     this.getTrailer(), this.getLocandina());
             FilmManager.update(film);
         } catch (Exception ex) {
-            
+            ex.printStackTrace();
         }
     }
     
@@ -49,7 +50,7 @@ public class FilmManagement implements Serializable {
         try {
             FilmManager.delete(this.getTitolo());
         } catch (Exception ex) {
-            
+            ex.printStackTrace();
         }
     }
     
@@ -61,7 +62,7 @@ public class FilmManagement implements Serializable {
             this.setDurata(film.getDurata());
             this.setLocandina(film.getLocandina());
         } catch (Exception ex) {
-            
+            ex.printStackTrace();
         }
     }
 
@@ -137,6 +138,8 @@ public class FilmManagement implements Serializable {
      * @param durata new value of durata
      */
     public void setDurata(String durata) {
+        if (durata.length() == 5)
+            durata = durata + ":00";
         this.durata = durata;
     }
 

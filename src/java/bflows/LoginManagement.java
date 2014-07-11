@@ -21,6 +21,14 @@ public class LoginManagement implements Serializable {
 
     /* cookies property */
     private Cookie[] cookies;
+    
+    private String name;
+
+    private String surname;
+
+    private String email;
+
+    private String creditcard;
 
     public LoginManagement() {
     }
@@ -33,6 +41,10 @@ public class LoginManagement implements Serializable {
                 String[] property = {"username", "admin"};
                 cookies = CookieManager.add(property, user.getUsername(), 
                                         user.isAdmin() ? "true" : "false");
+                this.setName(user.getName());
+                this.setSurname(user.getSurname());
+                this.setEmail(user.getEmail());
+                this.setCreditcard(user.getCreditcard());
             }
         } catch (NotFoundDBException ex) {
             // da gestire
@@ -49,6 +61,7 @@ public class LoginManagement implements Serializable {
         return CookieManager.getValue(name, cookies);
     }
 
+    // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username
      *
@@ -122,4 +135,78 @@ public class LoginManagement implements Serializable {
     public void setCookie(int index, Cookie cookie) {
         this.cookies[index] = cookie;
     }
+
+    /**
+     * Get the value of name
+     *
+     * @return the value of name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the value of name
+     *
+     * @param name new value of name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Get the value of surname
+     *
+     * @return the value of surname
+     */
+    public String getSurname() {
+        return surname;
+    }
+
+    /**
+     * Set the value of surname
+     *
+     * @param surname new value of surname
+     */
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    /**
+     * Get the value of email
+     *
+     * @return the value of email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Set the value of email
+     *
+     * @param email new value of email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Get the value of creditcard
+     *
+     * @return the value of creditcard
+     */
+    public String getCreditcard() {
+        return creditcard;
+    }
+
+    /**
+     * Set the value of creditcard
+     *
+     * @param creditcard new value of creditcard
+     */
+    public void setCreditcard(String creditcard) {
+        this.creditcard = creditcard;
+    }
+
+    // </editor-fold>
 }
