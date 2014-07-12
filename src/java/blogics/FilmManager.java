@@ -18,9 +18,9 @@ public class FilmManager {
         try {
             /* controllo che non ci sia già un film con lo stesso titolo */
             String sql = "SELECT *" +
-                        " FROM FILM " +
+                        " FROM `film` " +
                         " WHERE " +
-                        " TITOLO ='" + util.Conversion.getDatabaseString(film.getTitolo()) + "'";
+                        " `titolo` ='" + util.Conversion.getDatabaseString(film.getTitolo()) + "'";
             
             DataBase database = DBService.getDataBase();
             ResultSet resultSet = database.select(sql);
@@ -39,9 +39,15 @@ public class FilmManager {
                     "'" + util.Conversion.getDatabaseString(film.getDescrizione()) + "'," +
                     "'" + film.getDurata() + "'," +
                     "'" + util.Conversion.getDatabaseString(film.getLocandina()) + "');";
-            database.modify(sql);
-            resultSet.close();
+            resultSet = database.modifyPK(sql);
             database.commit();
+            
+            /* leggo la chiave generata dal DB */
+            if (resultSet.next()) {
+                film.setId_film(resultSet.getInt(1));
+                resultSet.close();
+            }
+            
             database.close();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -55,11 +61,12 @@ public class FilmManager {
             /* aggiorno il film nel database */
             String sql = "UPDATE `film` " +
                         "SET " +
+                        "`titolo`='" + util.Conversion.getDatabaseString(film.getTitolo()) + "'," +
                         "`trailer`='" + util.Conversion.getDatabaseString(film.getTrailer()) + "'," +
                         "`descrizione`='" + util.Conversion.getDatabaseString(film.getDescrizione()) + "'," +
                         "`durata`='" + film.getDurata() + "'," +
                         "`locandina`='" + util.Conversion.getDatabaseString(film.getLocandina()) + "' " +
-                        "WHERE `titolo`='" + util.Conversion.getDatabaseString(film.getTitolo()) + "';" ;
+                        "WHERE `id_film`='" + film.getId_film() + "';" ;
             database.modify(sql);
             database.commit();
             database.close();
@@ -68,13 +75,13 @@ public class FilmManager {
         }
     }
     
-    public static void delete(String titolo) {
+    public static void delete(int id_film) {
         try {
             DataBase database = DBService.getDataBase();
             
             /* elimino il film dal database */
             String sql = "DELETE FROM `film` " +
-                        "WHERE `titolo`='" + util.Conversion.getDatabaseString(titolo) + "';";
+                        "WHERE `id_film`='" + id_film + "';";
             database.modify(sql);
             database.commit();
             database.close();
@@ -83,6 +90,33 @@ public class FilmManager {
         }
     }
 
+    public static FilmModel get(int id_film)
+            throws NotFoundDBException, ResultSetDBException {
+        DataBase database = DBService.getDataBase();
+        try {
+            FilmModel film = new FilmModel();
+
+            String sql = " SELECT * "
+                    + " FROM `film` "
+                    + " WHERE "
+                    + " `id_film`='" + id_film + "'";
+            
+            ResultSet result = database.select(sql);
+            if (result.next()) { // true c'è un'altra riga
+                film = new FilmModel(result);
+            }
+            result.close();
+            database.commit();
+
+            return film;
+        } catch (SQLException ex) {
+            throw new ResultSetDBException("FilmManager: getFilm(): ResultSetDBException: "
+                    + ex.getMessage());
+        } finally {
+            database.close();
+        }
+    }
+    
     /* metodo per ottenere un film dal titolo */
     public static FilmModel get(String titolo)
             throws NotFoundDBException, ResultSetDBException {

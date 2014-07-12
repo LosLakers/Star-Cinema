@@ -6,6 +6,7 @@
     String status = request.getParameter("status");
     String submit = "Aggiungi";
     String hidden = "aggiungi";
+    int id = 0;
 
     boolean delete = false;
 
@@ -16,24 +17,26 @@
         hidden = "aggiornato";
         submit = "Aggiorna";
         filmManagement.addFilm();
+        delete = true;
+        id = filmManagement.getId_film();
     } else if (status.equals("aggiornato")) {
         hidden = "aggiornato";
         submit = "Aggiorna";
         delete = true;
         filmManagement.updateFilm();
+        id = filmManagement.getId_film();
     } else if (status.equals("edit")) {
         submit = "Aggiorna";
         hidden = "aggiornato";
         delete = true;
+        id = filmManagement.getId_film();
     } else if (status.equals("delete")) {
         hidden = "aggiungi";
         submit = "Aggiungi";
         filmManagement.deleteFilm();
-        filmManagement.setTitolo("");
     }
 
-   String titolo = filmManagement.getTitolo() != null ? filmManagement.getTitolo() : "";
-    filmManagement.getFilm();
+   filmManagement.getFilm();
 
 %>
 
@@ -53,7 +56,7 @@
                     <div class="col-xs-4">
                         <span class="label label-info">Inserisci Titolo Film</span>
                         <input type="text" class="form-control" name="titolo" placeholder="Titolo" 
-                               required="required" value="<%=titolo%>" />
+                               required="required" value="<%=filmManagement.getTitolo()%>" />
                     </div>
                     <div class="col-xs-4">
                         <span class="label label-info">Inserisci Durata Film</span>
@@ -83,13 +86,14 @@
                 <input type="submit" form="filmForm" class="btn btn-primary" value="<%=submit%>"/>
                 <a href="#" class="btn btn-warning">Torna al Profilo</a>
                 <input type="hidden" name="status" value="<%=hidden%>"/>
+                <input type="hidden" name="id_film" value="<%=id%>"/>
             </form>
             <br/>
             <% if (delete) {%>
             <form id="deleteFilm" class="inline-form" method="post" action="addedit_film.jsp">
                 <input type="submit" form="deleteFilm" class="btn btn-danger" value="Elimina Film"/>
                 <input type="hidden" name="status" value="delete"/>
-                <input type="hidden" name="titolo" value="<%=filmManagement.getTitolo()%>"/>
+                <input type="hidden" name="id_film" value="<%=filmManagement.getId_film()%>"/>
             </form>
             <%}%>
         </div>

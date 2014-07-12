@@ -33,14 +33,15 @@ public class LoginManagement implements Serializable {
     public LoginManagement() {
     }
 
+    // <editor-fold defaultstate="collapsed" desc=" LOGIN-LOGOUT ">
     public void login() {
         try {
             UserModel user = UserManager.get(username, password);
-
+            
             if (user != null) {
-                String[] property = {"username", "admin"};
-                cookies = CookieManager.add(property, user.getUsername(), 
-                                        user.isAdmin() ? "true" : "false");
+                String[] property = {"username", "password", "admin"};
+                cookies = CookieManager.add(property, user.getUsername(), user.getPassword(),
+                        user.isAdmin() ? "true" : "false");
                 this.setName(user.getName());
                 this.setSurname(user.getSurname());
                 this.setEmail(user.getEmail());
@@ -52,10 +53,38 @@ public class LoginManagement implements Serializable {
             // da gestire
         }
     }
-
+    
     public void logout() {
         CookieManager.delete(cookies);
     }
+
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    
+    public void updateUser() {
+        try {
+            UserModel newUser = new UserModel(this.getUsername(), this.getPassword(), this.getName(),
+                    this.getSurname(), this.getEmail(), this.getCreditcard());
+            UserManager.update(newUser);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void getUser() {
+        try {
+            UserModel user = UserManager.get(this.getUsername(), this.getPassword());
+            this.setName(user.getName());
+            this.setSurname(user.getSurname());
+            this.setEmail(user.getEmail());
+            this.setCreditcard(user.getCreditcard());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    // </editor-fold>
     
     public String getCookieValue(String name) {
         return CookieManager.getValue(name, cookies);

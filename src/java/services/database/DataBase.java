@@ -59,6 +59,20 @@ public class DataBase {
     
   }
   
+  public ResultSet modifyPK(String sql) throws NotFoundDBException {
+    
+    int recordsNumber;
+    try {
+      recordsNumber = statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+      ResultSet resultSet = statement.getGeneratedKeys();
+      return resultSet;
+    } catch (SQLException ex){
+      
+      throw new NotFoundDBException("DataBase: modify(): Impossibile eseguire la update sul DB. Eccezione: " +
+                                    ex + "\n " + sql,this);
+    }
+  }
+  
   public void commit() throws NotFoundDBException {
     
     try{

@@ -11,6 +11,8 @@ import java.sql.*;
  * @author Guido Pio
  */
 public class FilmManagement implements Serializable {
+
+    private int id_film;
     
     private String titolo;
     
@@ -28,9 +30,10 @@ public class FilmManagement implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     public void addFilm() {
         try {
-            FilmModel film = new FilmModel(this.getTitolo(), this.getDurata(), this.getDescrizione(),
-                    this.getTrailer(), this.getLocandina());
+            FilmModel film = new FilmModel(0, this.getTitolo(), this.getDurata(), 
+                    this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.add(film);
+            this.setId_film(film.getId_film());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -38,8 +41,8 @@ public class FilmManagement implements Serializable {
     
     public void updateFilm() {
         try {
-            FilmModel film = new FilmModel(this.getTitolo(), this.getDurata(), this.getDescrizione(),
-                    this.getTrailer(), this.getLocandina());
+            FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), this.getDurata(), 
+                    this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.update(film);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -48,7 +51,7 @@ public class FilmManagement implements Serializable {
     
     public void deleteFilm() {
         try {
-            FilmManager.delete(this.getTitolo());
+            FilmManager.delete(this.getId_film());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -56,7 +59,8 @@ public class FilmManagement implements Serializable {
     
     public void getFilm() {
         try {
-            FilmModel film = FilmManager.get(titolo);
+            FilmModel film = FilmManager.get(this.getId_film());
+            this.setTitolo(film.getTitolo());
             this.setDescrizione(film.getDescrizione());
             this.setTrailer(film.getTrailer());
             this.setDurata(film.getDurata());
@@ -69,6 +73,25 @@ public class FilmManagement implements Serializable {
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
+    
+    /**
+     * Get the value of id_film
+     *
+     * @return the value of id_film
+     */
+    public int getId_film() {
+        return id_film;
+    }
+
+    /**
+     * Set the value of id_film
+     *
+     * @param id_film new value of id_film
+     */
+    public void setId_film(int id_film) {
+        this.id_film = id_film;
+    }
+    
     /**
      * Get the value of titolo
      *

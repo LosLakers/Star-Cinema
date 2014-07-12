@@ -9,7 +9,9 @@
     Cookie[] cookies = null;
     cookies = request.getCookies();
     boolean isAdmin = false;
-    String profile ="#";
+    String profile = "#";
+    String username = "";
+    String password = "";
 
     if (cookies != null) {
         loginManagement.setCookies(cookies);
@@ -17,7 +19,7 @@
             isAdmin = true;
         }
     }
-    
+
     boolean loggedIn = (cookies != null);
 
     int i;
@@ -38,6 +40,8 @@
             }
             cookies = loginManagement.getCookies();
             loggedIn = true;
+            username = loginManagement.getCookieValue("username");
+            password = loginManagement.getCookieValue("password");
             isAdmin = loginManagement.getCookieValue("admin").equals("true") ? true : false;
         }
     }
@@ -53,68 +57,72 @@
             loggedIn = false;
         }
     }
-    
+
     if (isAdmin) {
-        profile = "admin_page.jsp?name=" + loginManagement.getName() +
-                "&surname=" + loginManagement.getSurname() +
-                "&email=" + loginManagement.getEmail();
+        profile = "admin_page.jsp?name=" + loginManagement.getName()
+                + "&surname=" + loginManagement.getSurname()
+                + "&email=" + loginManagement.getEmail();
     }
-    
+
     /* gestione pagina corrente */
     String uri = request.getRequestURI();
-    String pageName = uri.substring(uri.lastIndexOf("/")+1);
+    String pageName = uri.substring(uri.lastIndexOf("/") + 1);
     String queryString = (request.getQueryString() != null) ? "?" + request.getQueryString() : "";
     pageName = pageName + queryString;
 %>
 
 <!DOCTYPE html>
 <html>
-    <%@include file="default.html" %>
-    <title>Star Cinema</title>
-    <link href="theme.css" rel="stylesheet" type="text/css"/>
-    <script language="javascript">
-
-    </script>
-</head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Star Cinema</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="home.jsp">Home</a>
-                    </li>
-                    <li>
-                        <a href="#">Programmazione</a>
-                    </li>
-                </ul>
-                <%if (!loggedIn) {%>
-                <form name="loginForm" action="<%=pageName%>" class="navbar-form navbar-right" method="post">
-                    <input type="hidden" name="status" value="login"/>
-                    <div class="form-group">
-                        <input type="text" name="username" placeholder="Username" class="form-control" required="required"/>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="password" placeholder="Password" class="form-control" required="required"/>
-                    </div>
-                    <button type="submit" class="btn btn-success">Accedi</button>
-                    <a href="registration.jsp" class="btn btn-primary">Registrati</a>
-                </form>
-                <%} else {%>
-                <form name="logoutForm" class="navbar-form navbar-right" action="home.jsp" method="post">
-                    <a href="<%=profile%>" class="btn btn-primary"><%=loginManagement.getCookieValue("username")%></a>
-                    <input type="hidden" name="status" value="logout"/>
-                    <button type="submit" class="btn btn-warning">Disconnetti</button>
-                </form>
-                <%}%>
+    <head>
+        <%@include file="default.html" %>
+        <title>Star Cinema</title>
+        <link href="theme.css" rel="stylesheet" type="text/css"/>
+        <script src="utility.js"></script>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Star Cinema</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="home.jsp">Home</a>
+                        </li>
+                        <li>
+                            <a href="#">Programmazione</a>
+                        </li>
+                    </ul>
+                    <%if (!loggedIn) {%>
+                    <form name="loginForm" action="<%=pageName%>" class="navbar-form navbar-right" method="post">
+                        <input type="hidden" name="status" value="login"/>
+                        <div class="form-group">
+                            <input type="text" name="username" placeholder="Username" class="form-control" required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" placeholder="Password" class="form-control" required="required"/>
+                        </div>
+                        <button type="submit" class="btn btn-success">Accedi</button>
+                        <a href="registration.jsp" class="btn btn-primary">Registrati</a>
+                    </form>
+                    <%} else {%>
+                    <form class="navbar-form navbar-right" name="logoutForm" action="home.jsp" method="post">
+                        <input type="hidden" name="status" value="logout"/>
+                        <a href="javascript:;" class="btn btn-warning" onclick="parentNode.submit();">Disconnetti</a>
+                    </form>
+                    <form class="navbar-form navbar-right" name="profileForm" action="user_page.jsp" method="post">
+                        <a href="javascript:;" class="btn btn-primary" onclick="parentNode.submit();"><%=username%></a>
+                        <input type="hidden" name="status" value="profile"/>
+                        <input type="hidden" name="username" value="<%=username%>"/>
+                        <input type="hidden" name="password" value="<%=password%>"/>
+                    </form>
+                    <%}%>
+                </div>
             </div>
         </div>
-    </div>

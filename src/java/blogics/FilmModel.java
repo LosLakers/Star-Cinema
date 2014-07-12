@@ -8,6 +8,8 @@ import java.sql.*;
  * @author Guido Pio
  */
 public class FilmModel {
+
+    private int id_film;
     
     private String titolo;
 
@@ -28,7 +30,8 @@ public class FilmModel {
         this.setLocandina("");
     }
     
-    public FilmModel(String titolo, String durata, String descrizione, String trailer, String locandina) {
+    public FilmModel(int id_film, String titolo, String durata, String descrizione, String trailer, String locandina) {
+        this.setId_film(id_film);
         this.setTitolo(titolo);
         this.setDurata(durata);
         this.setDescrizione(descrizione);
@@ -38,6 +41,7 @@ public class FilmModel {
     
     public FilmModel(ResultSet result) {
         try {
+            this.setId_film(result.getInt("id_film"));
             this.setTitolo(result.getString("titolo"));
             this.setDurata(result.getString("durata"));
             this.setDescrizione(result.getString("descrizione"));
@@ -51,6 +55,25 @@ public class FilmModel {
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
+
+    /**
+     * Get the value of id_film
+     *
+     * @return the value of id_film
+     */
+    public int getId_film() {
+        return id_film;
+    }
+
+    /**
+     * Set the value of id_film
+     *
+     * @param id_film new value of id_film
+     */
+    public void setId_film(int id_film) {
+        this.id_film = id_film;
+    }
+    
     /**
      * Get the value of titolo
      *

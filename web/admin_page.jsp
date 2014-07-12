@@ -1,7 +1,7 @@
 <%@include file="login_navbar.jsp" %>
 
 <div class="jumbotron">
-    <h1>Admin Home Page</h1>
+    <h1>Admin Profile Page</h1>
 </div>
 <div class="container">
     <br>
@@ -20,7 +20,7 @@
                 <br/>
                 <label class="control-label">Email</label>
                 <div class="controls">
-                    <input typer="email" class="form-control" value="<%=loginManagement.getEmail()%>"/>
+                    <input type="email" class="form-control" value="<%=loginManagement.getEmail()%>"/>
                 </div>
                 <br/>
                 <input type="submit" class="btn btn-primary" value="Aggiorna Profilo">

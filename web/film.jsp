@@ -1,6 +1,6 @@
 <%@include file="login_navbar.jsp" %>
 <jsp:useBean id="filmManagement" scope="page" class="bflows.FilmManagement"/>
-<jsp:setProperty name="filmManagement" property="titolo"/>
+<jsp:setProperty name="filmManagement" property="id_film"/>
 
 <% filmManagement.getFilm(); %>
 
@@ -10,7 +10,7 @@
             <h1><%=filmManagement.getTitolo()%></h1>
             <% if (isAdmin) {%>
             <form id="adminForm" action="addedit_film.jsp">
-                <input type="hidden" name="titolo" value="<%=filmManagement.getTitolo()%>"/>
+                <input type="hidden" name="id_film" value="<%=filmManagement.getId_film()%>"/>
                 <input type="hidden" name="status" value="edit"/>
                 <button type="submit" class="btn btn-success">Modifica</button>
             </form>
