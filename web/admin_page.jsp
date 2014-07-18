@@ -1,28 +1,53 @@
 <%@include file="login_navbar.jsp" %>
 
+<%
+    boolean authorized = false;
+
+    if (loginManagement.getCookieValue("username").equals(loginManagement.getUsername()) && status.equals("profile")) {
+        authorized = true;
+        loginManagement.getUser();
+    }
+
+    if (status.equals("edit")) {
+        authorized = true;
+        loginManagement.updateUser();
+    }
+%>
+
+<% if (authorized) {%>
 <div class="jumbotron">
-    <h1>Admin Profile Page</h1>
+    <div class="container">
+        <h1>Profilo Admin</h1>
+    </div>
 </div>
 <div class="container">
-    <br>
+    <br/>
     <div class="row">
         <form class="col-xs-4">
             <div class="form-group">
                 <label class="control-label">Nome</label>
                 <div class="controls">
-                    <input type="text" class="form-control" value="<%=loginManagement.getName()%>"/>
+                    <input type="text" class="form-control" name="name" value="<%=loginManagement.getName()%>" required="required"/>
                 </div>
                 <br/>
                 <label class="control-label">Cognome</label>
                 <div class="controls">
-                    <input type="text" class="form-control" value="<%=loginManagement.getSurname()%>"/>
+                    <input type="text" class="form-control" name="surname" value="<%=loginManagement.getSurname()%>" required="required"/>
                 </div>
                 <br/>
                 <label class="control-label">Email</label>
                 <div class="controls">
-                    <input type="email" class="form-control" value="<%=loginManagement.getEmail()%>"/>
+                    <input type="email" class="form-control" name="email" value="<%=loginManagement.getEmail()%>" required="required"/>
                 </div>
                 <br/>
+                <label class="control-label">Carta di Credito</label>
+                <div class="controls">
+                    <input type="text" class="form-control" name="creditcard" value="<%=loginManagement.getCreditcard()%>" placeholder="CreditCard" required="required"/>
+                </div>
+                <br/>
+                <input type="hidden" name="status" value="edit"/>
+                <input type="hidden" name="username" value="<%=username%>"/>
+                <input type="hidden" name="password" value="<%=password%>"/>
                 <input type="submit" class="btn btn-primary" value="Aggiorna Profilo">
             </div>
         </form>
@@ -37,10 +62,10 @@
                 <tbody>
                     <tr>
                         <td>
-                            <a href="film.jsp?titolo=Iron Man 3">Iron Man 3</a>
+                            <a href="film.jsp?id_film=1">Iron Man 3</a>
                         </td>
                         <td>
-                            <a href="addedit_film.jsp?titolo=Iron Man 3&status=edit" class="badge">Modifica</a>
+                            <a href="addedit_film.jsp?id_film=1&status=edit" class="badge">Modifica</a>
                             <a href="#" class="badge">Elimina</a> 
                         </td>
                     </tr>
@@ -149,6 +174,6 @@
         </div>
     </div>
 </div>
+<%}%>
 </body>
-
 </html>

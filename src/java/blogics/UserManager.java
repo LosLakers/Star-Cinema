@@ -10,10 +10,11 @@ public class UserManager {
 
     // <editor-fold defaultstate="collapsed" desc="CRUD">
     
-    public static void update(UserModel user) {
-        try {
-            DataBase database = DBService.getDataBase();
-            
+    public static void update(UserModel user) 
+            throws NotFoundDBException {
+        
+        DataBase database = DBService.getDataBase();
+        try {            
             String sql = "UPDATE `utenti` " +
                         "SET `name`='" + util.Conversion.getDatabaseString(user.getName()) + "'," +
                         "`surname`='" + util.Conversion.getDatabaseString(user.getSurname()) + "'," +
@@ -25,6 +26,8 @@ public class UserManager {
             database.close();
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            database.close();
         }
     }
 
@@ -37,33 +40,18 @@ public class UserManager {
             UserModel user = null;
             
             String sql = " SELECT * "
-                    + " FROM UTENTI "
+                    + " FROM `utenti` "
                     + " WHERE "
-                    + " USERNAME = '" + util.Conversion.getDatabaseString(username) + "'";
+                    + " `username`= '" + util.Conversion.getDatabaseString(username) + "'";
             
             ResultSet result = database.select(sql);
             if (result.next()) { // true c'è un'altra riga
                 user = new UserModel(result);
-                user.setAdmin(false);
             }
             result.close();
-
-            /* TODO */
-            if (user == null) {
-                sql = " SELECT * "
-                        + " FROM ADMIN "
-                        + " WHERE "
-                        + " USERNAME = '" + util.Conversion.getDatabaseString(username) + "'";
-                result = database.select(sql);
-                if (result.next()) { // true c'è un'altra riga
-                    user = new UserModel(result);
-                    user.setAdmin(true);
-                }
-                result.close();
-            }
-            
             database.commit();
-            /* se ho trovato un utente e combacia con la password allora è l'utente che mi serve */
+            
+            /* se non ho trovato l'utente o la password non combacia allora ritorno null */
             if (user == null || !user.getPassword().equals(password)) {
                 return null;
             }

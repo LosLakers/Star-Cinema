@@ -36,7 +36,7 @@
         filmManagement.deleteFilm();
     }
 
-   filmManagement.getFilm();
+    filmManagement.getFilm();
 
 %>
 
@@ -48,7 +48,9 @@
     </head>
     <body>
         <div class="jumbotron">
-            <h1>Film</h1>
+            <div class="container">
+                <h1>Film</h1>
+            </div>
         </div>  
         <div class="container">
             <form id="filmForm" class="inline-form" method="post" action="addedit_film.jsp">

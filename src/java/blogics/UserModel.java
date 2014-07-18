@@ -35,6 +35,7 @@ public class UserModel {
         this.setSurname(surname);
         this.setEmail(email);
         this.setCreditcard(creditcard);
+        this.setAdmin(false);
     }
     
     public UserModel(ResultSet result) {
@@ -45,6 +46,7 @@ public class UserModel {
             this.setPassword(result.getString("password"));
             this.setEmail(result.getString("email"));
             this.setCreditcard(result.getString("credit_card"));
+            this.setAdmin(result.getString("role").equals("admin") ? true : false);
         } catch (SQLException ex) {
             /* non ci devono essere campi senza valore */
         }

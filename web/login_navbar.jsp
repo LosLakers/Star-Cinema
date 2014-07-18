@@ -13,13 +13,6 @@
     String username = "";
     String password = "";
 
-    if (cookies != null) {
-        loginManagement.setCookies(cookies);
-        if (loginManagement.getCookieValue("admin").equals("true")) {
-            isAdmin = true;
-        }
-    }
-
     boolean loggedIn = (cookies != null);
 
     int i;
@@ -27,6 +20,7 @@
     // da usare in futuro per mantenere la sessione anche alla chiusura del browser
     //String ricordami = request.getParameter("ricordami");
 
+    /* gestione dello status con cui arrivo nella pagina */
     status = request.getParameter("status");
     if (status == null) {
         status = "view";
@@ -57,13 +51,23 @@
             loggedIn = false;
         }
     }
-
-    if (isAdmin) {
-        profile = "admin_page.jsp?name=" + loginManagement.getName()
-                + "&surname=" + loginManagement.getSurname()
-                + "&email=" + loginManagement.getEmail();
+    
+    /* gestione di eventuali cookie già settati o settati durante il login */
+    if (cookies != null) {
+        loginManagement.setCookies(cookies);
+        username = loginManagement.getCookieValue("username");
+        password = loginManagement.getCookieValue("password");
+        if (loginManagement.getCookieValue("admin").equals("true")) {
+            isAdmin = true;
+            profile = "admin_page.jsp?" + "username=" + username
+                    + "&password=" + password;
+        } else {
+            profile = "user_page.jsp?" + "username=" + username
+                    + "&password=" + password;
+        }
     }
 
+    /* TODO */
     /* gestione pagina corrente */
     String uri = request.getRequestURI();
     String pageName = uri.substring(uri.lastIndexOf("/") + 1);
@@ -116,7 +120,7 @@
                         <input type="hidden" name="status" value="logout"/>
                         <a href="javascript:;" class="btn btn-warning" onclick="parentNode.submit();">Disconnetti</a>
                     </form>
-                    <form class="navbar-form navbar-right" name="profileForm" action="user_page.jsp" method="post">
+                    <form class="navbar-form navbar-right" name="profileForm" action="<%=profile%>" method="post">
                         <a href="javascript:;" class="btn btn-primary" onclick="parentNode.submit();"><%=username%></a>
                         <input type="hidden" name="status" value="profile"/>
                         <input type="hidden" name="username" value="<%=username%>"/>

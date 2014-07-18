@@ -12,26 +12,50 @@
         authorized = true;
         loginManagement.updateUser();
     }
-    
-    username = loginManagement.getUsername();
-    password = loginManagement.getPassword();
 %>
 
 <% if (authorized) {%>
-<form action="user_page.jsp" method="post">
-    <input type="text" name="name" value="<%=loginManagement.getName()%>" placeholder="Nome" required/>
-    <input type="text" name="surname" value="<%=loginManagement.getSurname()%>" placeholder="Cognome" required/>
-    <input type="email" name="email" value="<%=loginManagement.getEmail()%>" placeholder="Email" required/>
-    <input type="text" name="creditcard" value="<%=loginManagement.getCreditcard()%>" placeholder="CreditCard" required/>
-    <input type="hidden" name="status" value="edit"/>
-    <input type="hidden" name="username" value="<%=username%>"/>
-    <input type="hidden" name="password" value="<%=password%>"/>
-    <button type="submit">Modifica</button>
-</form>
+<div class="jumbotron">
+    <div class="container">
+        <h1>Profilo Utente</h1>
+    </div>
+</div>
+<div class="container">
+    <br/>
+    <div class="row">
+        <form class="col-xs-4" action="user_page.jsp" method="post">
+            <div class="form-group">
+                <label class="control-label">Nome</label>
+                <div class="controls">
+                    <input type="text" class="form-control" name="name" value="<%=loginManagement.getName()%>" placeholder="Nome" required="required"/>
+                </div>
+                <br/>
+                <label class="control-label">Cognome</label>
+                <div class="controls">
+                    <input type="text" class="form-control" name="surname" value="<%=loginManagement.getSurname()%>" placeholder="Cognome" required="required"/>
+                </div>
+                <br/>
+                <label class="control-label">Email</label>
+                <div class="controls">
+                    <input type="email" class="form-control" name="email" value="<%=loginManagement.getEmail()%>" placeholder="Email" required="required"/>
+                </div>
+                <br/>
+                <label class="control-label">Carta di Credito</label>
+                <div class="controls">
+                    <input type="text" class="form-control" name="creditcard" value="<%=loginManagement.getCreditcard()%>" placeholder="CreditCard" required="required"/>
+                </div>
+                <br/>
+                <input type="hidden" name="status" value="edit"/>
+                <input type="hidden" name="username" value="<%=username%>"/>
+                <input type="hidden" name="password" value="<%=password%>"/>
+                <button type="submit" class="btn btn-primary">Modifica</button>
+        </form>
+    </div>
 
-<a href="#">Lista Biglietti Acquistati</a>
-#Abbonamento
-#ingressi disponibili
+    <a href="#">Lista Biglietti Acquistati</a>
+    #Abbonamento
+    #ingressi disponibili
+</div>
 <%}%>
 </body>
 </html>

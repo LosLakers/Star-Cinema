@@ -15,7 +15,7 @@ public class Constants {
   public static final String[] MAIL_GATEWAYS = {"151.99.250.122"};
   
   /* Constants for Debug */
-  public static final boolean DEBUG=true; 
+  public static final boolean DEBUG = true; 
   
   /** Constants for db connection */
   public static final String DB_USER_NAME         = "root";
