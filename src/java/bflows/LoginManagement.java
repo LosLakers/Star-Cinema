@@ -21,7 +21,7 @@ public class LoginManagement implements Serializable {
 
     /* cookies property */
     private Cookie[] cookies;
-    
+
     private String name;
 
     private String surname;
@@ -37,7 +37,7 @@ public class LoginManagement implements Serializable {
     public void login() {
         try {
             UserModel user = UserManager.get(username, password);
-            
+
             if (user != null) {
                 String[] property = {"username", "password", "admin"};
                 cookies = CookieManager.add(property, user.getUsername(), user.getPassword(),
@@ -45,7 +45,7 @@ public class LoginManagement implements Serializable {
                 this.setName(user.getName());
                 this.setSurname(user.getSurname());
                 this.setEmail(user.getEmail());
-                this.setCreditcard(user.getCreditcard());
+                this.setCreditcard(Integer.toString(user.getCreditcard()));
             }
         } catch (NotFoundDBException ex) {
             // da gestire
@@ -53,7 +53,7 @@ public class LoginManagement implements Serializable {
             // da gestire
         }
     }
-    
+
     public void logout() {
         CookieManager.delete(cookies);
     }
@@ -61,11 +61,10 @@ public class LoginManagement implements Serializable {
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
-    
     public void updateUser() {
         try {
             UserModel newUser = new UserModel(this.getUsername(), this.getPassword(), this.getName(),
-                    this.getSurname(), this.getEmail(), this.getCreditcard());
+                    this.getSurname(), this.getEmail(), Integer.parseInt(this.getCreditcard()));
             UserManager.update(newUser);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -75,15 +74,20 @@ public class LoginManagement implements Serializable {
     public void getUser() {
         try {
             UserModel user = UserManager.get(this.getUsername(), this.getPassword());
-            this.setName(user.getName());
-            this.setSurname(user.getSurname());
-            this.setEmail(user.getEmail());
-            this.setCreditcard(user.getCreditcard());
+            if (user != null) {
+                this.setName(user.getName());
+                this.setSurname(user.getSurname());
+                this.setEmail(user.getEmail());
+
+                /* gestione carta di credito */
+                int creditcard = user.getCreditcard();
+                this.setCreditcard(Integer.toString(creditcard));
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+
     // </editor-fold>
     
     public String getCookieValue(String name) {

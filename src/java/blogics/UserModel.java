@@ -19,7 +19,7 @@ public class UserModel {
 
     private String email;
 
-    private String creditcard;
+    private int creditcard;
 
     /* valore per distinguere un semplice utente da un admin */
     private Boolean admin;
@@ -27,33 +27,34 @@ public class UserModel {
     // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public UserModel() {
     }
-    
-    public UserModel(String username, String password, String name, String surname, String email, String creditcard) {
-        this.setUsername(username);
-        this.setPassword(password);
-        this.setName(name);
-        this.setSurname(surname);
-        this.setEmail(email);
+
+    public UserModel(String username, String password, String name, String surname, String email, int creditcard) {
+        this.setUsername((username != null) ? username : "");
+        this.setPassword((password != null) ? password : "");
+        this.setName((name != null) ? name : "");
+        this.setSurname((surname != null) ? surname : "");
+        this.setEmail((email != null) ? email : "");
         this.setCreditcard(creditcard);
         this.setAdmin(false);
     }
-    
+
     public UserModel(ResultSet result) {
         try {
-            this.setUsername(result.getString("username"));
-            this.setName(result.getString("name"));
-            this.setSurname(result.getString("surname"));
-            this.setPassword(result.getString("password"));
-            this.setEmail(result.getString("email"));
-            this.setCreditcard(result.getString("credit_card"));
-            this.setAdmin(result.getString("role").equals("admin") ? true : false);
+            if (result.getInt("active") != 0) {
+                this.setUsername(result.getString("username"));
+                this.setName(result.getString("name"));
+                this.setSurname(result.getString("surname"));
+                this.setPassword(result.getString("password"));
+                this.setEmail(result.getString("email"));
+                this.setCreditcard(result.getInt("credit_card"));
+                this.setAdmin(result.getString("role").equals("admin") ? true : false);
+            }
         } catch (SQLException ex) {
             /* non ci devono essere campi senza valore */
         }
     }
 
     // </editor-fold>
-
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username
@@ -150,7 +151,7 @@ public class UserModel {
      *
      * @return the value of creditcard
      */
-    public String getCreditcard() {
+    public int getCreditcard() {
         return creditcard;
     }
 
@@ -159,14 +160,14 @@ public class UserModel {
      *
      * @param creditcard new value of creditcard
      */
-    public void setCreditcard(String creditcard) {
+    public void setCreditcard(int creditcard) {
         this.creditcard = creditcard;
     }
-    
+
     public void setAdmin(Boolean admin) {
         this.admin = admin;
     }
-    
+
     public Boolean isAdmin() {
         return this.admin;
     }

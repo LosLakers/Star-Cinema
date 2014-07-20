@@ -27,12 +27,12 @@ public class RegistrationManagement implements Serializable {
 
     public void registration() {
         try {
+            int credit_card = this.getCreditcard() != null ? Integer.parseInt(this.getCreditcard()) : 0;
             UserModel user = new UserModel(this.getUsername(), this.getPassword(), this.getName(),
-                    this.getSurname(), this.getEmail(), this.getCreditcard());
-
-            RegistrationManager.createUser(user);
+                    this.getSurname(), this.getEmail(), credit_card);
+            UserManager.add(user);
         } catch (Exception ex) {
-            
+            ex.printStackTrace();
         }
     }
 

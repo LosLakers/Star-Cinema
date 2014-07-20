@@ -10,6 +10,29 @@ public class UserManager {
 
     // <editor-fold defaultstate="collapsed" desc="CRUD">
     
+    public static void add(UserModel user)
+            throws NotFoundDBException {
+        
+        DataBase database = DBService.getDataBase();
+        try {
+            String sql = "INSERT INTO `utenti` " +
+                    "(`username`,`password`,`name`,`surname`,`email`,`credit_card`) " +
+                    "VALUES " +
+                    "('" + util.Conversion.getDatabaseString(user.getUsername()) + "'," +
+                    "'" + util.Conversion.getDatabaseString(user.getPassword()) + "'," +
+                    "'" + util.Conversion.getDatabaseString(user.getName()) + "'," +
+                    "'" + util.Conversion.getDatabaseString(user.getSurname()) + "'," +
+                    "'" + util.Conversion.getDatabaseString(user.getEmail()) + "'," +
+                    "'" + user.getCreditcard() + "');";
+            database.modify(sql);
+            database.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            database.close();
+        }
+    }
+    
     public static void update(UserModel user) 
             throws NotFoundDBException {
         
@@ -19,7 +42,7 @@ public class UserManager {
                         "SET `name`='" + util.Conversion.getDatabaseString(user.getName()) + "'," +
                         "`surname`='" + util.Conversion.getDatabaseString(user.getSurname()) + "'," +
                         "`email`='" + util.Conversion.getDatabaseString(user.getEmail()) + "'," +
-                        "`credit_card`='" + util.Conversion.getDatabaseString(user.getCreditcard()) + "' " +
+                        "`credit_card`='" + user.getCreditcard() + "' " +
                         "WHERE `username`='" + util.Conversion.getDatabaseString(user.getUsername()) + "'";
             database.modify(sql);
             database.commit();

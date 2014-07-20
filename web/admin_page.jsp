@@ -27,22 +27,26 @@
             <div class="form-group">
                 <label class="control-label">Nome</label>
                 <div class="controls">
-                    <input type="text" class="form-control" name="name" value="<%=loginManagement.getName()%>" required="required"/>
+                    <input type="text" class="form-control" name="name" required="required" 
+                           value="<%=loginManagement.getName()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Cognome</label>
                 <div class="controls">
-                    <input type="text" class="form-control" name="surname" value="<%=loginManagement.getSurname()%>" required="required"/>
+                    <input type="text" class="form-control" name="surname" required="required"
+                           value="<%=loginManagement.getSurname()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Email</label>
                 <div class="controls">
-                    <input type="email" class="form-control" name="email" value="<%=loginManagement.getEmail()%>" required="required"/>
+                    <input type="email" class="form-control" name="email" required="required" 
+                           value="<%=loginManagement.getEmail()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Carta di Credito</label>
                 <div class="controls">
-                    <input type="text" class="form-control" name="creditcard" value="<%=loginManagement.getCreditcard()%>" placeholder="CreditCard" required="required"/>
+                    <input type="number" class="form-control" name="creditcard" placeholder="CreditCard" required="required" 
+                           value="<%=loginManagement.getCreditcard()%>"/>
                 </div>
                 <br/>
                 <input type="hidden" name="status" value="edit"/>

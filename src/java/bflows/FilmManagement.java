@@ -23,6 +23,14 @@ public class FilmManagement implements Serializable {
     private String durata;
     
     private String locandina;
+
+    private int id_commento;
+
+    private int voto;
+
+    private String giudizio;
+
+    private String user;
     
     public FilmManagement() {
     }
@@ -71,6 +79,17 @@ public class FilmManagement implements Serializable {
     }
 
     // </editor-fold>
+
+    public void addComment() {
+        try {
+            CommentModel commento = new CommentModel(this.getVoto(), this.getGiudizio(),
+                            this.getUser(), this.getId_film());
+            CommentManager.add(commento);
+            this.setId_commento(commento.getId_commento());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     
@@ -182,6 +201,78 @@ public class FilmManagement implements Serializable {
      */
     public void setLocandina(String locandina) {
         this.locandina = locandina;
+    }
+
+    /**
+     * Get the value of id_commento
+     *
+     * @return the value of id_commento
+     */
+    public int getId_commento() {
+        return id_commento;
+    }
+
+    /**
+     * Set the value of id_commento
+     *
+     * @param id_commento new value of id_commento
+     */
+    public void setId_commento(int id_commento) {
+        this.id_commento = id_commento;
+    }
+
+    /**
+     * Get the value of voto
+     *
+     * @return the value of voto
+     */
+    public int getVoto() {
+        return voto;
+    }
+
+    /**
+     * Set the value of voto
+     *
+     * @param voto new value of voto
+     */
+    public void setVoto(int voto) {
+        this.voto = voto;
+    }
+
+    /**
+     * Get the value of giudizio
+     *
+     * @return the value of giudizio
+     */
+    public String getGiudizio() {
+        return giudizio;
+    }
+
+    /**
+     * Set the value of giudizio
+     *
+     * @param giudizio new value of giudizio
+     */
+    public void setGiudizio(String giudizio) {
+        this.giudizio = giudizio;
+    }
+
+    /**
+     * Get the value of user
+     *
+     * @return the value of user
+     */
+    public String getUser() {
+        return user;
+    }
+
+    /**
+     * Set the value of user
+     *
+     * @param user new value of user
+     */
+    public void setUser(String user) {
+        this.user = user;
     }
 
     // </editor-fold>

@@ -15,6 +15,7 @@ public class FilmManager {
     public static void add(FilmModel film)
             throws NotFoundDBException, SQLException {
         
+        DataBase database = DBService.getDataBase();
         try {
             /* controllo che non ci sia già un film con lo stesso titolo */
             String sql = "SELECT *" +
@@ -22,7 +23,6 @@ public class FilmManager {
                         " WHERE " +
                         " `titolo` ='" + util.Conversion.getDatabaseString(film.getTitolo()) + "'";
             
-            DataBase database = DBService.getDataBase();
             ResultSet resultSet = database.select(sql);
             
             if (resultSet.next()) { // se true riporto un errore
@@ -47,10 +47,10 @@ public class FilmManager {
                 film.setId_film(resultSet.getInt(1));
                 resultSet.close();
             }
-            
-            database.close();
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            database.close();
         }
     }
     

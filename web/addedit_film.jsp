@@ -82,7 +82,8 @@
                 <div class="row">
                     <div class="form-group col-xs-8">
                         <span class="label label-info">Inserisci Descrizione</span>
-                        <textarea form="filmForm" class="form-control" name="descrizione" required="required"><%=filmManagement.getDescrizione()%></textarea>
+                        <textarea form="filmForm" class="form-control" name="descrizione" 
+                                  required="required"><%=filmManagement.getDescrizione()%></textarea>
                     </div>
                 </div>
                 <input type="submit" form="filmForm" class="btn btn-primary" value="<%=submit%>"/>
