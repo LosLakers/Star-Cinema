@@ -11,7 +11,7 @@ import services.database.*;
  */
 public class FilmManager {
 
-    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+   // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     public static void add(FilmModel film)
             throws NotFoundDBException, SQLException {
         
@@ -54,10 +54,11 @@ public class FilmManager {
         }
     }
     
-    public static void update(FilmModel film) {
+    public static void update(FilmModel film) 
+            throws NotFoundDBException {
+        
+        DataBase database = DBService.getDataBase();
         try {
-            DataBase database = DBService.getDataBase();
-
             /* aggiorno il film nel database */
             String sql = "UPDATE `film` " +
                         "SET " +
@@ -69,29 +70,33 @@ public class FilmManager {
                         "WHERE `id_film`='" + film.getId_film() + "';" ;
             database.modify(sql);
             database.commit();
-            database.close();
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            database.close();
         }
     }
     
-    public static void delete(int id_film) {
-        try {
-            DataBase database = DBService.getDataBase();
-            
+    public static void delete(int id_film) 
+            throws NotFoundDBException {
+        
+        DataBase database = DBService.getDataBase();
+        try {           
             /* elimino il film dal database */
             String sql = "DELETE FROM `film` " +
                         "WHERE `id_film`='" + id_film + "';";
             database.modify(sql);
             database.commit();
-            database.close();
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            database.close();
         }
     }
 
     public static FilmModel get(int id_film)
             throws NotFoundDBException, ResultSetDBException {
+        
         DataBase database = DBService.getDataBase();
         try {
             FilmModel film = new FilmModel();
@@ -120,6 +125,7 @@ public class FilmManager {
     /* metodo per ottenere un film dal titolo */
     public static FilmModel get(String titolo)
             throws NotFoundDBException, ResultSetDBException {
+        
         DataBase database = DBService.getDataBase();
         try {
             FilmModel film = new FilmModel();

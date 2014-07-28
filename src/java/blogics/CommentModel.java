@@ -2,6 +2,8 @@
 package blogics;
 
 import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -19,13 +21,28 @@ public class CommentModel {
 
     private int id_film;
 
-    public CommentModel() {}
+    public CommentModel() {
+        this.setId_commento(0);
+    }
     
-    public CommentModel(int voto, String giudizio, String username, int id_film) {
+    public CommentModel(int id_commento, int voto, String giudizio, String username, int id_film) {
+        this.setId_commento(id_commento);
         this.setVoto(voto);
         this.setGiudizio(giudizio);
         this.setUsername(username);
         this.setId_film(id_film);
+    }
+    
+    public CommentModel(ResultSet result) {
+        try {
+            this.setId_commento(result.getInt("id_commento"));
+            this.setVoto(result.getInt("voto"));
+            this.setGiudizio(result.getString("giudizio"));
+            this.setUsername(result.getString("username"));
+            this.setId_film(result.getInt("id_film"));
+        } catch (SQLException ex) {
+            /* nessun valore deve essere null */
+        }
     }
     
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">

@@ -81,7 +81,6 @@
         <%@include file="default.html" %>
         <title>Star Cinema</title>
         <link href="theme.css" rel="stylesheet" type="text/css"/>
-        <script src="utility.js"></script>
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-fixed-top">

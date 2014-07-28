@@ -10,8 +10,9 @@ import java.sql.*;
  *
  * @author Guido Pio
  */
-public class FilmManagement implements Serializable {
+public class FilmManagement extends BaseBean implements Serializable {
 
+    // proprietà per la gestione del film
     private int id_film;
     
     private String titolo;
@@ -24,6 +25,7 @@ public class FilmManagement implements Serializable {
     
     private String locandina;
 
+    // proprietà per la gestione del commento di un utente
     private int id_commento;
 
     private int voto;
@@ -31,6 +33,9 @@ public class FilmManagement implements Serializable {
     private String giudizio;
 
     private String user;
+
+    // lista dei commenti per un film
+    private CommentModel[] commenti;
     
     public FilmManagement() {
     }
@@ -79,17 +84,77 @@ public class FilmManagement implements Serializable {
     }
 
     // </editor-fold>
-
+    
+    // <editor-fold defaultstate="collapsed" desc=" Comment-Management ">
     public void addComment() {
         try {
-            CommentModel commento = new CommentModel(this.getVoto(), this.getGiudizio(),
-                            this.getUser(), this.getId_film());
+            CommentModel commento = new CommentModel(0, this.getVoto(), this.getGiudizio(),
+                    this.getUser(), this.getId_film());
             CommentManager.add(commento);
             this.setId_commento(commento.getId_commento());
+            this.setMessage("Inserimento avvenuto con successo");
+            this.setMessagetype("green");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            this.setMessage("Riprovare l'inserimento. Se il problema persiste contattare l'amministratore");
+            this.setMessagetype("red");
         }
     }
+    
+    public void updateComment() {
+        try {
+            CommentModel commento = new CommentModel(this.getId_commento(), this.getVoto(), this.getGiudizio(),
+                this.getUser(), this.getId_film());
+            CommentManager.update(commento);
+            this.setMessage("Aggiornamento avvenuto con successo");
+            this.setMessagetype("green");
+        } catch (Exception ex) {
+            this.setMessage("Riprovare l'aggiornamento. Se il problema persiste contattare l'amministratore");
+            this.setMessagetype("red");
+        }
+    }
+    
+    public void deleteComment() {
+        // TODO
+    }
+    
+    public void getComment() {
+        try {
+            CommentModel commento = CommentManager.get(this.getUser(), this.getId_film());
+            this.setId_commento(commento.getId_commento());
+            if (this.getId_commento() != 0) {
+                this.setVoto(commento.getVoto());
+                this.setGiudizio(commento.getGiudizio());
+            }
+            
+            // creo la lista dei commenti associati al film
+            this.setCommenti(CommentManager.getCommenti(this.getId_film()));
+        } catch (Exception ex) {
+            this.setMessage("Errore nel recupero dei commenti. Se il problema persiste contattare l'amministratore");
+            this.setMessagetype("red");
+        }
+    }
+
+    public int getComment_Voto(CommentModel commento) {
+        return commento.getVoto();
+    }
+    
+    public String getComment_Giudizio(CommentModel commento) {
+        return commento.getGiudizio();
+    }
+    
+    public String getComment_User(CommentModel commento) {
+        return commento.getUsername();
+    }
+    
+    public int getComment_Length() {
+        CommentModel[] commenti = this.getCommenti();
+        if (commenti == null) {
+            return 0;
+        }
+        return commenti.length;
+    }
+    
+    // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     
@@ -273,6 +338,44 @@ public class FilmManagement implements Serializable {
      */
     public void setUser(String user) {
         this.user = user;
+    }
+
+    /**
+     * Get the value of commenti
+     *
+     * @return the value of commenti
+     */
+    public CommentModel[] getCommenti() {
+        return commenti;
+    }
+
+    /**
+     * Set the value of commenti
+     *
+     * @param commenti new value of commenti
+     */
+    public void setCommenti(CommentModel[] commenti) {
+        this.commenti = commenti;
+    }
+
+    /**
+     * Get the value of commenti at specified index
+     *
+     * @param index the index of commenti
+     * @return the value of commenti at specified index
+     */
+    public CommentModel getCommenti(int index) {
+        return this.commenti[index];
+    }
+
+    /**
+     * Set the value of commenti at specified index.
+     *
+     * @param index the index of commenti
+     * @param commenti new value of commenti at specified index
+     */
+    public void setCommenti(int index, CommentModel commenti) {
+        this.commenti[index] = commenti;
     }
 
     // </editor-fold>
