@@ -22,8 +22,8 @@ public class CookieManager {
     }
     
     public static void delete(Cookie... cookies) {
-        for (int i = 0; i < cookies.length; i++) {
-            cookies[i].setMaxAge(0);
+        for (Cookie cookie : cookies) {
+            cookie.setMaxAge(0);
         }
     }
     

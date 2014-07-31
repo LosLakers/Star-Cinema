@@ -152,7 +152,7 @@
     <!-- Lista Commenti del Film -->
     <%
         int num_comments = filmManagement.getComment_Length();
-        int num_page = num_comments / 4;
+        int num_page = num_comments%4 == 0 ? num_comments/4 : num_comments/4 + 1;
         if (num_page == 0) {
             num_page = 1;
         }
@@ -215,7 +215,7 @@
                     </li>
                     <% for (int j = 1; j < num_page; j++) {%>
                     <li>
-                        <a href="#<%=pages[j + 1]%>" data-toggle="tab"><%=j + 1%> <span class="sr-only">(current)</span></a>
+                        <a href="#<%=pages[j]%>" data-toggle="tab"><%=j + 1%> <span class="sr-only">(current)</span></a>
                     </li>
                     <%}%>
                 </ul>

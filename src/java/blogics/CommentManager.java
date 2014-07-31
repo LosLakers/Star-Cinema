@@ -51,7 +51,7 @@ public class CommentManager {
                 resultSet.close();
             }
             database.commit();
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             throw ex;
         } finally {
             database.close();
@@ -71,7 +71,7 @@ public class CommentManager {
                     + "WHERE `id_commento`='" + model.getId_commento() + "';";
             database.modify(sql);
             database.commit();
-        } catch (Exception ex) {
+        } catch (NotFoundDBException ex) {
             throw ex;
         } finally {
             database.close();
@@ -88,7 +88,7 @@ public class CommentManager {
                     + "WHERE `id_commento`='" + id_commento + "';";
             database.modify(sql);
             database.commit();
-        } catch (Exception ex) {
+        } catch (NotFoundDBException ex) {
             throw ex;
         } finally {
             database.close();
@@ -96,7 +96,7 @@ public class CommentManager {
     }
 
     public static CommentModel get(String user, int id_film) 
-            throws NotFoundDBException {
+            throws NotFoundDBException, SQLException {
         
         DataBase database = DBService.getDataBase();
         CommentModel commento = new CommentModel();
@@ -111,16 +111,16 @@ public class CommentManager {
                 commento = new CommentModel(resultSet);
             }
             database.commit();
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             throw ex;
         } finally {
             database.close();
-            return commento;
         }
+        return commento;
     }
     
     public static CommentModel[] getCommenti(int id_film) 
-            throws NotFoundDBException {
+            throws NotFoundDBException, SQLException {
         
         DataBase database = DBService.getDataBase();
         CommentModel[] commenti = null;
@@ -144,12 +144,13 @@ public class CommentManager {
             for (int i = 0; i < commenti.length; i++) {
                 commenti[i] = commentList.get(i);
             }
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             throw ex;
         } finally {
             database.close();
-            return commenti;
+            
         }
+        return commenti;
     }
     
     // </editor-fold>

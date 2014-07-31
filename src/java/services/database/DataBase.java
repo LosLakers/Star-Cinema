@@ -59,6 +59,13 @@ public class DataBase {
     
   }
   
+  /**
+   * Restituisce una istanza di ResultSet contente la colonna con la chiave
+   * auto-generata.
+   * @param sql
+   * @return
+   * @throws NotFoundDBException 
+   */
   public ResultSet modifyPK(String sql) throws NotFoundDBException {
     
     int recordsNumber;

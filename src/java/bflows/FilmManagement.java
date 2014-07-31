@@ -5,6 +5,7 @@ import blogics.*;
 import java.beans.*;
 import java.io.Serializable;
 import java.sql.*;
+import java.time.LocalTime;
 
 /**
  *
@@ -43,7 +44,7 @@ public class FilmManagement extends BaseBean implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     public void addFilm() {
         try {
-            FilmModel film = new FilmModel(0, this.getTitolo(), this.getDurata(), 
+            FilmModel film = new FilmModel(0, this.getTitolo(), LocalTime.parse(this.getDurata()), 
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.add(film);
             this.setId_film(film.getId_film());
@@ -54,7 +55,7 @@ public class FilmManagement extends BaseBean implements Serializable {
     
     public void updateFilm() {
         try {
-            FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), this.getDurata(), 
+            FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), LocalTime.parse(this.getDurata()), 
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.update(film);
         } catch (Exception ex) {
@@ -76,7 +77,7 @@ public class FilmManagement extends BaseBean implements Serializable {
             this.setTitolo(film.getTitolo());
             this.setDescrizione(film.getDescrizione());
             this.setTrailer(film.getTrailer());
-            this.setDurata(film.getDurata());
+            this.setDurata(film.getDurata().toString());
             this.setLocandina(film.getLocandina());
         } catch (Exception ex) {
             ex.printStackTrace();

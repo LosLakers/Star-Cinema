@@ -1,7 +1,7 @@
-
 package blogics;
 
 import java.sql.*;
+import java.time.*;
 
 /**
  *
@@ -10,10 +10,10 @@ import java.sql.*;
 public class FilmModel {
 
     private int id_film;
-    
+
     private String titolo;
 
-    private String durata;
+    private LocalTime durata;
 
     private String descrizione;
 
@@ -21,16 +21,20 @@ public class FilmModel {
 
     private String locandina;
 
+    // collegamento ad un altro modello, va settato nel codice che lo deve usare
+    private TheaterDateModel[] theaterdate;
+
     // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public FilmModel() {
         this.setTitolo("");
-        this.setDurata("00:00:00");
+        this.setDurata(LocalTime.of(0, 0));
         this.setDescrizione("");
         this.setTrailer("");
         this.setLocandina("");
     }
-    
-    public FilmModel(int id_film, String titolo, String durata, String descrizione, String trailer, String locandina) {
+
+    public FilmModel(int id_film, String titolo, LocalTime durata, String descrizione,
+            String trailer, String locandina) {
         this.setId_film(id_film);
         this.setTitolo(titolo);
         this.setDurata(durata);
@@ -38,24 +42,19 @@ public class FilmModel {
         this.setTrailer(trailer);
         this.setLocandina(locandina);
     }
-    
-    public FilmModel(ResultSet result) {
-        try {
-            this.setId_film(result.getInt("id_film"));
-            this.setTitolo(result.getString("titolo"));
-            this.setDurata(result.getString("durata"));
-            this.setDescrizione(result.getString("descrizione"));
-            this.setTrailer(result.getString("trailer"));
-            this.setLocandina(result.getString("locandina"));
-        } catch (SQLException ex) {
-            /* nessun valore deve essere null */
-        }
+
+    public FilmModel(ResultSet result) throws SQLException {
+        this.setId_film(result.getInt("id_film"));
+        this.setTitolo(result.getString("titolo"));
+        this.setDurata(result.getTime("durata").toLocalTime());
+        this.setDescrizione(result.getString("descrizione"));
+        this.setTrailer(result.getString("trailer"));
+        this.setLocandina(result.getString("locandina"));
     }
 
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
-
     /**
      * Get the value of id_film
      *
@@ -73,7 +72,7 @@ public class FilmModel {
     public void setId_film(int id_film) {
         this.id_film = id_film;
     }
-    
+
     /**
      * Get the value of titolo
      *
@@ -97,7 +96,7 @@ public class FilmModel {
      *
      * @return the value of durata
      */
-    public String getDurata() {
+    public LocalTime getDurata() {
         return durata;
     }
 
@@ -106,9 +105,7 @@ public class FilmModel {
      *
      * @param durata new value of durata
      */
-    public void setDurata(String durata) {
-        if (durata.length() == 5)
-            durata = durata + ":00";
+    public void setDurata(LocalTime durata) {
         this.durata = durata;
     }
 
@@ -164,6 +161,44 @@ public class FilmModel {
      */
     public void setLocandina(String locandina) {
         this.locandina = locandina;
+    }
+
+    /**
+     * Get the value of theaterdate
+     *
+     * @return the value of theaterdate
+     */
+    public TheaterDateModel[] getTheaterdate() {
+        return theaterdate;
+    }
+
+    /**
+     * Set the value of theaterdate
+     *
+     * @param theaterdate new value of theaterdate
+     */
+    public void setTheaterdate(TheaterDateModel[] theaterdate) {
+        this.theaterdate = theaterdate;
+    }
+
+    /**
+     * Get the value of theaterdate at specified index
+     *
+     * @param index the index of theaterdate
+     * @return the value of theaterdate at specified index
+     */
+    public TheaterDateModel getTheaterdate(int index) {
+        return this.theaterdate[index];
+    }
+
+    /**
+     * Set the value of theaterdate at specified index.
+     *
+     * @param index the index of theaterdate
+     * @param theaterdate new value of theaterdate at specified index
+     */
+    public void setTheaterdate(int index, TheaterDateModel theaterdate) {
+        this.theaterdate[index] = theaterdate;
     }
 
     // </editor-fold>

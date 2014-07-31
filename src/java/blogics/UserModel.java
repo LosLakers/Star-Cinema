@@ -55,6 +55,7 @@ public class UserModel {
     }
 
     // </editor-fold>
+    
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username

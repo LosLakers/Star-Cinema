@@ -12,6 +12,8 @@
     if (status != null && status.equals("registrato")) {
         registration = true;
         registrationManagement.registration();
+        String redirect = new String("home.jsp");
+        response.sendRedirect(redirect);
     }
 
 %>
@@ -71,9 +73,9 @@
                 <br/>
                 <input type="submit" class="btn btn-primary" value="Registrami"></input>
                 <a href="home.jsp" class="btn btn-warning">Annulla</a>
+                <br/>
+                <br/>
             </form>
-            <%} else {%>
-            <a href="home.jsp">Registrazione Completata</a>
             <%}%>
         </div>
 <script src="scripts/validation_registration.js"></script>
