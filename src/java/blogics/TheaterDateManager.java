@@ -31,42 +31,65 @@ public class TheaterDateManager {
             throw new Exception();
         }
 
-        // gestione inizio e fine rispetto agli altri orari
         DataBase database = DBService.getDataBase();
         try {
+            // gestione inizio e fine rispetto agli altri orari
+            String sql = "SELECT P.ora_inizio, P.ora_fine " +
+                        "FROM `film_sala_programmazione` AS FSP " +
+                        "JOIN `sale` AS S ON FSP.id_sala=S.id_sala " +
+                        "JOIN `programmazione` AS P ON FSP.id_data=P.id_data " +
+                        "WHERE `numero_sala`='" + theater.getNumero_sala() + "' AND " +
+                        "P.data='" + show.getData() + "'" +
+                        "ORDER BY P.ora_inizio;";
+            ResultSet resultSet = database.select(sql);
+            while(resultSet.next()) {
+                LocalTime _inizio = resultSet.getTime("ora_inizio").toLocalTime();
+                LocalTime _fine = resultSet.getTime("ora_fine").toLocalTime();
+                
+                // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
+                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine)) {
+                    throw new Exception();
+                }
+                // errore se il film è compreso nell'inizio di un altro film
+                if (inizio.isBefore(_inizio) && fine.isAfter(_inizio)) {
+                    throw new Exception();
+                }
+            }
+            resultSet.close();
+
             // inserimento data con recupero id_data
-            String sql = "INSERT INTO `programmazione`" +
-                        "(`data`,`ora_inizio`,`ora_fine`) VALUES " +
-                        "('" + show.getData() + "'," +
-                        "'" + show.getOra_inizio() + "'," +
-                        "'" + show.getOra_fine() + "');";
-            ResultSet resultSet = database.modifyPK(sql);
+            sql = "INSERT INTO `programmazione`"
+                    + "(`data`,`ora_inizio`,`ora_fine`) VALUES "
+                    + "('" + show.getData() + "',"
+                    + "'" + show.getOra_inizio() + "',"
+                    + "'" + show.getOra_fine() + "');";
+            resultSet = database.modifyPK(sql);
             if (resultSet.next()) {
                 show.setId_data(resultSet.getInt(1));
             }
             resultSet.close();
-            
+
             // inserimento sala con recupero id_sala
-            sql = "INSERTO INTO `sale`" +
-                    "(`numero_sala`) VALUES " +
-                    "('" + theater.getNumero_sala() + "');";
+            sql = "INSERT INTO `sale`"
+                    + "(`numero_sala`) VALUES "
+                    + "('" + theater.getNumero_sala() + "');";
             resultSet = database.modifyPK(sql);
             if (resultSet.next()) {
                 theater.setId_sala(resultSet.getInt(1));
             }
             resultSet.close();
-            
+
             // inserimento id_film - id_data - id_sala nella relativa tabella
-            sql = "INSERTO INTO `film_sala_programmazione`" +
-                    "(`id_film`, `id_sala`, `id_data`) VALUES " +
-                    "('" + film.getId_film() + "'," +
-                    "'" + theater.getId_sala() + "'," +
-                    "'" + show.getId_data() + "');";
+            sql = "INSERT INTO `film_sala_programmazione`"
+                    + "(`id_film`, `id_sala`, `id_data`) VALUES "
+                    + "('" + film.getId_film() + "',"
+                    + "'" + theater.getId_sala() + "',"
+                    + "'" + show.getId_data() + "');";
             int count = database.modify(sql);
             if (count == 0) {
                 throw new Exception();
             }
-            
+
             database.commit();
         } catch (Exception ex) {
             throw ex;

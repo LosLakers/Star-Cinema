@@ -1,7 +1,7 @@
 <%@include file="login_navbar.jsp" %>
 
-<jsp:useBean id="nowShowingManagement" scope="page" class="bflows.NowShowingManagement" />
-<jsp:setProperty name="nowShowingManagement" property="*" />
+<jsp:useBean id="nowShowingBean" scope="page" class="bflows.NowShowingManagement" />
+<jsp:setProperty name="nowShowingBean" property="*" />
 
 <%
     String id_film = request.getParameter("id_film");
@@ -10,11 +10,11 @@
         response.sendRedirect(redirect);
     }
     if (status.equals("addDate")) {
-        nowShowingManagement.addShow();
+        nowShowingBean.addShow();
     }
-    nowShowingManagement.populateTheater();
-    int num_sale = nowShowingManagement.numberOfTheater();
-    String[] week = nowShowingManagement.getWeek();
+    nowShowingBean.populateTheater();
+    int num_sale = nowShowingBean.numberOfTheater();
+    String[] week = nowShowingBean.getWeek();
 %>
 
 <% if (isAdmin) {%>
@@ -25,13 +25,22 @@
         <p>
             Seleziona la sala, la data, l'ora di inizio e l'ora di fine del film che vuoi inserire.
             <br/>
-            Il film è <strong><%=nowShowingManagement.getTitolo_film()%></strong> con durata <strong><%=nowShowingManagement.getDurata_film()%></strong>
+            Il film è <strong><%=nowShowingBean.getTitolo_film()%></strong> con durata <strong><%=nowShowingBean.getDurata_film()%></strong>
         </p>
     </div>
 </div>
+<% if (!nowShowingBean.getMessage().equals("")) {%>
+<!-- Gestione Errori -->
+<div class="container">
+    <div class="alert alert-dismissable <%=nowShowingBean.getMessagetype()%>">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+        <p><strong><%=nowShowingBean.getMessage()%></strong></p>
+    </div>
+</div>
+<%}%>
 <div class="container">
     <div class="row">
-        <form>
+        <form method="post" action="slotsala.jsp">
             <!-- Gestione Sale -->
             <div class="col-lg-12 col-md-12">
                 <div class="form-group col-lg-4 col-md-4">
@@ -124,8 +133,8 @@
                         <tbody>
                             <%
                                 for (int j = 0; j < num_sale; j++) {
-                                    String[] inizio = nowShowingManagement.oraInizioTheater(j + 1, week[0]);
-                                    String[] fine = nowShowingManagement.oraFineTheater(j + 1, week[0]);
+                                    String[] inizio = nowShowingBean.oraInizioTheater(j + 1, week[0]);
+                                    String[] fine = nowShowingBean.oraFineTheater(j + 1, week[0]);
                             %>
                             <tr>
                                 <td>
@@ -157,8 +166,8 @@
                         <tbody>
                             <%
                                 for (int m = 0; m < num_sale; m++) {
-                                    String[] inizio = nowShowingManagement.oraInizioTheater(m + 1, week[j]);
-                                    String[] fine = nowShowingManagement.oraFineTheater(m + 1, week[j]);
+                                    String[] inizio = nowShowingBean.oraInizioTheater(m + 1, week[j]);
+                                    String[] fine = nowShowingBean.oraFineTheater(m + 1, week[j]);
                             %>
                             <tr>
                                 <td>

@@ -13,7 +13,7 @@ import java.sql.*;
  *
  * @author Guido Pio
  */
-public class NowShowingManagement implements Serializable {
+public class NowShowingManagement extends BaseBean implements Serializable {
 
     // proprietà da ottenere
     private int id_film;
@@ -35,7 +35,7 @@ public class NowShowingManagement implements Serializable {
 
     private String[] week;
 
-    public NowShowingManagement() {
+    public NowShowingManagement(){
     }
 
     public void populateTheater() {
@@ -94,9 +94,11 @@ public class NowShowingManagement implements Serializable {
             TheaterModel theater = new TheaterModel(0,0,this.getSala());
             TheaterDateManager.add(film, show, theater);
             
-            // messaggio di avvenuto inserimento
+            this.setMessage("Sala-Data-Ora inserita con successo");
+            this.setMessagetype("alert-success");
         } catch (Exception ex) {
-            // messaggio di errore
+            this.setMessage("Errore nell'inserimento.");
+            this.setMessagetype("alert-danger");
         }
     }
 
