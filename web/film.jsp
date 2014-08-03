@@ -1,40 +1,38 @@
 <%@include file="login_navbar.jsp" %>
-<jsp:useBean id="filmManagement" scope="page" class="bflows.FilmManagement"/>
-<jsp:setProperty name="filmManagement" property="id_film"/>
+<jsp:useBean id="filmBean" scope="page" class="bflows.FilmManagement"/>
+<jsp:setProperty name="filmBean" property="id_film"/>
 
 <%
     Boolean firstComment = true;
-    filmManagement.getFilm();
-    filmManagement.setUser(username);
+    filmBean.getFilm();
+    filmBean.setUser(username);
 
     if (status.equals("addcommento")) {
 %>
-<jsp:setProperty name="filmManagement" property="*"/>
+<jsp:setProperty name="filmBean" property="*"/>
 <%
-        filmManagement.addComment();
+        filmBean.addComment();
     }
     if (status.equals("updatecommento")) {
 %>
-<jsp:setProperty name="filmManagement" property="*"/>
+<jsp:setProperty name="filmBean" property="*"/>
 <%
-        filmManagement.updateComment();
+        filmBean.updateComment();
     }
 
-    filmManagement.getComment();
-    if (filmManagement.getId_commento() != 0) {
+    filmBean.getComment();
+    if (filmBean.getId_commento() != 0) {
         firstComment = false;
     }
 %>
 
-<% if (!filmManagement.getMessage().equals("")) {%>
+<% if (!filmBean.getMessage().equals("")) {%>
 <!-- Gestione Errori -->
 <div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-md-6 col-lg-6">
-            <div class="aler alert-success alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-                <p class="message-success"><%=filmManagement.getMessage()%></p>
-            </div>
+    <div class="col-md-6 col-lg-6">
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <p class="message-success"><%=filmBean.getMessage()%></p>
         </div>
     </div>
 </div>
@@ -44,12 +42,17 @@
 <div class="jumbotron">
     <div class="row">
         <div class="col-sm-offset-1 col-lg-5">
-            <h1><%=filmManagement.getTitolo()%></h1>
+            <h1><%=filmBean.getTitolo()%></h1>
             <% if (isAdmin) {%>
             <form id="adminForm" action="addedit_film.jsp">
-                <input type="hidden" name="id_film" value="<%=filmManagement.getId_film()%>"/>
+                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
                 <input type="hidden" name="status" value="edit"/>
-                <button form="adminForm" type="submit" class="btn btn-success">Modifica</button>
+                <button form="adminForm" type="submit" class="btn btn-primary">Modifica Film</button>
+            </form>
+            <br/>
+            <form id="showForm" action="slotsala.jsp">
+                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
+                <button form="showForm" type="submit" class="btn btn-default">Aggiungi Spettacolo</button>
             </form>
             <%}%>    
         </div>
@@ -82,18 +85,18 @@
     <div class="row">
         <div class="col-lg-4 col-md-4">
             <h2>Locandina</h2>
-            <img src="<%=filmManagement.getLocandina()%>"/>
+            <img src="<%=filmBean.getLocandina()%>"/>
         </div>
         <div class="col-lg-4 col-md-4">
             <h2>Descrizione</h2>
-            <p><%=filmManagement.getDescrizione()%></p>
+            <p><%=filmBean.getDescrizione()%></p>
         </div>
         <div class="col-lg-4 col-md-4">
             <h3>Durata</h3>
-            <%=filmManagement.getDurata()%>
+            <%=filmBean.getDurata()%>
             <br/>
             <br/>
-            <a href="<%=filmManagement.getTrailer()%>" class="btn btn-default">Guarda il trailer</a>
+            <a href="<%=filmBean.getTrailer()%>" class="btn btn-default">Guarda il trailer</a>
         </div>
     </div>
     <!-- Gestione Commenti -->
@@ -117,42 +120,42 @@
                 <textarea class="form-control" name="giudizio" rows="5" required="required"></textarea>
                 <br/>
                 <input type="hidden" id="voto" name="voto" value="1"/>
-                <input type="hidden" name="id_film" value="<%=filmManagement.getId_film()%>"/>
+                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
                 <input type="hidden" name="status" value="addcommento"/>
-                <button form="addcomment" type="submit" class="btn btn-success">Conferma</button>
+                <button form="addcomment" type="submit" class="btn btn-primary">Conferma</button>
             </form>
         </div>
         <%} else {%>
         <!-- Modifica Commento -->
         <div class="col-lg-6 col-md-6">
             <div class="row">
-                <h3>Commento</h3>
+                <h3><strong>Commento</strong></h3>
             </div>
             <br/>
             <form id="updatecomment" method="post" action="film.jsp">
                 <div class="inline-block">
-                    <% for (int star = 1; star <= filmManagement.getVoto(); star++) {%>
+                    <% for (int star = 1; star <= filmBean.getVoto(); star++) {%>
                     <a class="glyphicon glyphicon-star btn btn-warning inline-block disabled able" data-star="<%=star%>"></a>
                     <%}%>
-                    <% for (int star = filmManagement.getVoto() + 1; star <= 5; star++) {%>
+                    <% for (int star = filmBean.getVoto() + 1; star <= 5; star++) {%>
                     <a class="glyphicon glyphicon-star btn btn-default inline-block disabled able" data-star="<%=star%>"></a>
                     <%}%>
                 </div>
                 <br/>
                 <textarea id="giudizio" class="form-control" name="giudizio" rows="5" 
-                          required="required" disabled="disabled"><%=filmManagement.getGiudizio()%></textarea>
+                          required="required" disabled="disabled"><%=filmBean.getGiudizio()%></textarea>
                 <br/>
-                <a id="modify" class="btn btn-primary">Modifica</a>
-                <input type="hidden" name="id_film" value="<%=filmManagement.getId_film()%>"/>
-                <input type="hidden" name="id_commento" value="<%=filmManagement.getId_commento()%>"/>
+                <a id="modify" class="btn btn-primary">Modifica Commento</a>
+                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
+                <input type="hidden" name="id_commento" value="<%=filmBean.getId_commento()%>"/>
             </form>
         </div>
         <%}%>    
     </div>
     <!-- Lista Commenti del Film -->
     <%
-        int num_comments = filmManagement.getComment_Length();
-        int num_page = num_comments%4 == 0 ? num_comments/4 : num_comments/4 + 1;
+        int num_comments = filmBean.getComment_Length();
+        int num_page = num_comments % 4 == 0 ? num_comments / 4 : num_comments / 4 + 1;
         if (num_page == 0) {
             num_page = 1;
         }
@@ -187,9 +190,9 @@
                                 num_comments -= 4;
                             }
                             for (int p = 0; p < count; p++) {
-                                String user = filmManagement.getComment_User(filmManagement.getCommenti(p + (j * 4)));
-                                String commento = filmManagement.getComment_Giudizio(filmManagement.getCommenti(p + (j * 4)));
-                                int voto = filmManagement.getComment_Voto(filmManagement.getCommenti(p + (j * 4)));
+                                String user = filmBean.getComment_User(filmBean.getCommenti(p + (j * 4)));
+                                String commento = filmBean.getComment_Giudizio(filmBean.getCommenti(p + (j * 4)));
+                                int voto = filmBean.getComment_Voto(filmBean.getCommenti(p + (j * 4)));
                         %>
                         <div class="col-lg-3">
                             <div class="inline-block">

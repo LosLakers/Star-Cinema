@@ -111,13 +111,13 @@
                         <div class="form-group">
                             <input type="password" name="password" placeholder="Password" class="form-control" required="required"/>
                         </div>
-                        <button type="submit" class="btn btn-success">Accedi</button>
-                        <a href="registration.jsp" class="btn btn-primary">Registrati</a>
+                        <button type="submit" class="btn btn-primary">Accedi</button>
+                        <a href="registration.jsp" class="btn btn-default">Registrati</a>
                     </form>
                     <%} else {%>
                     <form class="navbar-form navbar-right" name="logoutForm" action="home.jsp" method="post">
                         <input type="hidden" name="status" value="logout"/>
-                        <a href="javascript:;" class="btn btn-warning" onclick="parentNode.submit();">Disconnetti</a>
+                        <a href="javascript:;" class="btn btn-danger" onclick="parentNode.submit();">Disconnetti</a>
                     </form>
                     <form class="navbar-form navbar-right" name="profileForm" action="<%=profile%>" method="post">
                         <a href="javascript:;" class="btn btn-primary" onclick="parentNode.submit();"><%=username%></a>

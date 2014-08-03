@@ -6,11 +6,13 @@
 <%
     String id_film = request.getParameter("id_film");
     if (id_film == null) {
-        String redirect = new String("home.jsp");
+        String redirect = "home.jsp";
         response.sendRedirect(redirect);
     }
     if (status.equals("addDate")) {
         nowShowingBean.addShow();
+        /*String redirect = String.format("slotsala.jsp?id_film=", id_film);
+        response.sendRedirect(redirect);*/
     }
     nowShowingBean.populateTheater();
     int num_sale = nowShowingBean.numberOfTheater();
@@ -25,7 +27,7 @@
         <p>
             Seleziona la sala, la data, l'ora di inizio e l'ora di fine del film che vuoi inserire.
             <br/>
-            Il film è <strong><%=nowShowingBean.getTitolo_film()%></strong> con durata <strong><%=nowShowingBean.getDurata_film()%></strong>
+            Il film è <strong><%=nowShowingBean.getTitolo_film()%></strong> con durata <strong id="durata"><%=nowShowingBean.getDurata_film()%></strong>
         </p>
     </div>
 </div>
@@ -40,7 +42,7 @@
 <%}%>
 <div class="container">
     <div class="row">
-        <form method="post" action="slotsala.jsp">
+        <form id="showForm" method="post" action="slotsala.jsp">
             <!-- Gestione Sale -->
             <div class="col-lg-12 col-md-12">
                 <div class="form-group col-lg-4 col-md-4">
@@ -69,13 +71,13 @@
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Inizio</label>
                     <div class="controls">
-                        <input type="time" name="ora_inizio" class="form-control" required="required"/>
+                        <input id="inizio" type="time" name="ora_inizio" class="form-control" required="required"/>
                     </div>
                 </div>
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Fine</label>
                     <div class="controls">
-                        <input type="time" name="ora_fine" class="form-control" required="required"/>
+                        <input id="fine" type="time" name="ora_fine" class="form-control" required="required"/>
                     </div>
                 </div>
             </div>
@@ -84,7 +86,7 @@
             <br/>
             <div class="col-lg-12 col-md-12">
                 <button type="submit" class="btn btn-primary">Conferma</button>
-                <a href="home.jsp" class="btn btn-warning">Annulla</a>
+                <a href="#" class="btn btn-warning">Annulla</a>
             </div>
         </form>
     </div>
@@ -188,6 +190,7 @@
         </div>
     </div>
 </div>
+<script src="scripts/nowshowing_script.js"></script>
 <%}%>
 </body>
 </html>

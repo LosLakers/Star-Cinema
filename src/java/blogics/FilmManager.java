@@ -2,6 +2,7 @@ package blogics;
 
 import exceptions.*;
 import java.sql.*;
+import java.time.*;
 import java.util.*;
 import services.database.*;
 
@@ -148,7 +149,76 @@ public class FilmManager {
     }
 
     // </editor-fold>
-    /* metodo per ottenere una lista di film con all'interno il titolo */
-    //public static List<FilmModel> getFilmList(/* TODO */) {
-    //}
+    
+    // metodo per ottenere una lista di film con all'interno il titolo
+    public static FilmModel[] searchFilm(String titolo) 
+            throws NotFoundDBException, SQLException {
+        
+        DataBase database = DBService.getDataBase();
+        FilmModel[] film = null;
+        try {
+            List<FilmModel> list = new ArrayList<>();
+            String sql = "SELECT * " +
+                        "FROM `film` " +
+                        "WHERE `titolo` LIKE " +
+                        "'%" + util.Conversion.getDatabaseString(titolo) + "%' " +
+                        "ORDER BY `titolo`";
+            ResultSet resultSet = database.select(sql);
+            while (resultSet.next()) {
+                FilmModel model = new FilmModel(resultSet);
+                list.add(model);
+            }
+            resultSet.close();
+            database.commit();
+            
+            film = new FilmModel[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                film[i] = list.get(i);
+            }
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return film;
+    }
+
+    public static FilmModel[] searchFilm(LocalDate date) 
+            throws NotFoundDBException, SQLException {
+        
+        DataBase database = DBService.getDataBase();
+        FilmModel[] film = null;
+        try {
+            List<FilmModel> list = new ArrayList<>();
+            /*
+                SELECT DISTINCT F.id_film, F.titolo
+                FROM `film` AS F JOIN `film_sala_programmazione` AS FSP ON F.id_film=FSP.id_film
+                    JOIN `programmazione` AS P ON P.id_data=FSP.id_data
+                WHERE P.data='date'
+                ORDER BY F.titolo
+            */
+            String sql = "SELECT DISTINCT F.id_film, F.titolo, F.trailer, F.descrizione, F.durata, F.locandina " +
+                        "FROM `film` AS F JOIN `film_sala_programmazione` AS FSP ON F.id_film=FSP.id_film " +
+                        "JOIN `programmazione` AS P ON P.id_data=FSP.id_data " +
+                        "WHERE P.data='" + date + "' " +
+                        "ORDER BY F.titolo";
+            ResultSet resultSet = database.select(sql);
+            while (resultSet.next()) {
+                FilmModel model = new FilmModel(resultSet);
+                list.add(model);
+            }
+            resultSet.close();
+            database.commit();
+            
+            film = new FilmModel[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                film[i] = list.get(i);
+            }
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return film;
+    }
 }

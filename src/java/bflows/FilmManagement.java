@@ -1,11 +1,13 @@
-
 package bflows;
 
 import blogics.*;
+import exceptions.NotFoundDBException;
 import java.beans.*;
 import java.io.Serializable;
 import java.sql.*;
-import java.time.LocalTime;
+import java.time.*;
+import java.time.*;
+import java.time.format.*;
 
 /**
  *
@@ -15,15 +17,15 @@ public class FilmManagement extends BaseBean implements Serializable {
 
     // proprietà per la gestione del film
     private int id_film;
-    
+
     private String titolo;
-    
+
     private String descrizione;
-    
+
     private String trailer;
-    
+
     private String durata;
-    
+
     private String locandina;
 
     // proprietà per la gestione del commento di un utente
@@ -37,14 +39,19 @@ public class FilmManagement extends BaseBean implements Serializable {
 
     // lista dei commenti per un film
     private CommentModel[] commenti;
-    
+
+    // stringa di ricerca film per titolo o data
+    private String searchString;
+
+    private FilmModel[] filmList;
+
     public FilmManagement() {
     }
 
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     public void addFilm() {
         try {
-            FilmModel film = new FilmModel(0, this.getTitolo(), LocalTime.parse(this.getDurata()), 
+            FilmModel film = new FilmModel(0, this.getTitolo(), LocalTime.parse(this.getDurata()),
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.add(film);
             this.setId_film(film.getId_film());
@@ -52,17 +59,17 @@ public class FilmManagement extends BaseBean implements Serializable {
             ex.printStackTrace();
         }
     }
-    
+
     public void updateFilm() {
         try {
-            FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), LocalTime.parse(this.getDurata()), 
+            FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), LocalTime.parse(this.getDurata()),
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.update(film);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+
     public void deleteFilm() {
         try {
             FilmManager.delete(this.getId_film());
@@ -70,7 +77,7 @@ public class FilmManagement extends BaseBean implements Serializable {
             ex.printStackTrace();
         }
     }
-    
+
     public void getFilm() {
         try {
             FilmModel film = FilmManager.get(this.getId_film());
@@ -85,7 +92,46 @@ public class FilmManagement extends BaseBean implements Serializable {
     }
 
     // </editor-fold>
+
+    // recupero la lista di tutti i film nel database
+    public void index() {
+        try {
+            FilmModel[] index = FilmManager.searchFilm("");
+            this.setFilmList(index);
+        } catch (NotFoundDBException | SQLException ex) {
+            // messaggio di errore
+        }
+    }
+
+    // ricerco per data o titolo
+    public void search() {
+        try {
+            try {
+                LocalDate search = LocalDate.parse(this.getSearchString(), DateTimeFormatter.ISO_LOCAL_DATE);
+                FilmModel[] index = FilmManager.searchFilm(search);
+                this.setFilmList(index);
+            } catch (DateTimeParseException ex) {
+                String search = this.getSearchString();
+                FilmModel[] index = FilmManager.searchFilm(search);
+                this.setFilmList(index);
+            }
+        } catch (NotFoundDBException | SQLException ex) {
+            // messaggio di errore
+        }
+    }
+
+    public int filmList_length() {
+        return this.filmList.length;
+    }
     
+    public int filmList_idfilm(int index) {
+        return this.filmList[index].getId_film();
+    }
+    
+    public String filmList_titolo(int index) {
+        return this.filmList[index].getTitolo();
+    }
+
     // <editor-fold defaultstate="collapsed" desc=" Comment-Management ">
     public void addComment() {
         try {
@@ -100,11 +146,11 @@ public class FilmManagement extends BaseBean implements Serializable {
             this.setMessagetype("red");
         }
     }
-    
+
     public void updateComment() {
         try {
             CommentModel commento = new CommentModel(this.getId_commento(), this.getVoto(), this.getGiudizio(),
-                this.getUser(), this.getId_film());
+                    this.getUser(), this.getId_film());
             CommentManager.update(commento);
             this.setMessage("Aggiornamento avvenuto con successo");
             this.setMessagetype("green");
@@ -113,11 +159,11 @@ public class FilmManagement extends BaseBean implements Serializable {
             this.setMessagetype("red");
         }
     }
-    
+
     public void deleteComment() {
         // TODO
     }
-    
+
     public void getComment() {
         try {
             CommentModel commento = CommentManager.get(this.getUser(), this.getId_film());
@@ -126,7 +172,7 @@ public class FilmManagement extends BaseBean implements Serializable {
                 this.setVoto(commento.getVoto());
                 this.setGiudizio(commento.getGiudizio());
             }
-            
+
             // creo la lista dei commenti associati al film
             this.setCommenti(CommentManager.getCommenti(this.getId_film()));
         } catch (Exception ex) {
@@ -138,15 +184,15 @@ public class FilmManagement extends BaseBean implements Serializable {
     public int getComment_Voto(CommentModel commento) {
         return commento.getVoto();
     }
-    
+
     public String getComment_Giudizio(CommentModel commento) {
         return commento.getGiudizio();
     }
-    
+
     public String getComment_User(CommentModel commento) {
         return commento.getUsername();
     }
-    
+
     public int getComment_Length() {
         CommentModel[] commenti = this.getCommenti();
         if (commenti == null) {
@@ -154,11 +200,10 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
         return commenti.length;
     }
-    
+
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
-    
     /**
      * Get the value of id_film
      *
@@ -176,7 +221,7 @@ public class FilmManagement extends BaseBean implements Serializable {
     public void setId_film(int id_film) {
         this.id_film = id_film;
     }
-    
+
     /**
      * Get the value of titolo
      *
@@ -246,8 +291,9 @@ public class FilmManagement extends BaseBean implements Serializable {
      * @param durata new value of durata
      */
     public void setDurata(String durata) {
-        if (durata.length() == 5)
+        if (durata.length() == 5) {
             durata = durata + ":00";
+        }
         this.durata = durata;
     }
 
@@ -379,6 +425,61 @@ public class FilmManagement extends BaseBean implements Serializable {
         this.commenti[index] = commenti;
     }
 
+    /**
+     * Get the value of searchString
+     *
+     * @return the value of searchString
+     */
+    public String getSearchString() {
+        return searchString;
+    }
+
+    /**
+     * Set the value of searchString
+     *
+     * @param searchString new value of searchString
+     */
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
+    }
+
+    /**
+     * Get the value of filmList
+     *
+     * @return the value of filmList
+     */
+    public FilmModel[] getFilmList() {
+        return filmList;
+    }
+
+    /**
+     * Set the value of filmList
+     *
+     * @param filmList new value of filmList
+     */
+    public void setFilmList(FilmModel[] filmList) {
+        this.filmList = filmList;
+    }
+
+    /**
+     * Get the value of filmList at specified index
+     *
+     * @param index the index of filmList
+     * @return the value of filmList at specified index
+     */
+    public FilmModel getFilmList(int index) {
+        return this.filmList[index];
+    }
+
+    /**
+     * Set the value of filmList at specified index.
+     *
+     * @param index the index of filmList
+     * @param filmList new value of filmList at specified index
+     */
+    public void setFilmList(int index, FilmModel filmList) {
+        this.filmList[index] = filmList;
+    }
+
     // </editor-fold>
-    
 }

@@ -1,44 +1,24 @@
-// ad ogni sala associo l'evento per sbloccare le date
-var sala = document.getElementById('sala');
-sala.addEventListener('change', function() {
-    disableDate();
-});
-sala.addEventListener('load', function() {
-    disableDate();
-});
+/* controllo che l'ora di inizio sia inferiore a quella di fine 
+ * e compresa nella durata del film [NON COMPLETA].
+ */
+var form = document.getElementById('showForm');
+form.addEventListener('submit', function(evt) {
+    var inizio = document.getElementById('inizio').value;
+    var fine = document.getElementById('fine').value;
+    var durataFilm = document.getElementById('durata').innerHTML;
+    
+    inizio = Date.parse('01/01/2001 ' + inizio);
+    fine = Date.parse('01/01/2001 ' + fine);
+    //durataFilm = Date.parse('01/01/2001 ' + durataFilm); PROBLEMA FORMATTAZIONE TEMPO
+    durata = fine - inizio;
 
-// ad ogni data associo l'evento per sbloccare gli orari
-var data = document.getElementById('data');
-data.addEventListener('change', function() {
-   var radio = document.getElementsByName('orario');
-   for (var j = 0; j < radio.length; j++) {
-       radio[j].disabled = false;
-   }
-});
-
-// funzione per disabilitare date
-function disableDate() {
-    num_sala = document.getElementById('sala').value;
-    document.getElementById('data').disabled = false;
-    var date = document.getElementById('data').getElementsByTagName('option');
-    var day = Date.today();
-    for (var i = 1; i < date.length; i++) {
-        // controllo sugli hidden
-        day = day.addDays(1);
-        var hidden = document.getElementById(day.toString('yyyy-MM-dd'));
-        if (hidden !== null) {
-            var hiddenvalue = hidden.value;
-            hiddenvalue = hiddenvalue.split(':');
-            for (var j = 0; j < hiddenvalue.length; j++) {
-                if (num_sala === hiddenvalue[j]) {
-                    date[i].disabled = true;
-                    break;
-                } else {
-                    date[i].disabled = false;
-                }
-            }
-        } else {
-            date[i].disabled = false;
-        }
+    if (durata > 0 /*&& durata > durataFilm*/ ) {
+        // submit form
+        return true;
+    } else {
+        // blocco form
+        evt.returnValue = false; // IE Specific
+        evt.preventDefault();
+        return false;
     }
-}
+});
