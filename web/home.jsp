@@ -1,8 +1,8 @@
 <%@include file="login_navbar.jsp" %>
 
 <div class="jumbotron">
-    <br/>
     <div class="container">
+        <h1>Star(k) Cinema Home</h1>
         <div class="col-lg-6">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
@@ -117,6 +117,26 @@
             </div>
         </div>
     </div>
-</div>        
+</div>
+<div class="container">
+    <form id="filmsearch" action="search.jsp" class="col-lg-6 col-md-6">
+        <div class="form-group">
+            <label class="control-label">Ricerca Film per Titolo</label>
+            <div class="controls">
+                <input type="text" name="searchString" class="form-control" placeholder="Titolo" required="required"/>
+            </div>
+        </div>
+        <button type="submit" form="filmsearch" class="form-group btn btn-default">Cerca</button>
+    </form>
+    <form id="datasearch" action="search.jsp" class="col-lg-6">
+        <div class="form-group">
+            <label class="control-label">Ricerca Film per Data</label>
+            <div class="controls">
+                <input type="date" name="searchString" class="form-control" placeholder="Data" required="required"/>
+            </div>
+        </div>
+        <button type="submit" form="datasearch" class="btn btn-default">Cerca</button>
+    </form>
+</div>
 </body>
 </html>

@@ -16,3 +16,7 @@ a.disabled {
     pointer-events: none;
     cursor: default;
 }
+
+input.error {
+    border-color: red;
+}

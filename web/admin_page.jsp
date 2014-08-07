@@ -3,14 +3,14 @@
 <%
     boolean authorized = false;
 
-    if (loginManagement.getCookieValue("username").equals(loginManagement.getUsername()) && status.equals("profile")) {
+    if (loginBean.getCookieValue("username").equals(loginBean.getUsername()) && status.equals("profile")) {
         authorized = true;
-        loginManagement.getUser();
+        loginBean.getUser();
     }
 
     if (status.equals("edit")) {
         authorized = true;
-        loginManagement.updateUser();
+        loginBean.updateUser();
     }
 %>
 
@@ -23,30 +23,30 @@
 <div class="container">
     <br/>
     <div class="row">
-        <form class="col-xs-4">
+        <form class="col-lg-4 col-md-4">
             <div class="form-group">
                 <label class="control-label">Nome</label>
                 <div class="controls">
                     <input type="text" class="form-control" name="name" required="required" 
-                           value="<%=loginManagement.getName()%>"/>
+                           value="<%=loginBean.getName()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Cognome</label>
                 <div class="controls">
                     <input type="text" class="form-control" name="surname" required="required"
-                           value="<%=loginManagement.getSurname()%>"/>
+                           value="<%=loginBean.getSurname()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Email</label>
                 <div class="controls">
                     <input type="email" class="form-control" name="email" required="required" 
-                           value="<%=loginManagement.getEmail()%>"/>
+                           value="<%=loginBean.getEmail()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Carta di Credito</label>
                 <div class="controls">
                     <input type="number" class="form-control" name="creditcard" placeholder="CreditCard" required="required" 
-                           value="<%=loginManagement.getCreditcard()%>"/>
+                           value="<%=loginBean.getCreditcard()%>"/>
                 </div>
                 <br/>
                 <input type="hidden" name="status" value="edit"/>
@@ -55,31 +55,8 @@
                 <input type="submit" class="btn btn-primary" value="Aggiorna Profilo">
             </div>
         </form>
-        <div class="col-xs-4 col-xs-offset-4">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Titolo</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <a href="film.jsp?id_film=1">Iron Man 3</a>
-                        </td>
-                        <td>
-                            <a href="addedit_film.jsp?id_film=1&status=edit" class="badge">Modifica</a>
-                            <a href="#" class="badge">Elimina</a> 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jake</td>
-                    </tr>
-                </tbody>
-            </table>
-            <a href="addedit_film.jsp" class="btn btn-primary">Aggiungi Film</a>
+        <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
+            <a href="addedit_film.jsp" class="btn btn-default">Aggiungi Film</a>
         </div>
     </div><br>
     <div class="row">

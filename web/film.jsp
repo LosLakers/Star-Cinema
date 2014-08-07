@@ -1,4 +1,4 @@
-<%@include file="login_navbar.jsp" %>
+<%@include file="../User/login_navbar.jsp" %>
 <jsp:useBean id="filmBean" scope="page" class="bflows.FilmManagement"/>
 <jsp:setProperty name="filmBean" property="id_film"/>
 
@@ -152,6 +152,7 @@
         </div>
         <%}%>    
     </div>
+    <%}%>
     <!-- Lista Commenti del Film -->
     <%
         int num_comments = filmBean.getComment_Length();
@@ -226,9 +227,8 @@
             <br/>
         </div>
     </div>
-    <%}%>
     <br/>
-    <script src="scripts/film.js"></script>
-    <script src="scripts/utility.js"></script>
+    <script src="../scripts/film.js"></script>
+    <script src="../scripts/utility.js"></script>
 </body>
 </html>

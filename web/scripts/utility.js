@@ -20,3 +20,9 @@ function addSubmit(form, key, value) {
 function removeElement(el) {
     el.parentNode.removeChild(el);
 }
+
+function formBlock(evt) {
+    evt.returnValue = false; // IE Specific
+    evt.preventDefault();
+    return false;
+}

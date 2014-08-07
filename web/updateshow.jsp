@@ -1,25 +1,28 @@
 <%@include file="login_navbar.jsp" %>
 
+<% if (isAdmin) {%>
+
 <jsp:useBean id="nowShowingBean" scope="page" class="bflows.NowShowingManagement" />
 <jsp:setProperty name="nowShowingBean" property="*" />
 
 <%
     String id_film = request.getParameter("id_film");
-    if (id_film == null) {
+    String id_tabella = request.getParameter("id_tabella");
+    if (id_film == null || id_tabella == null) {
         String redirect = "home.jsp";
         response.sendRedirect(redirect);
     }
-    if (status.equals("addDate")) {
-        nowShowingBean.addShow();
+    if (status.equals("updateShow")) {
+        nowShowingBean.updateShow();
         /*String redirect = String.format("slotsala.jsp?id_film=", id_film);
-        response.sendRedirect(redirect);*/
+         response.sendRedirect(redirect);*/
     }
+    nowShowingBean.getShow();
     nowShowingBean.populateTheater();
     int num_sale = nowShowingBean.numberOfTheater();
     String[] week = nowShowingBean.getWeek();
 %>
 
-<% if (isAdmin) {%>
 <!-- Jumbotron -->
 <div class="jumbotron">
     <div class="container">
@@ -42,26 +45,40 @@
 <%}%>
 <div class="container">
     <div class="row">
-        <form id="showForm" method="post" action="slotsala.jsp">
+        <form id="showForm" method="post" action="updateshow.jsp">
             <!-- Gestione Sale -->
             <div class="col-lg-12 col-md-12">
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Sala</label>
                     <select id="sala" name="sala" class="form-control" required="required">
-                        <option selected="selected" disabled="true">Seleziona una Sala...</option>
-                        <%for (int j = 1; j <= num_sale; j++) {%>
+                        <%
+                            for (int j = 1; j <= num_sale; j++) {
+                                if (j == nowShowingBean.getSala()) {
+                        %>
+                        <option selected="selected" value="<%=j%>">Sala <%=j%></option>
+                        <%} else {%>
                         <option value="<%=j%>">Sala <%=j%></option>
-                        <%}%>
+                        <%
+                                }
+                            }
+                        %>
                     </select>
                 </div>
                 <!-- Gestione Date -->
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Data</label>
                     <select id="data" name="data" class="form-control" required="required">
-                        <option selected="selected" disabled="true">Seleziona una Data...</option>
-                        <% for (int j = 0; j < week.length; j++) {%>
+                        <%
+                            for (int j = 0; j < week.length; j++) {
+                                if (week[j].equals(nowShowingBean.getData())) {
+                        %>
+                        <option selected="selected" value="<%=week[j]%>"><%=week[j]%></option>
+                        <%} else {%>
                         <option value="<%=week[j]%>"><%=week[j]%></option>
-                        <%}%>
+                        <%
+                                }
+                            }
+                        %>
                     </select>
                 </div>
             </div>
@@ -71,18 +88,21 @@
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Inizio</label>
                     <div class="controls">
-                        <input id="inizio" type="time" name="ora_inizio" class="form-control" required="required"/>
+                        <input id="inizio" type="time" name="ora_inizio" class="form-control" required="required"
+                               value="<%=nowShowingBean.getOra_inizio()%>"/>
                     </div>
                 </div>
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Fine</label>
                     <div class="controls">
-                        <input id="fine" type="time" name="ora_fine" class="form-control" required="required"/>
+                        <input id="fine" type="time" name="ora_fine" class="form-control" required="required"
+                               value="<%=nowShowingBean.getOra_fine()%>"/>
                     </div>
                 </div>
             </div>
             <input type="hidden" name="id_film" value="<%=id_film%>" />
-            <input type="hidden" name="status" value="addDate" />
+            <input type="hidden" name="id_tabella" value="<%=id_tabella%>" />
+            <input type="hidden" name="status" value="updateShow" />
             <br/>
             <div class="col-lg-12 col-md-12">
                 <button type="submit" class="btn btn-primary">Conferma</button>
@@ -191,6 +211,12 @@
     </div>
 </div>
 <script src="scripts/nowshowing_script.js"></script>
-<%}%>
+<script src="scripts/utility,js"></script>
+<%
+    } else { // redirect per evitare che un non admin abbia accesso
+        String redirect = "home.jsp";
+        response.sendRedirect(redirect);
+    }
+%>    
 </body>
 </html>

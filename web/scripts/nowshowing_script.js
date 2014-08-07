@@ -17,8 +17,33 @@ form.addEventListener('submit', function(evt) {
         return true;
     } else {
         // blocco form
-        evt.returnValue = false; // IE Specific
-        evt.preventDefault();
-        return false;
+        formBlock(evt);
     }
 });
+
+/*
+ * se l'ora di inizio è superiore all'ora di fine, aggiungo la classe .error altrimenti
+ * la elimino
+ */
+var inizio = document.getElementById('inizio');
+inizio.addEventListener('change', function() {
+   controlTime();
+});
+var fine = document.getElementById('fine');
+fine.addEventListener('change', function() {
+   controlTime(); 
+});
+
+function controlTime() {
+   var inizio = document.getElementById('inizio').value;
+   var fine = document.getElementById('fine').value;
+   
+   inizio = Date.parse('01/01/2001 ' + inizio);
+   fine = Date.parse('01/01/2001 ' + fine);
+   
+   if (inizio > fine) {
+       document.getElementById('inizio').className = 'form-control error';
+   } else {
+       document.getElementById('inizio').className = 'form-control';
+   }
+}

@@ -54,9 +54,9 @@
                 for (int j = 0; j < film_num; j++) {
                     String film_tit = filmBean.filmList_titolo(j);
                     String href = "film.jsp?id_film=" + filmBean.filmList_idfilm(j);
-                    String modify = "addedit_film.jsp?status=edit&id_film=" + filmBean.filmList_idfilm(j);
-                    String delete = "addedit_film.jsp?status=delete&id_film=" + filmBean.filmList_idfilm(j);
-                    String show = "slotsala.jsp?id_film=" + filmBean.filmList_idfilm(j);
+                    String modify = "updatefilm.jsp?id_film=" + filmBean.filmList_idfilm(j);
+                    String delete = "film.jsp?status=deletefilm&id_film=" + filmBean.filmList_idfilm(j);
+                    String show = "addsala.jsp?id_film=" + filmBean.filmList_idfilm(j);
             %>
             <tr>
                 <td>

@@ -2,8 +2,8 @@
 <%@page contentType="text/html" %>
 <%@page session="false" %>
 
-<jsp:useBean id="loginManagement" scope="page" class="bflows.LoginManagement" />
-<jsp:setProperty name="loginManagement" property="*" />
+<jsp:useBean id="loginBean" scope="page" class="bflows.LoginManagement" />
+<jsp:setProperty name="loginBean" property="*" />
 
 <%
     Cookie[] cookies = null;
@@ -27,25 +27,25 @@
     }
 
     if (status.equals("login")) {
-        loginManagement.login();
-        if (loginManagement.getCookies() != null) {
-            for (i = 0; i < loginManagement.getCookies().length; i++) {
-                response.addCookie(loginManagement.getCookie(i));
+        loginBean.login();
+        if (loginBean.getCookies() != null) {
+            for (i = 0; i < loginBean.getCookies().length; i++) {
+                response.addCookie(loginBean.getCookie(i));
             }
-            cookies = loginManagement.getCookies();
+            cookies = loginBean.getCookies();
             loggedIn = true;
-            username = loginManagement.getCookieValue("username");
-            password = loginManagement.getCookieValue("password");
-            isAdmin = loginManagement.getCookieValue("admin").equals("true") ? true : false;
+            username = loginBean.getCookieValue("username");
+            password = loginBean.getCookieValue("password");
+            isAdmin = loginBean.getCookieValue("admin").equals("true") ? true : false;
         }
     }
 
     if (status.equals("logout")) {
         if (loggedIn) {
-            loginManagement.setCookies(cookies);
-            loginManagement.logout();
-            for (i = 0; i < loginManagement.getCookies().length; i++) {
-                response.addCookie(loginManagement.getCookie(i));
+            loginBean.setCookies(cookies);
+            loginBean.logout();
+            for (i = 0; i < loginBean.getCookies().length; i++) {
+                response.addCookie(loginBean.getCookie(i));
             }
 
             loggedIn = false;
@@ -54,10 +54,10 @@
     
     /* gestione di eventuali cookie già settati o settati durante il login */
     if (cookies != null) {
-        loginManagement.setCookies(cookies);
-        username = loginManagement.getCookieValue("username");
-        password = loginManagement.getCookieValue("password");
-        if (loginManagement.getCookieValue("admin").equals("true")) {
+        loginBean.setCookies(cookies);
+        username = loginBean.getCookieValue("username");
+        password = loginBean.getCookieValue("password");
+        if (loginBean.getCookieValue("admin").equals("true")) {
             isAdmin = true;
             profile = "admin_page.jsp?" + "username=" + username
                     + "&password=" + password;
@@ -101,6 +101,9 @@
                         <li>
                             <a href="#">Programmazione</a>
                         </li>
+                        <li class="active">
+                            <a href="search.jsp">Lista Film</a>
+                        </li>
                     </ul>
                     <%if (!loggedIn) {%>
                     <form name="loginForm" action="<%=pageName%>" class="navbar-form navbar-right" method="post">
@@ -115,7 +118,7 @@
                         <a href="registration.jsp" class="btn btn-default">Registrati</a>
                     </form>
                     <%} else {%>
-                    <form class="navbar-form navbar-right" name="logoutForm" action="home.jsp" method="post">
+                    <form class="navbar-form navbar-right" name="logoutForm" action="/StarCinema/home.jsp" method="post">
                         <input type="hidden" name="status" value="logout"/>
                         <a href="javascript:;" class="btn btn-danger" onclick="parentNode.submit();">Disconnetti</a>
                     </form>

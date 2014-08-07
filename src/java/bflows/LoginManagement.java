@@ -6,6 +6,9 @@ import java.io.Serializable;
 
 import blogics.*;
 import exceptions.*;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -47,9 +50,7 @@ public class LoginManagement implements Serializable {
                 this.setEmail(user.getEmail());
                 this.setCreditcard(Integer.toString(user.getCreditcard()));
             }
-        } catch (NotFoundDBException ex) {
-            // da gestire
-        } catch (ResultSetDBException ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // da gestire
         }
     }

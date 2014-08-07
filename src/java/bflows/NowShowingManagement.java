@@ -16,6 +16,8 @@ import java.sql.*;
 public class NowShowingManagement extends BaseBean implements Serializable {
 
     // proprietà da ottenere
+    private int id_tabella;
+
     private int id_film;
 
     private int sala;
@@ -35,7 +37,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
 
     private String[] week;
 
-    public NowShowingManagement(){
+    public NowShowingManagement() {
     }
 
     public void populateTheater() {
@@ -52,17 +54,17 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             this.setWeek(week);
             LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);
             LocalDate lastDayOfTheWeek = day;
-            
+
             /**
-             * Costruisco un numero di array di TheaterDateModel pari al numero 
-             * delle sale del cinema. Per ogni array ricavo data e orario ordinando
-             * gli elementi prima per data e poi per orario.
+             * Costruisco un numero di array di TheaterDateModel pari al numero
+             * delle sale del cinema. Per ogni array ricavo data e orario
+             * ordinando gli elementi prima per data e poi per orario.
              */
             TheaterDate[] model = new TheaterDate[Constants.NUMERO_SALE];
             for (int i = 0; i < Constants.NUMERO_SALE; i++) {
                 TheaterModel sala = new TheaterModel();
-                sala.setNumero_sala(i+1);
-                DateTimeModel[] datetime = TheaterDateManager.getDate(sala.getNumero_sala(),
+                sala.setNumero_sala(i + 1);
+                DateTimeModel[] datetime = ShowManager.getDate(sala.getNumero_sala(),
                         firstDayOfTheWeek, lastDayOfTheWeek);
                 model[i] = new TheaterDate(sala, datetime);
             }
@@ -70,9 +72,9 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             this.theaterDate = model;
 
             /**
-             * Recupero film che voglio inserire nella programmazione dal id_film.
-             * Le uniche proprietà che per ora voglio visualizzare sono Titolo e
-             * Durata.
+             * Recupero film che voglio inserire nella programmazione dal
+             * id_film. Le uniche proprietà che per ora voglio visualizzare sono
+             * Titolo e Durata.
              */
             FilmModel film = FilmManager.get(this.getId_film());
             this.setTitolo_film(film.getTitolo());
@@ -81,7 +83,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             // gestione messaggi di errore
         }
     }
-    
+
     public void addShow() {
         try {
             /**
@@ -90,10 +92,10 @@ public class NowShowingManagement extends BaseBean implements Serializable {
              */
             FilmModel film = FilmManager.get(this.getId_film());
             DateTimeModel show = new DateTimeModel(0, LocalDate.parse(this.getData()),
-                        LocalTime.parse(this.getOra_inizio()), LocalTime.parse(this.getOra_fine()));
-            TheaterModel theater = new TheaterModel(0,0,this.getSala());
-            TheaterDateManager.add(film, show, theater);
-            
+                    LocalTime.parse(this.getOra_inizio()), LocalTime.parse(this.getOra_fine()));
+            TheaterModel theater = new TheaterModel(0, 0, this.getSala());
+            ShowManager.add(film, show, theater);
+
             this.setMessage("Sala-Data-Ora inserita con successo");
             this.setMessagetype("alert-success");
         } catch (Exception ex) {
@@ -102,18 +104,68 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         }
     }
 
+    public void updateShow() {
+        try {
+            FilmTheaterDateModel model = ShowManager.get(this.getId_tabella());
+            
+            FilmModel film = FilmManager.get(this.getId_film());
+            if (film == null) {
+                throw new Exception();
+            }
+            
+            DateTimeModel show = model.getDate();
+            show.setData(LocalDate.parse(this.getData()));
+            show.setOra_inizio(LocalTime.parse(this.getOra_inizio()));
+            show.setOra_fine(LocalTime.parse(this.getOra_fine()));
+
+            TheaterModel theater = model.getTheater();
+            theater.setNumero_sala(this.getSala());
+            
+            ShowManager.update(film, show, theater);
+            
+            this.setMessage("Aggiornamento avvenuto");
+            this.setMessagetype("alert-success");
+        } catch (Exception ex) {
+            // messaggio di errore
+        }
+    }
+
+    public void getShow() {
+        try {
+            FilmTheaterDateModel model = ShowManager.get(this.getId_tabella());
+
+            // gestione film
+            FilmModel film = model.getFilm();
+            this.setId_film(film.getId_film());
+            this.setTitolo_film(film.getTitolo());
+            this.setDurata_film(film.getDurata().toString());
+
+            // gestione sala
+            TheaterModel sala = model.getTheater();
+            this.setSala(sala.getNumero_sala());
+
+            // gestione data-orario
+            DateTimeModel data = model.getDate();
+            this.setData(data.getData().toString());
+            this.setOra_inizio(data.getOra_inizio().toString());
+            this.setOra_fine(data.getOra_fine().toString());
+        } catch (Exception ex) {
+            // messaggio di errore
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom per TheaterDate ">
     public int numberOfTheater() {
         return this.theaterDate.length;
     }
-    
+
     public String[] oraInizioTheater(int num_sala, String day) {
         List<String> oraInizio = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
             if (tmp.getNum_sala() == num_sala) {
                 int num_date = tmp.getDate().length;
                 for (int i = 0; i < num_date; i++) {
-                    if(tmp.getDate(i).equals(day)) {
+                    if (tmp.getDate(i).equals(day)) {
                         oraInizio.add(tmp.getOra_inizio(i));
                     }
                 }
@@ -121,17 +173,17 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         }
         String[] model = new String[oraInizio.size()];
         model = oraInizio.toArray(model);
-        
+
         return model;
     }
-    
+
     public String[] oraFineTheater(int num_sala, String day) {
         List<String> oraFine = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
             if (tmp.getNum_sala() == num_sala) {
                 int num_date = tmp.getDate().length;
                 for (int i = 0; i < num_date; i++) {
-                    if(tmp.getDate(i).equals(day)) {
+                    if (tmp.getDate(i).equals(day)) {
                         oraFine.add(tmp.getOra_fine(i));
                     }
                 }
@@ -139,14 +191,31 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         }
         String[] model = new String[oraFine.size()];
         model = oraFine.toArray(model);
-        
+
         return model;
     }
 
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
-    
+    /**
+     * Get the value of id_tabella
+     *
+     * @return the value of id_tabella
+     */
+    public int getId_tabella() {
+        return id_tabella;
+    }
+
+    /**
+     * Set the value of id_tabella
+     *
+     * @param id_tabella new value of id_tabella
+     */
+    public void setId_tabella(int id_tabella) {
+        this.id_tabella = id_tabella;
+    }
+
     /**
      * Get the value of id_film
      *
@@ -324,8 +393,9 @@ class TheaterDate {
 
     private String[] ora_fine;
 
-    public TheaterDate() {}
-    
+    public TheaterDate() {
+    }
+
     public TheaterDate(TheaterModel sala, DateTimeModel[] data) {
         this.setNum_sala(sala.getNumero_sala());
         List<String> date = new ArrayList<>();
@@ -336,13 +406,13 @@ class TheaterDate {
             inizio.add(model.getOra_inizio().toString());
             fine.add(model.getOra_fine().toString());
         }
-        
+
         int size = date.size();
         this.setDate(date.toArray(new String[size]));
         this.setOra_inizio(inizio.toArray(new String[size]));
         this.setOra_fine(fine.toArray(new String[size]));
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of num_sala

@@ -3,14 +3,14 @@
 <%
     boolean authorized = false;
 
-    if (loginManagement.getCookieValue("username").equals(loginManagement.getUsername()) && status.equals("profile")) {
+    if (loginBean.getCookieValue("username").equals(loginBean.getUsername()) && status.equals("profile")) {
         authorized = true;
-        loginManagement.getUser();
+        loginBean.getUser();
     }
 
     if (status.equals("edit")) {
         authorized = true;
-        loginManagement.updateUser();
+        loginBean.updateUser();
     }
 %>
 
@@ -28,25 +28,25 @@
                 <label class="control-label">Nome</label>
                 <div class="controls">
                     <input type="text" class="form-control" name="name" placeholder="Nome" required="required" 
-                           value="<%=loginManagement.getName()%>"/>
+                           value="<%=loginBean.getName()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Cognome</label>
                 <div class="controls">
                     <input type="text" class="form-control" name="surname" placeholder="Cognome" required="required" 
-                           value="<%=loginManagement.getSurname()%>"/>
+                           value="<%=loginBean.getSurname()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Email</label>
                 <div class="controls">
                     <input type="email" class="form-control" name="email" placeholder="Email" required="required" 
-                           value="<%=loginManagement.getEmail()%>"/>
+                           value="<%=loginBean.getEmail()%>"/>
                 </div>
                 <br/>
                 <label class="control-label">Carta di Credito</label>
                 <div class="controls">
                     <input type="number" class="form-control" name="creditcard" placeholder="CreditCard" 
-                           value="<%=loginManagement.getCreditcard()%>"/>
+                           value="<%=loginBean.getCreditcard()%>"/>
                 </div>
                 <br/>
                 <input type="hidden" name="status" value="edit"/>

@@ -11,7 +11,7 @@ import services.database.*;
  *
  * @author Guido Pio
  */
-public class TheaterDateManager {
+public class ShowManager {
 
     public static void add(FilmModel film, DateTimeModel show, TheaterModel theater)
             throws Exception {
@@ -34,18 +34,18 @@ public class TheaterDateManager {
         DataBase database = DBService.getDataBase();
         try {
             // gestione inizio e fine rispetto agli altri orari
-            String sql = "SELECT P.ora_inizio, P.ora_fine " +
-                        "FROM `film_sala_programmazione` AS FSP " +
-                        "JOIN `sale` AS S ON FSP.id_sala=S.id_sala " +
-                        "JOIN `programmazione` AS P ON FSP.id_data=P.id_data " +
-                        "WHERE `numero_sala`='" + theater.getNumero_sala() + "' AND " +
-                        "P.data='" + show.getData() + "'" +
-                        "ORDER BY P.ora_inizio;";
+            String sql = "SELECT P.ora_inizio, P.ora_fine "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
+                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
+                    + "WHERE `numero_sala`='" + theater.getNumero_sala() + "' AND "
+                    + "P.data='" + show.getData() + "'"
+                    + "ORDER BY P.ora_inizio;";
             ResultSet resultSet = database.select(sql);
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 LocalTime _inizio = resultSet.getTime("ora_inizio").toLocalTime();
                 LocalTime _fine = resultSet.getTime("ora_fine").toLocalTime();
-                
+
                 // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
                 if (inizio.isAfter(_inizio) && inizio.isBefore(_fine)) {
                     throw new Exception();
@@ -96,6 +96,127 @@ public class TheaterDateManager {
         } finally {
             database.close();
         }
+    }
+
+    public static void update(FilmModel film, DateTimeModel show, TheaterModel theater)
+            throws Exception {
+
+        // controllo su validità data e ora inizio e fine
+        LocalTime inizio = show.getOra_inizio();
+        LocalTime fine = show.getOra_fine();
+
+        if (fine.isBefore(inizio)) { // controlla già che anche la durata sia maggiore di 0
+            throw new Exception();
+        }
+
+        int ora_inizio = inizio.getHour();
+        int min_inizio = inizio.getMinute();
+        LocalTime durata = fine.minusHours(ora_inizio).minusMinutes(min_inizio);
+        if (durata.compareTo(film.getDurata()) < 0) { // < 0 se inferiore a quella del film
+            throw new Exception();
+        }
+
+        DataBase database = DBService.getDataBase();
+        try {
+            // gestione inizio e fine rispetto agli altri orari
+            String sql = "SELECT P.ora_inizio, P.ora_fine "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
+                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
+                    + "WHERE `numero_sala`='" + theater.getNumero_sala() + "' AND "
+                    + "P.data='" + show.getData() + "'"
+                    + "ORDER BY P.ora_inizio;";
+            ResultSet resultSet = database.select(sql);
+            while (resultSet.next()) {
+                LocalTime _inizio = resultSet.getTime("ora_inizio").toLocalTime();
+                LocalTime _fine = resultSet.getTime("ora_fine").toLocalTime();
+
+                // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
+                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine)) {
+                    throw new Exception();
+                }
+                // errore se il film è compreso nell'inizio di un altro film
+                if (inizio.isBefore(_inizio) && fine.isAfter(_inizio)) {
+                    throw new Exception();
+                }
+            }
+            resultSet.close();
+
+            // aggiornamento data
+            sql = "UPDATE `programmazione` SET "
+                    + "`data`='" + show.getData() + "',"
+                    + "`ora_inizio`='" + show.getOra_inizio() + "',"
+                    + "`ora_fine`='" + show.getOra_fine() + "' "
+                    + "WHERE `id_data`='" + show.getId_data() + "';";
+            database.modify(sql);
+
+            // aggiornamento sala
+            sql = "UPDATE `sale` SET "
+                    + "`numero_sala`='" + theater.getNumero_sala() + "' "
+                    + "WHERE `id_sala`='" + theater.getId_sala() + "';";
+            database.modify(sql);
+
+            database.commit();
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+    }
+
+    public static FilmTheaterDateModel get(int id_tabella)
+            throws Exception {
+
+        DataBase database = DBService.getDataBase();
+        FilmTheaterDateModel model = new FilmTheaterDateModel();
+        try {
+            String sql = "SELECT * "
+                    + "FROM `film_sala_programmazione` "
+                    + "WHERE `id_tabella`='" + id_tabella + "';";
+            ResultSet result = database.select(sql);
+            int id_film = 0;
+            int id_sala = 0;
+            int id_data = 0;
+            if (result.next()) {
+                id_film = result.getInt("id_film");
+                id_sala = result.getInt("id_sala");
+                id_data = result.getInt("id_data");
+            }
+            result.close();
+
+            if (id_film == 0 || id_sala == 0 || id_data == 0) {
+                throw new Exception();
+            }
+
+            FilmModel film = FilmManager.get(id_film);
+            model.setFilm(film);
+
+            sql = "SELECT * "
+                    + "FROM `sale` "
+                    + "WHERE `id_sala`='" + id_sala + "';";
+            result = database.select(sql);
+            if (result.next()) {
+                TheaterModel theater = new TheaterModel(result);
+                model.setTheater(theater);
+            }
+            result.close();
+
+            sql = "SELECT * "
+                    + "FROM `programmazione` "
+                    + "WHERE `id_data`='" + id_data + "';";
+            result = database.select(sql);
+            if (result.next()) {
+                DateTimeModel date = new DateTimeModel(result);
+                model.setDate(date);
+            }
+            result.close();
+            database.commit();
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
     }
 
     // Recupero un array con le date associate al numero della sala

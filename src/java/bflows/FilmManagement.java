@@ -103,7 +103,7 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
-    // ricerco per data o titolo
+    // ricerca per titolo/data
     public void search() {
         try {
             try {
@@ -179,6 +179,10 @@ public class FilmManagement extends BaseBean implements Serializable {
             this.setMessage("Errore nel recupero dei commenti. Se il problema persiste contattare l'amministratore");
             this.setMessagetype("red");
         }
+    }
+
+    public int getComment_IdCommento(CommentModel commento) {
+        return commento.getId_commento();
     }
 
     public int getComment_Voto(CommentModel commento) {
