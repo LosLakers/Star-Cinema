@@ -56,7 +56,7 @@
                     String href = "film.jsp?id_film=" + filmBean.filmList_idfilm(j);
                     String modify = "updatefilm.jsp?id_film=" + filmBean.filmList_idfilm(j);
                     String delete = "film.jsp?status=deletefilm&id_film=" + filmBean.filmList_idfilm(j);
-                    String show = "addsala.jsp?id_film=" + filmBean.filmList_idfilm(j);
+                    String show = "addshow.jsp?id_film=" + filmBean.filmList_idfilm(j);
             %>
             <tr>
                 <td>

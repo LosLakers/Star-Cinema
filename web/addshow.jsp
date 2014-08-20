@@ -72,13 +72,13 @@
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Inizio</label>
                     <div class="controls">
-                        <input id="inizio" type="time" name="ora_inizio" class="form-control" required="required"/>
+                        <input type="time" name="ora_inizio" class="form-control" required="required"/>
                     </div>
                 </div>
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Fine</label>
                     <div class="controls">
-                        <input id="fine" type="time" name="ora_fine" class="form-control" required="required"/>
+                        <input type="time" name="ora_fine" class="form-control" required="required"/>
                     </div>
                 </div>
             </div>
@@ -192,7 +192,7 @@
     </div>
 </div>
 <script src="scripts/nowshowing_script.js"></script>
-<script src="scripts/utility,js"></script>
+<script src="scripts/utility.js"></script>
 <%
     } else { // redirect per evitare che un non admin abbia accesso
         String redirect = "home.jsp";

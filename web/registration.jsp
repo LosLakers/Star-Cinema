@@ -41,13 +41,13 @@
                 <br/>
                 <div class="input-group">
                     <span class="label label-info">Inserisci Password</span>
-                    <input type="password" id="password" class="form-control" name="password" placeholder="Password" 
+                    <input type="password" class="form-control" name="password" placeholder="Password" 
                            required="required"/>
                 </div>
                 <br/>
                 <div class="input-group">
                     <span class="label label-info">Conferma Password</span>
-                    <input type="password" id="conf_password" class="form-control" placeholder="Password" 
+                    <input type="password" class="form-control" name="conf_password" placeholder="Password" 
                            required="required"/>
                 </div>
                 <br/>
@@ -79,5 +79,6 @@
             <%}%>
         </div>
 <script src="scripts/validation_registration.js"></script>
+<script src="scripts/utility.js"></script>
 </body>
 </html>

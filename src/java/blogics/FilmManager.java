@@ -3,6 +3,7 @@ package blogics;
 import exceptions.*;
 import java.sql.*;
 import java.time.*;
+import java.time.format.*;
 import java.util.*;
 import services.database.*;
 
@@ -24,10 +25,10 @@ public class FilmManager {
                     + " WHERE "
                     + " `titolo` ='" + util.Conversion.getDatabaseString(film.getTitolo()) + "'";
 
-            ResultSet resultSet = database.select(sql);
+            ResultSet result = database.select(sql);
 
-            if (resultSet.next()) { // se true riporto un errore
-                resultSet.close();
+            if (result.next()) { // se true riporto un errore
+                result.close();
                 throw new SQLException();
             }
 
@@ -40,13 +41,13 @@ public class FilmManager {
                     + "'" + util.Conversion.getDatabaseString(film.getDescrizione()) + "',"
                     + "'" + film.getDurata() + "',"
                     + "'" + util.Conversion.getDatabaseString(film.getLocandina()) + "');";
-            resultSet = database.modifyPK(sql);
+            result = database.modifyPK(sql);
             database.commit();
 
             /* leggo la chiave generata dal DB */
-            if (resultSet.next()) {
-                film.setId_film(resultSet.getInt(1));
-                resultSet.close();
+            if (result.next()) {
+                film.setId_film(result.getInt(1));
+                result.close();
             }
         } catch (NotFoundDBException | SQLException ex) {
             throw ex;
@@ -116,7 +117,7 @@ public class FilmManager {
         } finally {
             database.close();
         }
-        
+
         return film;
     }
 
@@ -144,33 +145,39 @@ public class FilmManager {
         } finally {
             database.close();
         }
-        
+
         return film;
     }
 
     // </editor-fold>
-    
     // metodo per ottenere una lista di film con all'interno il titolo
-    public static FilmModel[] searchFilm(String titolo) 
+    /**
+     *
+     * @param titolo
+     * @return
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static FilmModel[] searchFilm(String titolo)
             throws NotFoundDBException, SQLException {
-        
+
         DataBase database = DBService.getDataBase();
         FilmModel[] film = null;
         try {
             List<FilmModel> list = new ArrayList<>();
-            String sql = "SELECT * " +
-                        "FROM `film` " +
-                        "WHERE `titolo` LIKE " +
-                        "'%" + util.Conversion.getDatabaseString(titolo) + "%' " +
-                        "ORDER BY `titolo`";
-            ResultSet resultSet = database.select(sql);
-            while (resultSet.next()) {
-                FilmModel model = new FilmModel(resultSet);
+            String sql = "SELECT * "
+                    + "FROM `film` "
+                    + "WHERE `titolo` LIKE "
+                    + "'%" + util.Conversion.getDatabaseString(titolo) + "%' "
+                    + "ORDER BY `titolo`";
+            ResultSet result = database.select(sql);
+            while (result.next()) {
+                FilmModel model = new FilmModel(result);
                 list.add(model);
             }
-            resultSet.close();
+            result.close();
             database.commit();
-            
+
             film = new FilmModel[list.size()];
             for (int i = 0; i < list.size(); i++) {
                 film[i] = list.get(i);
@@ -183,33 +190,40 @@ public class FilmManager {
         return film;
     }
 
-    public static FilmModel[] searchFilm(LocalDate date) 
+    /**
+     *
+     * @param date
+     * @return
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static FilmModel[] searchFilm(LocalDate date)
             throws NotFoundDBException, SQLException {
-        
+
         DataBase database = DBService.getDataBase();
         FilmModel[] film = null;
         try {
             List<FilmModel> list = new ArrayList<>();
             /*
-                SELECT DISTINCT F.id_film, F.titolo
-                FROM `film` AS F JOIN `film_sala_programmazione` AS FSP ON F.id_film=FSP.id_film
-                    JOIN `programmazione` AS P ON P.id_data=FSP.id_data
-                WHERE P.data='date'
-                ORDER BY F.titolo
-            */
-            String sql = "SELECT DISTINCT F.id_film, F.titolo, F.trailer, F.descrizione, F.durata, F.locandina " +
-                        "FROM `film` AS F JOIN `film_sala_programmazione` AS FSP ON F.id_film=FSP.id_film " +
-                        "JOIN `programmazione` AS P ON P.id_data=FSP.id_data " +
-                        "WHERE P.data='" + date + "' " +
-                        "ORDER BY F.titolo";
-            ResultSet resultSet = database.select(sql);
-            while (resultSet.next()) {
-                FilmModel model = new FilmModel(resultSet);
+             SELECT DISTINCT F.id_film, F.titolo
+             FROM `film` AS F JOIN `film_sala_programmazione` AS FSP ON F.id_film=FSP.id_film
+             JOIN `programmazione` AS P ON P.id_data=FSP.id_data
+             WHERE P.data='date'
+             ORDER BY F.titolo
+             */
+            String sql = "SELECT DISTINCT F.id_film, F.titolo, F.trailer, F.descrizione, F.durata, F.locandina "
+                    + "FROM `film` AS F JOIN `film_sala_programmazione` AS FSP ON F.id_film=FSP.id_film "
+                    + "JOIN `programmazione` AS P ON P.id_data=FSP.id_data "
+                    + "WHERE P.data='" + date + "' "
+                    + "ORDER BY F.titolo";
+            ResultSet result = database.select(sql);
+            while (result.next()) {
+                FilmModel model = new FilmModel(result);
                 list.add(model);
             }
-            resultSet.close();
+            result.close();
             database.commit();
-            
+
             film = new FilmModel[list.size()];
             for (int i = 0; i < list.size(); i++) {
                 film[i] = list.get(i);
@@ -220,5 +234,54 @@ public class FilmManager {
             database.close();
         }
         return film;
+    }
+
+    /**
+     * Recupero la lista dei film in programmazione in un intervallo di date, ordinata
+     * per id_film
+     * 
+     * @param from  data di inizio
+     * @param to    data di fine
+     * @return      la lista dei film ordinata per id_film
+     * @throws NotFoundDBException
+     * @throws SQLException 
+     */
+    public static List<FilmModel> getFilms(LocalDate from, LocalDate to)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        List<FilmModel> model = new ArrayList<>();
+        try {
+            // recupero la lista dei film in programmazione
+            /*
+             SELECT DISTINCT F.id_film 
+             FROM `film_sala_programmazione` AS FSP 
+             JOIN `film` AS F ON FSP.id_film=F.id_film 
+             JOIN `programmazione` AS P ON FSP.id_data=P.id_data 
+             WHERE P.data BETWEEN from AND to 
+             ORDER BY FSP.id_film
+             */
+            String sql = "SELECT DISTINCT F.id_film "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `film` AS F ON FSP.id_film=F.id_film "
+                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
+                    + "WHERE P.data "
+                    + "BETWEEN '" + from.format(DateTimeFormatter.ISO_LOCAL_DATE) + "' AND '"
+                    + to.format(DateTimeFormatter.ISO_LOCAL_DATE) + "' "
+                    + "ORDER BY FSP.id_film";
+            ResultSet result = database.select(sql);
+            // aggiungo tutti i film trovati nella lista
+            while(result.next()) {
+                FilmModel film = FilmManager.get(result.getInt("id_film"));
+                model.add(film);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
     }
 }

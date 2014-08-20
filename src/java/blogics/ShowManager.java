@@ -13,24 +13,34 @@ import services.database.*;
  */
 public class ShowManager {
 
+    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    /**
+     * Inserisco un film in programmazione in base alla data e alla sala passate
+     * come parametri.
+     *
+     * @param film il film che voglio inserire in programmazione
+     * @param show la data, l'orario di inizio e di fine da associare al film
+     * @param theater la sala in cui il film deve essere proiettato
+     * @throws Exception
+     */
     public static void add(FilmModel film, DateTimeModel show, TheaterModel theater)
             throws Exception {
 
         // controllo su validità data e ora inizio e fine
         LocalTime inizio = show.getOra_inizio();
         LocalTime fine = show.getOra_fine();
-
+        
         if (fine.isBefore(inizio)) { // controlla già che anche la durata sia maggiore di 0
             throw new Exception();
         }
-
+        
         int ora_inizio = inizio.getHour();
         int min_inizio = inizio.getMinute();
         LocalTime durata = fine.minusHours(ora_inizio).minusMinutes(min_inizio);
         if (durata.compareTo(film.getDurata()) < 0) { // < 0 se inferiore a quella del film
             throw new Exception();
         }
-
+        
         DataBase database = DBService.getDataBase();
         try {
             // gestione inizio e fine rispetto agli altri orari
@@ -47,7 +57,7 @@ public class ShowManager {
                 LocalTime _fine = resultSet.getTime("ora_fine").toLocalTime();
 
                 // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
-                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine)) {
+                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine) && !inizio.equals(_inizio)) {
                     throw new Exception();
                 }
                 // errore se il film è compreso nell'inizio di un altro film
@@ -89,7 +99,7 @@ public class ShowManager {
             if (count == 0) {
                 throw new Exception();
             }
-
+            
             database.commit();
         } catch (Exception ex) {
             throw ex;
@@ -98,24 +108,32 @@ public class ShowManager {
         }
     }
 
+    /**
+     * Aggiorno la programmazione di un film in base ai modelli passati come parametri.
+     *
+     * @param film      film di cui voglio aggiornare la programmazione
+     * @param show      nuova data di programmazione
+     * @param theater   nuova sala di programmazione
+     * @throws Exception
+     */
     public static void update(FilmModel film, DateTimeModel show, TheaterModel theater)
             throws Exception {
 
         // controllo su validità data e ora inizio e fine
         LocalTime inizio = show.getOra_inizio();
         LocalTime fine = show.getOra_fine();
-
+        
         if (fine.isBefore(inizio)) { // controlla già che anche la durata sia maggiore di 0
             throw new Exception();
         }
-
+        
         int ora_inizio = inizio.getHour();
         int min_inizio = inizio.getMinute();
         LocalTime durata = fine.minusHours(ora_inizio).minusMinutes(min_inizio);
         if (durata.compareTo(film.getDurata()) < 0) { // < 0 se inferiore a quella del film
             throw new Exception();
         }
-
+        
         DataBase database = DBService.getDataBase();
         try {
             // gestione inizio e fine rispetto agli altri orari
@@ -132,7 +150,7 @@ public class ShowManager {
                 LocalTime _fine = resultSet.getTime("ora_fine").toLocalTime();
 
                 // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
-                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine)) {
+                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine) && !inizio.equals(_inizio)) {
                     throw new Exception();
                 }
                 // errore se il film è compreso nell'inizio di un altro film
@@ -155,7 +173,7 @@ public class ShowManager {
                     + "`numero_sala`='" + theater.getNumero_sala() + "' "
                     + "WHERE `id_sala`='" + theater.getId_sala() + "';";
             database.modify(sql);
-
+            
             database.commit();
         } catch (Exception ex) {
             throw ex;
@@ -164,9 +182,16 @@ public class ShowManager {
         }
     }
 
+    /**
+     * Recupero il modello nel database in base a id_tabella
+     *
+     * @param id_tabella    id_tabella nel database di cui voglio recuperare i dati
+     * @return              ritorno il modello del database ottenuto
+     * @throws Exception
+     */
     public static FilmTheaterDateModel get(int id_tabella)
             throws Exception {
-
+        
         DataBase database = DBService.getDataBase();
         FilmTheaterDateModel model = new FilmTheaterDateModel();
         try {
@@ -183,14 +208,14 @@ public class ShowManager {
                 id_data = result.getInt("id_data");
             }
             result.close();
-
+            
             if (id_film == 0 || id_sala == 0 || id_data == 0) {
                 throw new Exception();
             }
-
+            
             FilmModel film = FilmManager.get(id_film);
             model.setFilm(film);
-
+            
             sql = "SELECT * "
                     + "FROM `sale` "
                     + "WHERE `id_sala`='" + id_sala + "';";
@@ -200,7 +225,7 @@ public class ShowManager {
                 model.setTheater(theater);
             }
             result.close();
-
+            
             sql = "SELECT * "
                     + "FROM `programmazione` "
                     + "WHERE `id_data`='" + id_data + "';";
@@ -219,48 +244,95 @@ public class ShowManager {
         return model;
     }
 
-    // Recupero un array con le date associate al numero della sala
-    public static DateTimeModel[] getDate(int num_sala, LocalDate from, LocalDate to)
+    // </editor-fold>
+
+    /**
+     * Recupero tutte le date associate ad una data sala a partire da una data
+     * di inizio fino a una di fine, ordinate per data e ora_inizio.
+     *
+     * @param num_sala numero sala di cui ricerco le date
+     * @param from data di inizio
+     * @param to data di fine
+     * @return lista delle date associate alla sala
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static List<DateTimeModel> getDate(int num_sala, LocalDate from, LocalDate to)
             throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
-        DateTimeModel[] model = null;
+        List<DateTimeModel> model = new ArrayList<>();
         try {
-            /**
-             * Recupero tutte le date e le sale assegnate ad un dato film a
-             * partire da una from fino a to, ordinate per data e ora_inizio.
-             */
             /*
              SELECT * 
              FROM `film_sala_programmazione` AS FSP 
              JOIN `sale` AS S ON FSP.id_sala=S.id_sala 
              JOIN `programmazione` AS P ON FSP.id_data=P.id_data 
-             WHERE `numero_sala`='1' AND P.date BETWEEN from AND to
+             WHERE S.numero_sala='num_sala' AND P.date BETWEEN from AND to
              ORDER BY P.data, P.ora_inizio
              */
             String sql = "SELECT * "
                     + "FROM `film_sala_programmazione` AS FSP "
                     + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
                     + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
-                    + "WHERE `numero_sala`='" + num_sala + "' AND "
+                    + "WHERE S.numero_sala='" + num_sala + "' AND "
                     + "P.data BETWEEN '" + from.format(DateTimeFormatter.ISO_LOCAL_DATE) + "' AND "
                     + "'" + to.format(DateTimeFormatter.ISO_LOCAL_DATE) + "' "
                     + "ORDER BY P.data, P.ora_inizio";
             ResultSet resultSet = database.select(sql);
-            List<DateTimeModel> list;
-            list = new ArrayList<>();
             while (resultSet.next()) {
                 DateTimeModel tmp = new DateTimeModel(resultSet);
-                list.add(tmp);
+                model.add(tmp);
             }
             resultSet.close();
             database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
 
-            // preparo l'array per il modello inserito come parametro
-            model = new DateTimeModel[list.size()];
-            for (int i = 0; i < list.size(); i++) {
-                model[i] = list.get(i);
+    /**
+     * Recupero tutte le coppie Sala-Data associate ad un determinato film
+     *
+     * @param film modello di cui voglio recuperare le coppie Sala-Data
+     * @param from data da cui si vuole iniziare a ricercare
+     * @param to data fino a cui si vuole ricercare
+     * @return la lista delle coppie Sala-Data in programmazione
+     * @throws exceptions.NotFoundDBException
+     * @throws java.sql.SQLException
+     */
+    public static List<TheaterDateModel> getShowList(FilmModel film, LocalDate from, LocalDate to)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        List<TheaterDateModel> model = new ArrayList<>();
+        try {
+            /*
+             SELECT * 
+             FROM `film_sala_programmazione` AS FSP 
+             JOIN `programmazione` AS P ON FSP.id_data=P.id_data 
+             JOIN `sale` AS S ON FSP.id_sala=S.id_sala 
+             WHERE FSP.id_film=film.id_film AND P.data BETWEEN from AND to 
+             ORDER BY P.data, S.numero_sala, P.ora_inizio
+             */
+            String sql = "SELECT * "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
+                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
+                    + "WHERE FSP.id_film='" + film.getId_film() + "' AND "
+                    + "P.data BETWEEN '" + from.format(DateTimeFormatter.ISO_LOCAL_DATE) + "' AND "
+                    + "'" + to.format(DateTimeFormatter.ISO_LOCAL_DATE) + "' "
+                    + "ORDER BY P.data, S.numero_sala, P.ora_inizio";
+            ResultSet result = database.select(sql);
+            while (result.next()) {
+                TheaterDateModel theaterdate = new TheaterDateModel(result);
+                model.add(theaterdate);
             }
+            result.close();
+            database.commit();
         } catch (NotFoundDBException | SQLException ex) {
             throw ex;
         } finally {

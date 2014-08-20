@@ -1,4 +1,4 @@
-<%@include file="../User/login_navbar.jsp" %>
+<%@include file="login_navbar.jsp" %>
 <jsp:useBean id="filmBean" scope="page" class="bflows.FilmManagement"/>
 <jsp:setProperty name="filmBean" property="id_film"/>
 
@@ -57,7 +57,7 @@
             <%}%>    
         </div>
         <div class="col-lg-6">
-            <h2>Programmazione</h2>
+            <h2>Programmazione da Fare</h2>
             <table class="table">
                 <thead>
                     <tr>

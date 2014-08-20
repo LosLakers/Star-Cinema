@@ -98,8 +98,8 @@
                         <li class="active">
                             <a href="home.jsp">Home</a>
                         </li>
-                        <li>
-                            <a href="#">Programmazione</a>
+                        <li class="active">
+                            <a href="nowshowing.jsp">Programmazione</a>
                         </li>
                         <li class="active">
                             <a href="search.jsp">Lista Film</a>

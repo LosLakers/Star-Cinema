@@ -3,16 +3,16 @@
  */
 var form = document.getElementById('showForm');
 form.addEventListener('submit', function(evt) {
-    var inizio = document.getElementById('inizio').value;
-    var fine = document.getElementById('fine').value;
+    var inizio = this.ora_inizio.value;
+    var fine = this.ora_fine.value;
     var durataFilm = document.getElementById('durata').innerHTML;
-    
+
     inizio = Date.parse('01/01/2001 ' + inizio);
     fine = Date.parse('01/01/2001 ' + fine);
     //durataFilm = Date.parse('01/01/2001 ' + durataFilm); PROBLEMA FORMATTAZIONE TEMPO
     durata = fine - inizio;
 
-    if (durata > 0 /*&& durata > durataFilm*/ ) {
+    if (durata > 0 /*&& durata > durataFilm*/) {
         // submit form
         return true;
     } else {
@@ -25,25 +25,26 @@ form.addEventListener('submit', function(evt) {
  * se l'ora di inizio è superiore all'ora di fine, aggiungo la classe .error altrimenti
  * la elimino
  */
-var inizio = document.getElementById('inizio');
+var inizio = form.ora_inizio;
 inizio.addEventListener('change', function() {
-   controlTime();
+    controlTime();
 });
-var fine = document.getElementById('fine');
+var fine = form.ora_fine;
 fine.addEventListener('change', function() {
-   controlTime(); 
+    controlTime();
 });
 
 function controlTime() {
-   var inizio = document.getElementById('inizio').value;
-   var fine = document.getElementById('fine').value;
-   
-   inizio = Date.parse('01/01/2001 ' + inizio);
-   fine = Date.parse('01/01/2001 ' + fine);
-   
-   if (inizio > fine) {
-       document.getElementById('inizio').className = 'form-control error';
-   } else {
-       document.getElementById('inizio').className = 'form-control';
-   }
+    var form = document.getElementById('showForm');
+    var inizio = form.ora_inizio.value;
+    var fine = form.ora_fine.value;
+
+    inizio = Date.parse('01/01/2001 ' + inizio);
+    fine = Date.parse('01/01/2001 ' + fine);
+
+    if (inizio > fine) {
+        form.ora_inizio.className = 'form-control error';
+    } else {
+        form.ora_inizio.className = 'form-control';
+    }
 }
