@@ -11,6 +11,7 @@
     </div>
 </div>
 <div class="container">
+    <!-- Navbar -->
     <ul class="nav nav-tabs">
         <%
             String week[] = nowShowingBean.getWeek();
@@ -32,6 +33,7 @@
             }
         %>
     </ul>
+    <!-- Tab Content -->
     <div class="tab-content">
         <%
             for (int j = 0; j < week.length; j++) {

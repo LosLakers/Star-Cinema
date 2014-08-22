@@ -4,6 +4,7 @@ public class Constants {
 
     /* Constants for StarCinema */
     public static final int NUMERO_SALE = 4;
+    public static final int MAX_TICKETS = 5;
     
     /* Constants for language codes */
     public static final String CD_LANGUAGE_ITALIAN = "ITA";

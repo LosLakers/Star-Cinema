@@ -1,6 +1,8 @@
 
 package blogics;
 
+import java.sql.*;
+
 /**
  *
  * @author Guido Pio
@@ -8,10 +10,24 @@ package blogics;
 public class FilmTheaterDateModel {
 
     private FilmModel film;
-
     private TheaterModel theater;
-
     private DateTimeModel date;
+
+    public FilmTheaterDateModel() {
+    }
+
+    /**
+     * Costruttore pubblico basato su risultato di una query
+     * 
+     * @param   result      Risultato di una query
+     * @throws SQLException 
+     */
+    public FilmTheaterDateModel(ResultSet result) 
+            throws SQLException {
+        this.setFilm(new FilmModel(result));
+        this.setTheater(new TheaterModel(result));
+        this.setDate(new DateTimeModel(result));
+    }
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**

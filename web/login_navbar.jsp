@@ -51,7 +51,7 @@
             loggedIn = false;
         }
     }
-    
+
     /* gestione di eventuali cookie già settati o settati durante il login */
     if (cookies != null) {
         loginBean.setCookies(cookies);
@@ -70,9 +70,8 @@
     /* TODO */
     /* gestione pagina corrente */
     String uri = request.getRequestURI();
-    String pageName = uri.substring(uri.lastIndexOf("/") + 1);
+    String currentPage = uri.substring(uri.lastIndexOf("/") + 1);
     String queryString = (request.getQueryString() != null) ? "?" + request.getQueryString() : "";
-    pageName = pageName + queryString;
 %>
 
 <!DOCTYPE html>
@@ -91,22 +90,40 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Star Cinema</a>
+                    <a class="navbar-brand">Star Cinema</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
+                        <%
+                            if (currentPage.equals("home.jsp")) {
+                        %>
                         <li class="active">
+                            <%} else {%>
+                        <li>
+                            <%}%>
                             <a href="home.jsp">Home</a>
                         </li>
+                        <%
+                            if (currentPage.equals("nowshowing.jsp")) {
+                        %>
                         <li class="active">
+                            <%} else {%>
+                        <li>
+                            <%}%>
                             <a href="nowshowing.jsp">Programmazione</a>
                         </li>
+                        <%
+                            if (currentPage.equals("search.jsp")) {
+                        %>
                         <li class="active">
+                            <%} else {%>
+                        <li>
+                            <%}%>
                             <a href="search.jsp">Lista Film</a>
                         </li>
                     </ul>
                     <%if (!loggedIn) {%>
-                    <form name="loginForm" action="<%=pageName%>" class="navbar-form navbar-right" method="post">
+                    <form name="loginForm" action="home.jsp" class="navbar-form navbar-right" method="post">
                         <input type="hidden" name="status" value="login"/>
                         <div class="form-group">
                             <input type="text" name="username" placeholder="Username" class="form-control" required="required"/>
