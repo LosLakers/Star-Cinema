@@ -44,7 +44,7 @@
         <div class="col-sm-offset-1 col-lg-5">
             <h1><%=filmBean.getTitolo()%></h1>
             <% if (isAdmin) {%>
-            <form id="adminForm" action="addedit_film.jsp">
+            <form id="adminForm" action="updatefilm.jsp">
                 <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
                 <input type="hidden" name="status" value="edit"/>
                 <button form="adminForm" type="submit" class="btn btn-primary">Modifica Film</button>
@@ -228,7 +228,7 @@
         </div>
     </div>
     <br/>
-    <script src="../scripts/film.js"></script>
-    <script src="../scripts/utility.js"></script>
+    <script src="scripts/film.js"></script>
+    <script src="scripts/utility.js"></script>
 </body>
 </html>

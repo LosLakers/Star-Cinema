@@ -1,16 +1,14 @@
 <%@include file="login_navbar.jsp" %>
 
 <%
-    boolean authorized = false;
+    boolean authorized = loginBean.authenticate(username, password);
 
-    if (loginBean.getCookieValue("username").equals(loginBean.getUsername()) && status.equals("profile")) {
-        authorized = true;
-        loginBean.getUser();
+    if (status.equals("edit") && authorized) {
+        loginBean.updateUser();
     }
 
-    if (status.equals("edit")) {
-        authorized = true;
-        loginBean.updateUser();
+    if (authorized) {
+        loginBean.getUser();
     }
 %>
 
@@ -50,8 +48,6 @@
                 </div>
                 <br/>
                 <input type="hidden" name="status" value="edit"/>
-                <input type="hidden" name="username" value="<%=username%>"/>
-                <input type="hidden" name="password" value="<%=password%>"/>
                 <button type="submit" class="btn btn-primary">Modifica</button>
         </form>
     </div>
@@ -60,6 +56,11 @@
     #Abbonamento
     #ingressi disponibili
 </div>
-<%}%>
+<%
+    } else {
+        String redirect = "home.jsp";
+        response.sendRedirect(redirect);
+    }
+%>
 </body>
 </html>

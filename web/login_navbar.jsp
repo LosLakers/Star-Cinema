@@ -59,11 +59,9 @@
         password = loginBean.getCookieValue("password");
         if (loginBean.getCookieValue("admin").equals("true")) {
             isAdmin = true;
-            profile = "admin_page.jsp?" + "username=" + username
-                    + "&password=" + password;
+            profile = "admin_page.jsp";
         } else {
-            profile = "user_page.jsp?" + "username=" + username
-                    + "&password=" + password;
+            profile = "user_page.jsp";
         }
     }
 
@@ -123,6 +121,7 @@
                         </li>
                     </ul>
                     <%if (!loggedIn) {%>
+                    <!-- Utente non loggato -->
                     <form name="loginForm" action="home.jsp" class="navbar-form navbar-right" method="post">
                         <input type="hidden" name="status" value="login"/>
                         <div class="form-group">
@@ -135,12 +134,14 @@
                         <a href="registration.jsp" class="btn btn-default">Registrati</a>
                     </form>
                     <%} else {%>
+                    <!-- Utente loggato -->
                     <form class="navbar-form navbar-right" name="logoutForm" action="/StarCinema/home.jsp" method="post">
                         <input type="hidden" name="status" value="logout"/>
                         <a href="javascript:;" class="btn btn-danger" onclick="parentNode.submit();">Disconnetti</a>
                     </form>
                     <form class="navbar-form navbar-right" name="profileForm" action="<%=profile%>" method="post">
                         <a href="javascript:;" class="btn btn-primary" onclick="parentNode.submit();"><%=username%></a>
+                        <!-- non hanno senso di esistere -->
                         <input type="hidden" name="status" value="profile"/>
                         <input type="hidden" name="username" value="<%=username%>"/>
                         <input type="hidden" name="password" value="<%=password%>"/>

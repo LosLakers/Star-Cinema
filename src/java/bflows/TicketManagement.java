@@ -1,9 +1,10 @@
 package bflows;
 
+import blogics.*;
 import global.*;
 import java.io.Serializable;
 import java.util.*;
-import blogics.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -17,11 +18,45 @@ public class TicketManagement implements Serializable {
     private String data;
     private int id_tabella;
 
+    // film in programmazione
+    private FilmDate[] film;
+    private String[] week;
+
     // uso per controllo ticket che possono essere acquistati
     private int ticketCounter;
     private String[] reserved;
+    private int subscriptionSeat;
 
     public TicketManagement() {
+    }
+
+    public void index() {
+        try {
+            // Creo la settimana di programmazione che voglio vedere
+            String[] week = new String[7];
+            LocalDate day = LocalDate.now();
+            for (int i = 0; i < week.length; i++) {
+                day = day.plusDays(1);
+                week[i] = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            }
+            this.setWeek(week);
+            LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);
+            LocalDate lastDayOfTheWeek = day;
+
+            // recupero film in programmazione
+            List<FilmModel> films = FilmManager.getFilms(firstDayOfTheWeek, lastDayOfTheWeek);
+            List<FilmDate> filmDate = new ArrayList<>();
+
+            for (FilmModel tmp : films) {
+                // recupero le date associate al film
+                List<DateTimeModel> date = ShowManager.getDate(tmp, firstDayOfTheWeek, lastDayOfTheWeek);
+                FilmDate film = new FilmDate(tmp.getId_film(), tmp.getTitolo(), date);
+                filmDate.add(film);
+            }
+            this.film = filmDate.toArray(new FilmDate[filmDate.size()]);
+        } catch (Exception ex) {
+            // da gestire
+        }
     }
 
     public void populate() {
@@ -46,8 +81,9 @@ public class TicketManagement implements Serializable {
             SubscriptionModel subscription = TicketManager.getSubscription(this.getUsername());
             if (subscription != null) {
                 // setto valori per posti disponibili
+                this.setSubscriptionSeat(subscription.getIngressi_disp());
             } else {
-                // setto valori negativi per posti disponibili
+                this.setSubscriptionSeat(-1);
             }
 
             // recupero i posti prenotati - formato [FILA_NUM]
@@ -61,6 +97,50 @@ public class TicketManagement implements Serializable {
         }
     }
 
+    // <editor-fold defaultstate="collapsed" desc=" Metodi Custom FilmDate ">
+    /**
+     * Recupero la lista di tutti i film in programmazione
+     *
+     * @return L'array con tutti gli id_film
+     */
+    public int[] ticketId_film() {
+        int[] id_film = new int[this.film.length];
+        for (int i = 0; i < id_film.length; i++) {
+            id_film[i] = this.film[i].getId_film();
+        }
+        return id_film;
+    }
+
+    /**
+     * Recupero il titolo del film in base all'id_film
+     *
+     * @param id_film Id del film di cui voglio recuperare il titolo
+     * @return Il titolo del film
+     */
+    public String ticketTitolo(int id_film) {
+        FilmDate[] film = this.film;
+        String titolo = "";
+        for (FilmDate tmp : film) {
+            if (tmp.getId_film() == id_film) {
+                titolo = tmp.getTitolo();
+                break;
+            }
+        }
+        return titolo;
+    }
+
+    
+    public String[] ticketDate(int id_film) {
+        String[] date = null;
+        for (FilmDate tmp : this.film) {
+            if (tmp.getId_film() == id_film) {
+                date = tmp.getDate();
+                break;
+            }
+        }
+        return date;
+    }
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username
@@ -135,6 +215,44 @@ public class TicketManagement implements Serializable {
     }
 
     /**
+     * Get the value of week
+     *
+     * @return the value of week
+     */
+    public String[] getWeek() {
+        return week;
+    }
+
+    /**
+     * Set the value of week
+     *
+     * @param week new value of week
+     */
+    public void setWeek(String[] week) {
+        this.week = week;
+    }
+
+    /**
+     * Get the value of week at specified index
+     *
+     * @param index the index of week
+     * @return the value of week at specified index
+     */
+    public String getWeek(int index) {
+        return this.week[index];
+    }
+
+    /**
+     * Set the value of week at specified index.
+     *
+     * @param index the index of week
+     * @param week new value of week at specified index
+     */
+    public void setWeek(int index, String week) {
+        this.week[index] = week;
+    }
+
+    /**
      * Get the value of ticketCounter
      *
      * @return the value of ticketCounter
@@ -188,6 +306,125 @@ public class TicketManagement implements Serializable {
      */
     public void setReserved(int index, String reserved) {
         this.reserved[index] = reserved;
+    }
+
+    /**
+     * Get the value of subscriptionSeat
+     *
+     * @return the value of subscriptionSeat
+     */
+    public int getSubscriptionSeat() {
+        return subscriptionSeat;
+    }
+
+    /**
+     * Set the value of subscriptionSeat
+     *
+     * @param subscriptionSeat new value of subscriptionSeat
+     */
+    public void setSubscriptionSeat(int subscriptionSeat) {
+        this.subscriptionSeat = subscriptionSeat;
+    }
+
+    // </editor-fold>
+}
+
+class FilmDate {
+
+    private int id_film;
+    private String titolo;
+    private String[] date;
+
+    public FilmDate(int id_film, String titolo, List<DateTimeModel> date) {
+        this.setId_film(id_film);
+        this.setTitolo(titolo);
+
+        List<String> model = new ArrayList<>();
+        String help = "2000-01-01";
+        for (DateTimeModel data : date) {
+            String day = data.getData().format(DateTimeFormatter.ISO_LOCAL_DATE);
+            // evito di aggiungere date uguali
+            if (!day.equals(help)) {
+                model.add(day);
+                help = day; // new String(day)
+            }
+        }
+        this.setDate(model.toArray(new String[model.size()]));
+    }
+
+    // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
+    /**
+     * Get the value of id_film
+     *
+     * @return the value of id_film
+     */
+    public int getId_film() {
+        return id_film;
+    }
+
+    /**
+     * Set the value of id_film
+     *
+     * @param id_film new value of id_film
+     */
+    public void setId_film(int id_film) {
+        this.id_film = id_film;
+    }
+
+    /**
+     * Get the value of titolo
+     *
+     * @return the value of titolo
+     */
+    public String getTitolo() {
+        return titolo;
+    }
+
+    /**
+     * Set the value of titolo
+     *
+     * @param titolo new value of titolo
+     */
+    public void setTitolo(String titolo) {
+        this.titolo = titolo;
+    }
+
+    /**
+     * Get the value of date
+     *
+     * @return the value of date
+     */
+    public String[] getDate() {
+        return date;
+    }
+
+    /**
+     * Set the value of date
+     *
+     * @param date new value of date
+     */
+    public void setDate(String[] date) {
+        this.date = date;
+    }
+
+    /**
+     * Get the value of date at specified index
+     *
+     * @param index the index of date
+     * @return the value of date at specified index
+     */
+    public String getDate(int index) {
+        return this.date[index];
+    }
+
+    /**
+     * Set the value of date at specified index.
+     *
+     * @param index the index of date
+     * @param date new value of date at specified index
+     */
+    public void setDate(int index, String date) {
+        this.date[index] = date;
     }
 
     // </editor-fold>

@@ -20,3 +20,7 @@ a.disabled {
 input.error {
     border-color: red;
 }
+
+option[disabled] {
+    background: red;
+}

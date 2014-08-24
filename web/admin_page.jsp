@@ -1,16 +1,14 @@
 <%@include file="login_navbar.jsp" %>
 
 <%
-    boolean authorized = false;
+    boolean authorized = loginBean.authenticate(username, password);
 
-    if (loginBean.getCookieValue("username").equals(loginBean.getUsername()) && status.equals("profile")) {
-        authorized = true;
-        loginBean.getUser();
+    if (status.equals("edit") && authorized) {
+        loginBean.updateUser();
     }
 
-    if (status.equals("edit")) {
-        authorized = true;
-        loginBean.updateUser();
+    if (authorized) {
+        loginBean.getUser();
     }
 %>
 
@@ -23,6 +21,7 @@
 <div class="container">
     <br/>
     <div class="row">
+        <!-- Modifica Profilo -->
         <form class="col-lg-4 col-md-4">
             <div class="form-group">
                 <label class="control-label">Nome</label>
@@ -50,13 +49,12 @@
                 </div>
                 <br/>
                 <input type="hidden" name="status" value="edit"/>
-                <input type="hidden" name="username" value="<%=username%>"/>
-                <input type="hidden" name="password" value="<%=password%>"/>
                 <input type="submit" class="btn btn-primary" value="Aggiorna Profilo">
             </div>
         </form>
+        <!-- Opzioni Admin -->
         <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
-            <a href="addedit_film.jsp" class="btn btn-default">Aggiungi Film</a>
+            <a href="addfilm.jsp" class="btn btn-default">Aggiungi Film</a>
         </div>
     </div><br>
     <div class="row">
@@ -155,6 +153,11 @@
         </div>
     </div>
 </div>
-<%}%>
+<%
+    } else {
+        String redirect = "home.jsp";
+        response.sendRedirect(redirect);
+    }
+%>
 </body>
 </html>

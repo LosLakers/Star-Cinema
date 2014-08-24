@@ -14,25 +14,13 @@
         String redirect = "home.jsp";
         response.sendRedirect(redirect);
     }
-    switch(status) {
-        case "updatefilm" :
-            filmBean.updateFilm();
-            break;
-        case "deletefilm" :
-            filmBean.deleteFilm();
-            String redirect = "search.jsp";
-            response.sendRedirect(redirect);
-            break;
-        default :
-            break;
-    }
-    /*if (status.equals("updatefilm")) {
+    if (status.equals("updatefilm")) {
         filmBean.updateFilm();
     } else if (status.equals("deletefilm")) {
         filmBean.deleteFilm();
         String redirect = "search.jsp";
         response.sendRedirect(redirect);
-    }*/
+    }
 
     filmBean.getFilm();
 
@@ -40,7 +28,7 @@
 
 <div class="jumbotron">
     <div class="container">
-        <h1>Film</h1>
+        <h1>Aggiorna Film</h1>
     </div>
 </div>  
 <div class="container">
@@ -77,7 +65,7 @@
                           required="required"><%=filmBean.getDescrizione()%></textarea>
             </div>
         </div>
-        <input type="submit" form="filmForm" class="btn btn-primary" value="updatefilm"/>
+        <input type="submit" form="filmForm" class="btn btn-primary" value="Aggiorna"/>
         <a href="<%=profile%>" class="btn btn-warning">Torna al Profilo</a>
         <input type="hidden" name="status" value="updatefilm"/>
         <input type="hidden" name="id_film" value="<%=id%>"/>

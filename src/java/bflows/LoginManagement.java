@@ -16,21 +16,12 @@ import java.util.logging.Logger;
  */
 public class LoginManagement implements Serializable {
 
-    /* username property */
     private String username;
-
-    /* password property */
     private String password;
-
-    /* cookies property */
     private Cookie[] cookies;
-
     private String name;
-
     private String surname;
-
     private String email;
-
     private String creditcard;
 
     public LoginManagement() {
@@ -90,7 +81,21 @@ public class LoginManagement implements Serializable {
     }
 
     // </editor-fold>
-    
+
+    public Boolean authenticate(String username, String password) {
+        Boolean authorized = false;
+        try {
+            UserModel user = UserManager.get(username, password);
+            if (user != null) {
+                authorized = true;
+            }
+        } catch (NotFoundDBException | SQLException ex) {
+            // non faccio niente
+        } finally {
+            return authorized;
+        }
+    }
+
     public String getCookieValue(String name) {
         return CookieManager.getValue(name, cookies);
     }

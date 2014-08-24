@@ -17,24 +17,16 @@ public class FilmManagement extends BaseBean implements Serializable {
 
     // proprietà per la gestione del film
     private int id_film;
-
     private String titolo;
-
     private String descrizione;
-
     private String trailer;
-
     private String durata;
-
     private String locandina;
 
     // proprietà per la gestione del commento di un utente
     private int id_commento;
-
     private int voto;
-
     private String giudizio;
-
     private String user;
 
     // lista dei commenti per un film
@@ -42,7 +34,6 @@ public class FilmManagement extends BaseBean implements Serializable {
 
     // stringa di ricerca film per titolo o data
     private String searchString;
-
     private FilmModel[] filmList;
 
     public FilmManagement() {
@@ -93,7 +84,9 @@ public class FilmManagement extends BaseBean implements Serializable {
 
     // </editor-fold>
 
-    // recupero la lista di tutti i film nel database
+    /**
+     * Recupero la lista di tutti i film nel database
+     */
     public void index() {
         try {
             FilmModel[] index = FilmManager.searchFilm("");
@@ -103,7 +96,9 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
-    // ricerca per titolo/data
+    /**
+     * Ricerca film per titolo o data
+     */
     public void search() {
         try {
             try {
@@ -120,6 +115,7 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
+    // <editor-fold defaultstate="collapsed" desc=" Metodi Custom Film List ">
     public int filmList_length() {
         return this.filmList.length;
     }
@@ -131,6 +127,8 @@ public class FilmManagement extends BaseBean implements Serializable {
     public String filmList_titolo(int index) {
         return this.filmList[index].getTitolo();
     }
+
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Comment-Management ">
     public void addComment() {
@@ -147,6 +145,9 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
+    /**
+     * Aggiorno un commento inserito da un utente
+     */
     public void updateComment() {
         try {
             CommentModel commento = new CommentModel(this.getId_commento(), this.getVoto(), this.getGiudizio(),
