@@ -245,6 +245,49 @@ public class ShowManager {
         return model;
     }
 
+    /**
+     * Recupero la lista degli id_tabella con id_film e data inseriti come
+     * parametri
+     *
+     * @param id_film Id del film che mi interessa
+     * @param data Data di programmazione di cui sono interessato
+     * @return Array contenente gli id_tabella
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static int[] get(int id_film, LocalDate data)
+            throws NotFoundDBException, SQLException {
+
+        int[] id_tabella = new int[0];
+        DataBase database = DBService.getDataBase();
+        try {
+            String sql = "SELECT `id_tabella` "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `film` AS F ON FSP.id_film=F.id_film "
+                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
+                    + "WHERE FSP.id_film='" + id_film + "' AND "
+                    + "P.data='" + data + "';";
+            ResultSet result = database.select(sql);
+            List<Integer> list = new ArrayList<>();
+            while (result.next()) {
+                Integer id = result.getInt("id_tabella");
+                list.add(id);
+            }
+
+            // converto lista Integer in array int
+            id_tabella = new int[list.size()];
+            for (int i = 0; i < id_tabella.length; i++) {
+                id_tabella[i] = list.get(i);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return id_tabella;
+    }
     // </editor-fold>
 
     /**

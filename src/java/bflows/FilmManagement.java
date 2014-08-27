@@ -83,7 +83,6 @@ public class FilmManagement extends BaseBean implements Serializable {
     }
 
     // </editor-fold>
-
     /**
      * Recupero la lista di tutti i film nel database
      */
@@ -119,11 +118,11 @@ public class FilmManagement extends BaseBean implements Serializable {
     public int filmList_length() {
         return this.filmList.length;
     }
-    
+
     public int filmList_idfilm(int index) {
         return this.filmList[index].getId_film();
     }
-    
+
     public String filmList_titolo(int index) {
         return this.filmList[index].getTitolo();
     }
@@ -163,6 +162,19 @@ public class FilmManagement extends BaseBean implements Serializable {
 
     public void deleteComment() {
         // TODO
+    }
+
+    /**
+     * Un admin elimina dal sistema il commento con id inserito come parametro.
+     *
+     * @param id_commento Id del commento da eliminare
+     */
+    public void deleteComment(int id_commento) {
+        try {
+            CommentManager.delete(id_commento);
+        } catch (NotFoundDBException ex) {
+            // gestione errore
+        }
     }
 
     public void getComment() {

@@ -21,6 +21,7 @@ public class TicketManagement implements Serializable {
     // film in programmazione
     private FilmDate[] film;
     private String[] week;
+    private int[] id_tab;
 
     // uso per controllo ticket che possono essere acquistati
     private int ticketCounter;
@@ -30,6 +31,10 @@ public class TicketManagement implements Serializable {
     public TicketManagement() {
     }
 
+    /**
+     * Creo la lista dei film in programmazione nella settimana con le relative
+     * date
+     */
     public void index() {
         try {
             // Creo la settimana di programmazione che voglio vedere
@@ -97,6 +102,45 @@ public class TicketManagement implements Serializable {
         }
     }
 
+    /**
+     * Restituisco gli orari disponibili per l'acquisto dei biglietti del film
+     * specificato nella data inserita
+     *
+     * @return L'array con gli orari
+     * @throws java.lang.Exception
+     */
+    public String[] populateTime() throws Exception {
+        List<String> model = new ArrayList<>();
+        try {
+            int[] id_tab = ShowManager.get(this.getId_film(), LocalDate.parse(this.getData()));
+            /*
+             Lancio una eccezione se qualcuno prova a inserire un film o una data
+             che non è segnata in programmazione
+             */
+            if (id_tab.length == 0) {
+                throw new Exception();
+            }
+            List<FilmTheaterDateModel> lista = new ArrayList<>();
+            for (int i : id_tab) {
+                FilmTheaterDateModel tmp = ShowManager.get(i);
+                lista.add(tmp);
+            }
+            this.setId_tab(id_tab);
+
+            for (FilmTheaterDateModel tmp : lista) {
+                TheaterModel theater = tmp.getTheater();
+                DateTimeModel date = tmp.getDate();
+                String stringa = date.getOra_inizio().format(DateTimeFormatter.ISO_LOCAL_TIME)
+                        + " - " + date.getOra_fine().format(DateTimeFormatter.ISO_LOCAL_TIME)
+                        + " - Sala #" + theater.getNumero_sala() + " - Posti " + theater.getPosti_disp();
+                model.add(stringa);
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return model.toArray(new String[model.size()]);
+    }
+
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom FilmDate ">
     /**
      * Recupero la lista di tutti i film in programmazione
@@ -129,7 +173,6 @@ public class TicketManagement implements Serializable {
         return titolo;
     }
 
-    
     public String[] ticketDate(int id_film) {
         String[] date = null;
         for (FilmDate tmp : this.film) {
@@ -141,6 +184,7 @@ public class TicketManagement implements Serializable {
         return date;
     }
     // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username
@@ -250,6 +294,44 @@ public class TicketManagement implements Serializable {
      */
     public void setWeek(int index, String week) {
         this.week[index] = week;
+    }
+
+    /**
+     * Get the value of id_tab
+     *
+     * @return the value of id_tab
+     */
+    public int[] getId_tab() {
+        return id_tab;
+    }
+
+    /**
+     * Set the value of id_tab
+     *
+     * @param id_tab new value of id_tab
+     */
+    public void setId_tab(int[] id_tab) {
+        this.id_tab = id_tab;
+    }
+
+    /**
+     * Get the value of id_tab at specified index
+     *
+     * @param index the index of id_tab
+     * @return the value of id_tab at specified index
+     */
+    public int getId_tab(int index) {
+        return this.id_tab[index];
+    }
+
+    /**
+     * Set the value of id_tab at specified index.
+     *
+     * @param index the index of id_tab
+     * @param id_tab new value of id_tab at specified index
+     */
+    public void setId_tab(int index, int id_tab) {
+        this.id_tab[index] = id_tab;
     }
 
     /**

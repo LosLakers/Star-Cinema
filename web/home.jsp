@@ -14,7 +14,7 @@
         <br/>
         <!-- Acquisto Biglietti -->
         <div class="col-lg-12 col-md-12">
-            <form id="ticketfilm" class="form-inline">
+            <form id="ticketfilm" class="form-inline" action="ticketTime.jsp" method="post">
                 <!-- Selezione film -->
                 <div class="col-lg-4 col-md-4">
                     <select name="id_film" class="form-control" required="required">
@@ -45,11 +45,16 @@
                 for (int j = 0; j < id_film.length; j++) {
                     String[] data = ticketBean.ticketDate(id_film[j]);
                     String hidden = "";
-                    for (String tmp : data) {
-                        for (int p = 0; p < week.length; p++) {
-                            if (!tmp.equals(week[p])) {
-                                hidden += (p+1) + ":";
+                    for (int p = 0; p < week.length; p++) {
+                        Boolean check = true;
+                        for (String tmp : data) {
+                            if (tmp.equals(week[p])) {
+                                check = false;
+                                break;
                             }
+                        }
+                        if (check) {
+                            hidden += (p + 1) + ":";
                         }
                     }
             %>

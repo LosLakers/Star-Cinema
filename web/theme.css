@@ -22,5 +22,5 @@ input.error {
 }
 
 option[disabled] {
-    background: red;
+    color: red;
 }

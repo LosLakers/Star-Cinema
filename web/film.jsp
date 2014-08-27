@@ -24,6 +24,11 @@
     if (filmBean.getId_commento() != 0) {
         firstComment = false;
     }
+    
+    if (isAdmin && status.equals("admindelete")) {
+        int id = Integer.parseInt(request.getParameter("toDelete"));
+        filmBean.deleteComment(id);
+    }
 %>
 
 <% if (!filmBean.getMessage().equals("")) {%>
@@ -194,6 +199,7 @@
                                 String user = filmBean.getComment_User(filmBean.getCommenti(p + (j * 4)));
                                 String commento = filmBean.getComment_Giudizio(filmBean.getCommenti(p + (j * 4)));
                                 int voto = filmBean.getComment_Voto(filmBean.getCommenti(p + (j * 4)));
+                                int id_commento = filmBean.getComment_IdCommento(filmBean.getCommenti(p + (j * 4)));
                         %>
                         <div class="col-lg-3">
                             <div class="inline-block">
@@ -205,6 +211,14 @@
                             <br/>
                             <textarea class="form-control" disabled="disabled"><%=commento%></textarea>
                             <br/>
+                            <% if (isAdmin) {%>
+                            <form id="<%=user%>" action="film.jsp">
+                                <input type="hidden" name="status" value="admindelete"/>
+                                <input type="hidden" name="toDelete" value="<%=id_commento%>"/>
+                                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
+                                <button type="submit" form="<%=user%>" class="btn btn-danger">Elimina</button>
+                            </form>
+                            <%}%>
                         </div>
                         <%}%>
                     </div>
