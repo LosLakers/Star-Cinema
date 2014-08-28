@@ -17,6 +17,7 @@ public class TicketManagement implements Serializable {
     private int id_film;
     private String data;
     private int id_tabella;
+    private String[] seat;
 
     // film in programmazione
     private FilmDate[] film;
@@ -64,7 +65,47 @@ public class TicketManagement implements Serializable {
         }
     }
 
-    public void populate() {
+    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    public void addTicket() throws Exception {
+        try {
+            // formatto i posti in lista di file e array di numeri
+            String[] seat = this.getSeat();
+            List<String> fila = new ArrayList<>();
+            int[] posto = new int[seat.length];
+            for (int i = 0; i < seat.length; i++) {
+                String[] tmp = seat[i].split("-");
+                if (tmp.length != 2) {
+                    throw new Exception();
+                }
+                fila.add(tmp[0]);
+                posto[i] = Integer.parseInt(tmp[1]);
+            }
+            // controllo che il numero di elementi in fila sia uguale a quelli in posto
+            if (fila.size() != posto.length) {
+                throw new Exception();
+            }
+            
+            // verifico che l'utente possa effettivamente prenotare i posti
+            List<String> userReserved = TicketManager.getReserved(this.getId_tabella(), this.getUsername());
+            if (userReserved.size() + seat.length > Constants.MAX_TICKETS) {
+                throw new Exception();
+            }
+            
+            TicketManager.add(this.getId_tabella(), this.username, fila, posto);
+        } catch (Exception ex) {
+            // gestione eccezione
+        }
+    }
+
+    // </editor-fold>
+    /**
+     * Popolo la sala di selezione dei posti. Recupero tutti i posti già
+     * occupati da un utente, quelli prenotati da altri utenti e i posti ancora
+     * prenotabili dall'utente.
+     *
+     * @throws java.lang.Exception
+     */
+    public void populate() throws Exception {
         try {
             // controllo che a id_tabella possa corrispondere id_film - data
             FilmTheaterDateModel model = ShowManager.get(this.getId_tabella());
@@ -95,10 +136,7 @@ public class TicketManagement implements Serializable {
             List<String> reserved = TicketManager.getReserved(this.getId_tabella());
             this.setReserved(reserved.toArray(new String[reserved.size()]));
         } catch (Exception ex) {
-            /* 
-             ritorno alla pagina di scelta di orario-sala con un messaggio di errore
-             e passando come parametri id_film e data che ho.
-             */
+            throw ex;
         }
     }
 
@@ -256,6 +294,44 @@ public class TicketManagement implements Serializable {
      */
     public void setId_tabella(int id_tabella) {
         this.id_tabella = id_tabella;
+    }
+
+    /**
+     * Get the value of seat
+     *
+     * @return the value of seat
+     */
+    public String[] getSeat() {
+        return seat;
+    }
+
+    /**
+     * Set the value of seat
+     *
+     * @param seat new value of seat
+     */
+    public void setSeat(String[] seat) {
+        this.seat = seat;
+    }
+
+    /**
+     * Get the value of seat at specified index
+     *
+     * @param index the index of seat
+     * @return the value of seat at specified index
+     */
+    public String getSeat(int index) {
+        return this.seat[index];
+    }
+
+    /**
+     * Set the value of seat at specified index.
+     *
+     * @param index the index of seat
+     * @param seat new value of seat at specified index
+     */
+    public void setSeat(int index, String seat) {
+        this.seat[index] = seat;
     }
 
     /**

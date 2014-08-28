@@ -18,7 +18,7 @@
 <div class="jumbotron">
     <div class="container">
         <!-- Form per cambio film e/o data -->
-        <form id="ticketfilm" class="form-inline" action="ticketTime.jsp" method="post">
+        <form id="ticketfilm" class="form-inline" action="addtickettime.jsp" method="post">
             <!-- Selezione film -->
             <div class="col-lg-4 col-md-4">
                 <select name="id_film" class="form-control" required="required" disabled="disabled">
@@ -85,7 +85,7 @@
         int[] id_tabella = ticketBean.getId_tab();
     %>
     <!-- Form per la selezione di orario e sala -->
-    <form id="timeform">
+    <form id="timeform" action="addticketseat.jsp" method="post">
         <legend>Seleziona una fascia oraria</legend>
         <%
             for (int j = 0; j < orari.length; j++) {
@@ -103,6 +103,8 @@
         </div>
         <%}%>
         <br/>
+        <input type="hidden" name="id_film" value="<%=ticketBean.getId_film()%>"/>
+        <input type="hidden" name="data" value="<%=ticketBean.getData()%>"/>
         <button type="submit" form="timeform" class="btn btn-primary">Conferma</button>
     </form>
 </div>
