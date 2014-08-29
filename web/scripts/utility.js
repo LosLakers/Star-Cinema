@@ -26,3 +26,8 @@ function formBlock(evt) {
     evt.preventDefault();
     return false;
 }
+
+function backButton() {
+    history.back();
+    return false;
+}

@@ -6,13 +6,14 @@
     if (status.equals("edit") && authorized) {
         loginBean.updateUser();
     }
-
-    if (authorized) {
-        loginBean.getUser();
-    }
 %>
 
-<% if (authorized) {%>
+<% 
+    if (authorized) {
+        loginBean.setUsername(username);
+        loginBean.setPassword(password);
+        loginBean.getUser();
+%>
 <div class="jumbotron">
     <div class="container">
         <h1>Profilo Utente</h1>

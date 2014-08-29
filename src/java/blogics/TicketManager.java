@@ -11,11 +11,23 @@ import services.database.*;
  */
 public class TicketManager {
 
-    public static void add(int id_tabella, String username, List<String> rows, int[] numseat)
+    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    /**
+     * Inserisco gli ingressi acquistati nel database
+     *
+     * @param id_tabella Usato per ricavare lo spettacolo di riferimento
+     * @param username Utente che effettua l'acquisto
+     * @param rows Lettera fila di ogni posto
+     * @param numseat Numero di ogni posto
+     * @return Gli id_ingresso di ogni posto prenotato
+     * @throws Exception
+     */
+    public static int[] add(int id_tabella, String username, List<String> rows, int[] numseat)
             throws Exception {
         if (rows.size() != numseat.length) {
             throw new Exception();
         }
+        int[] id_ingresso = new int[numseat.length];
         DataBase database = DBService.getDataBase();
         try {
             // controlo che nessun posto sia già occupato
@@ -68,7 +80,11 @@ public class TicketManager {
                         + "'" + id_posto + "',"
                         + "'" + util.Conversion.getDatabaseString(username) + "',"
                         + "'" + id_film + "')";
-                database.modify(sql);
+                result = database.modifyPK(sql);
+                if (result.next()) {
+                    id_ingresso[i] = result.getInt(1);
+                    result.close();
+                }
             }
             String sql = "UPDATE `sale` "
                     + "SET `posti_disp`=`posti_disp`-'" + numseat.length + "' "
@@ -80,8 +96,10 @@ public class TicketManager {
         } finally {
             database.close();
         }
+        return id_ingresso;
     }
 
+    // </editor-fold>
     /**
      * Tutti i posti prenotati associati a una terna (film,sala,orario) ricavata
      * grazie a id_tabella
@@ -209,6 +227,7 @@ public class TicketManager {
         return reserved;
     }
 
+    // <editor-fold defaultstate="collapsed" desc=" Subscription ">
     /**
      * Recupero l'abbonamento associato allo username usato come parametro
      *
@@ -238,4 +257,61 @@ public class TicketManager {
         }
         return subscription;
     }
+
+    /**
+     * Uso un abbonamento per pagare i biglietti acquistati
+     *
+     * @param username Username dell'utente che fa l'acquisto
+     * @param subscription Abbonamento usato
+     * @param id_ingresso Ingressi acquistati
+     * @return I biglietti ancora da pagare
+     * @throws Exception
+     */
+    public static int useSubscription(String username, SubscriptionModel subscription, int... id_ingresso)
+            throws Exception {
+
+        // controllo eventuali errori e/o furbetti
+        if (!username.equals(subscription.getUsername())) {
+            throw new Exception();
+        }
+
+        int topay = 0;
+        DataBase database = DBService.getDataBase();
+        try {
+            if (subscription.getIngressi_disp() >= id_ingresso.length) {
+                // aggiorno ogni singolo ingresso
+                for (int i = 0; i < id_ingresso.length; i++) {
+                    String sql = "UPDATE `ingressi` "
+                            + "SET `id_abbonamento`='" + subscription.getId_abbonamento() + "' "
+                            + "WHERE `id_ingresso`='" + id_ingresso[i] + "';";
+                    database.modify(sql);
+                }
+                // aggiorno i nuovi ingressi disponibili nell'abbonamento
+                String sql = "UPDATE `abbonamenti` "
+                        + "SET `ingressi_disp`=`ingressi_disp`-'" + id_ingresso.length + "' "
+                        + "WHERE `id_abbonamento`='" + subscription.getId_abbonamento() + "';";
+                database.modify(sql);
+                database.commit();
+            } else { // gli ingressi disponibili sono inferiori ai biglietti prenotati
+                for (int i = 0; i < subscription.getIngressi_disp(); i++) {
+                    String sql = "UPDATE `ingressi` "
+                            + "SET `id_abbonamento`='" + subscription.getId_abbonamento() + "' "
+                            + "WHERE `id_ingresso`='" + id_ingresso[i] + "';";
+                    database.modify(sql);
+                }
+                String sql = "UPDATE `abbonamenti` "
+                        + "SET `ingressi_disp`='0' "
+                        + "WHERE `id_abbonamento`='" + subscription.getId_abbonamento() + "';";
+                database.modify(sql);
+                database.commit();
+                topay = id_ingresso.length - subscription.getIngressi_disp();
+            }
+        } catch (NotFoundDBException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return topay;
+    }
+    // </editor-fold>
 }

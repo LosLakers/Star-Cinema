@@ -77,7 +77,7 @@
     <head>
         <%@include file="default.html" %>
         <title>Star Cinema</title>
-        <link href="theme.css" rel="stylesheet" type="text/css"/>
+        <link href="css/custom-theme.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -141,10 +141,6 @@
                     </form>
                     <form class="navbar-form navbar-right" name="profileForm" action="<%=profile%>" method="post">
                         <a href="javascript:;" class="btn btn-primary" onclick="parentNode.submit();"><%=username%></a>
-                        <!-- non hanno senso di esistere -->
-                        <input type="hidden" name="status" value="profile"/>
-                        <input type="hidden" name="username" value="<%=username%>"/>
-                        <input type="hidden" name="password" value="<%=password%>"/>
                     </form>
                     <%}%>
                 </div>

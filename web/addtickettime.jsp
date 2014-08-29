@@ -1,10 +1,8 @@
 <%@include file="login_navbar.jsp" %>
 
 <%
-    if (username.equals("") || password.equals("")) {
-        String redirect = "pagina di login";
-        response.sendRedirect(redirect);
-    }
+    boolean authorized = loginBean.authenticate(username, password);
+    if (authorized) {
 %>
 
 <jsp:useBean id="ticketBean" scope="page" class="bflows.TicketManagement"/>
@@ -54,20 +52,20 @@
         <!-- Creazione hidden -->
         <%
             for (int j = 0; j < id_film.length; j++) {
-                    String[] data = ticketBean.ticketDate(id_film[j]);
-                    String hidden = "";
-                    for (int p = 0; p < week.length; p++) {
-                        Boolean check = true;
-                        for (String tmp : data) {
-                            if (tmp.equals(week[p])) {
-                                check = false;
-                                break;
-                            }
-                        }
-                        if (check) {
-                            hidden += (p + 1) + ":";
+                String[] data = ticketBean.ticketDate(id_film[j]);
+                String hidden = "";
+                for (int p = 0; p < week.length; p++) {
+                    Boolean check = true;
+                    for (String tmp : data) {
+                        if (tmp.equals(week[p])) {
+                            check = false;
+                            break;
                         }
                     }
+                    if (check) {
+                        hidden += (p + 1) + ":";
+                    }
+                }
         %>
         <input type="hidden" id="<%=id_film[j]%>" value="<%=hidden%>"/>
         <%}%>
@@ -85,7 +83,7 @@
         int[] id_tabella = ticketBean.getId_tab();
     %>
     <!-- Form per la selezione di orario e sala -->
-    <form id="timeform" action="addticketseat.jsp" method="post">
+    <form id="timeform" action="addticket.jsp" method="post">
         <legend>Seleziona una fascia oraria</legend>
         <%
             for (int j = 0; j < orari.length; j++) {
@@ -106,9 +104,16 @@
         <input type="hidden" name="id_film" value="<%=ticketBean.getId_film()%>"/>
         <input type="hidden" name="data" value="<%=ticketBean.getData()%>"/>
         <button type="submit" form="timeform" class="btn btn-primary">Conferma</button>
+        <a href="#" id="backbutton" class="btn btn-warning">Indietro</a>
     </form>
 </div>
 <script src="scripts/ticket.js"></script>
 <script src="scripts/utility.js"></script>
+<%
+    } else {
+        String redirect = "login.jsp";
+        response.sendRedirect(redirect);
+    }
+%>
 </body>
 </html>

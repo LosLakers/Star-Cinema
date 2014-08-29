@@ -3,8 +3,18 @@ package global;
 public class Constants {
 
     /* Constants for StarCinema */
+    /**
+     * Numero massimo di sale
+     */
     public static final int NUMERO_SALE = 4;
+    /**
+     * Numero massimo di ingressi acquistabili per spettacolo
+     */
     public static final int MAX_TICKETS = 5;
+    /**
+     * Numero massimo di ingressi per abbonamento
+     */
+    public static final int MAX_TICKETS_SUBSCRIPTION = 10;
     
     /* Constants for language codes */
     public static final String CD_LANGUAGE_ITALIAN = "ITA";

@@ -34,7 +34,7 @@
 <% if (!filmBean.getMessage().equals("")) {%>
 <!-- Gestione Errori -->
 <div class="container">
-    <div class="col-md-6 col-lg-6">
+    <div class="col-md-12 col-lg-12">
         <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
             <p class="message-success"><%=filmBean.getMessage()%></p>

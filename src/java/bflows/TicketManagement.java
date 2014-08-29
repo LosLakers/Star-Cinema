@@ -18,6 +18,7 @@ public class TicketManagement implements Serializable {
     private String data;
     private int id_tabella;
     private String[] seat;
+    private int topay;
 
     // film in programmazione
     private FilmDate[] film;
@@ -91,7 +92,15 @@ public class TicketManagement implements Serializable {
                 throw new Exception();
             }
             
-            TicketManager.add(this.getId_tabella(), this.username, fila, posto);
+            int[] id_ingresso = TicketManager.add(this.getId_tabella(), this.getUsername(), fila, posto);
+            
+            // gestione abbonamento
+            if (this.getSubscriptionSeat() > 0 && 
+                    this.getSubscriptionSeat() <= Constants.MAX_TICKETS_SUBSCRIPTION) {
+                SubscriptionModel subscription = TicketManager.getSubscription(this.getUsername());
+                int topay = TicketManager.useSubscription(this.getUsername(), subscription, id_ingresso);
+                this.setTopay(topay);
+            }
         } catch (Exception ex) {
             // gestione eccezione
         }
@@ -332,6 +341,24 @@ public class TicketManagement implements Serializable {
      */
     public void setSeat(int index, String seat) {
         this.seat[index] = seat;
+    }
+
+    /**
+     * Get the value of topay
+     *
+     * @return the value of topay
+     */
+    public int getTopay() {
+        return topay;
+    }
+
+    /**
+     * Set the value of topay
+     *
+     * @param topay new value of topay
+     */
+    public void setTopay(int topay) {
+        this.topay = topay;
     }
 
     /**

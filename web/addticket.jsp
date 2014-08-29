@@ -4,21 +4,14 @@
 <jsp:setProperty name="ticketBean" property="*"/>
 
 <%
-    ticketBean.setUsername(username);
+    boolean authorized = loginBean.authenticate(username, password);
 
-    status = request.getParameter("status");
-    if (status != null && status.equals("addticket")) {
-        try {
-            ticketBean.addTicket();
-            String redirect = profile + "?status=ticket";
-            response.sendRedirect(redirect);
-        } catch (Exception ex) {
-            // gestione errore
+    if (authorized) {
+        ticketBean.setUsername(username);
+        
+        if (status == null || !status.equals("addticket")) {
+            ticketBean.populate();
         }
-    }
-    if (status == null || !status.equals("addticket")) {
-        ticketBean.populate();
-    }
 %>
 <div class="jumbotron">
     <div class="container">
@@ -30,7 +23,8 @@
 </div>
 <div class="container">
     <legend>Seleziona Posti a Sedere</legend>
-    <form id="seatform" method="post">
+    <form id="seatform" action="pagamento.jsp" method="post">
+        <!-- Selezione posti nella sala -->
         <table class="table">
             <thead>
                 <tr>
@@ -81,11 +75,41 @@
         </table>
         <input type="hidden" name="status" value="addticket" />
         <input type="hidden" name="id_tabella" value="<%=ticketBean.getId_tabella()%>" />
+        <input type="hidden" name="username" value="<%=username%>" />
+        <br/>
+        <!-- Gestione abbonamento -->
+        <%
+            int abbonamento = ticketBean.getSubscriptionSeat();
+            if (abbonamento > 0) {
+        %>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="subscriptionSeat" value="<%=abbonamento%>">
+                Seleziona per usare abbonamento - <%=abbonamento%> ingressi disponibili
+            </label>
+        </div>
+        <br/>
+        <%} else if (abbonamento == 0) {%>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="subscriptionSeat" value="<%=abbonamento%>" disabled="disabled">
+                Impossibile usare abbonamento - <%=abbonamento%> ingressi disponibili
+            </label>
+        </div>
+        <br/>
+        <%}%>
         <button type="submit" form="seatform" class="btn btn-primary">Conferma</button>
+        <a href="#" id="backbutton" class="btn btn-warning">Indietro</a>
     </form>
 </div>
 <input type="hidden" id="ticketcount" value="<%=ticketBean.getTicketCounter()%>"/>
 <script src="scripts/utility.js"></script>
 <script src="scripts/ticket_validation.js"></script>
+<%
+    } else {
+        String redirect = "home.jsp";
+        response.sendRedirect(redirect);
+    }
+%>
 </body>
 </html>
