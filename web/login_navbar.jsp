@@ -135,7 +135,7 @@
                     </form>
                     <%} else {%>
                     <!-- Utente loggato -->
-                    <form class="navbar-form navbar-right" name="logoutForm" action="/StarCinema/home.jsp" method="post">
+                    <form class="navbar-form navbar-right" name="logoutForm" action="home.jsp" method="post">
                         <input type="hidden" name="status" value="logout"/>
                         <a href="javascript:;" class="btn btn-danger" onclick="parentNode.submit();">Disconnetti</a>
                     </form>

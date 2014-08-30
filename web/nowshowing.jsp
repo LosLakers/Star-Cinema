@@ -8,9 +8,13 @@
 
 <div class="jumbotron">
     <div class="container">
+        <% if (isAdmin) {%>
+        <p><strong>Admin</strong> cliccando sull'orario, è possibile modificarne la programmazione dello spettacolo</p>
+        <%}%>
     </div>
 </div>
 <div class="container">
+    <legend>Programmazione Settimanale Star Cinema</legend>
     <!-- Navbar -->
     <ul class="nav nav-tabs">
         <%
@@ -73,10 +77,23 @@
                             <%
                                 String[] oraInizio = nowShowingBean.showOraInizio(p, week[j]);
                                 String[] oraFine = nowShowingBean.showOraFine(p, week[j]);
+                                int[] id_tabella = nowShowingBean.showIdTabella(p, week[j]);
                                 for (int q = 0; q < oraInizio.length; q++) {
+                                    if (isAdmin) {
+                            %>
+                            <form action="updateshow.jsp" method="post">
+                                <input type="hidden" name="id_film" value="<%=nowShowingBean.showIdFilm(p)%>" />
+                                <input type="hidden" name="id_tabella" value="<%=id_tabella[q]%>" />
+                                <a href="javascript:;" onclick="parentNode.submit();"><%=oraInizio[q]%>-<%=oraFine[q]%></a>  ||
+                            </form>
+                            <%
+                            } else {
                             %>
                             <%=oraInizio[q]%>-<%=oraFine[q]%> ||
-                            <%}%>
+                            <%
+                                    }
+                                }
+                            %>
                         </td>
                         <td>
                             <%
@@ -97,6 +114,28 @@
         </div>
         <%}%>
     </div>
+    <% if (isAdmin) {%>
+    <br/>
+    <div class="col-lg-8 col-md-8">
+        <!-- Aggiunta in programmazione se Admin-->
+        <%
+            nowShowingBean.index();
+            String[] films = nowShowingBean.getFilms();
+        %>
+        <form id="addshowform" class="form-inline" action="addshow.jsp" method="post">
+            <select name="id_film" class="form-control" required="required">
+                <option selected="selected" disabled="true">Scegli un Film per Programmazione...</option>
+                <%
+                    for (int j = 0; j < films.length; j++) {
+                        String[] film = films[j].split("_");
+                %>
+                <option value="<%=film[0]%>"><%=film[1]%></option>
+                <%}%>
+            </select>
+            <button form="addshowform" class="btn btn-primary">Conferma</button>
+        </form>
+    </div>
+    <%}%>
 </div>
 </body>
 </html>

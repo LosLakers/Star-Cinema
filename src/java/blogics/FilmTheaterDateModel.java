@@ -1,4 +1,3 @@
-
 package blogics;
 
 import java.sql.*;
@@ -9,6 +8,7 @@ import java.sql.*;
  */
 public class FilmTheaterDateModel {
 
+    private int id_tabella;
     private FilmModel film;
     private TheaterModel theater;
     private DateTimeModel date;
@@ -18,18 +18,37 @@ public class FilmTheaterDateModel {
 
     /**
      * Costruttore pubblico basato su risultato di una query
-     * 
-     * @param   result      Risultato di una query
-     * @throws SQLException 
+     *
+     * @param result Risultato di una query
+     * @throws SQLException
      */
-    public FilmTheaterDateModel(ResultSet result) 
+    public FilmTheaterDateModel(ResultSet result)
             throws SQLException {
+        this.setId_tabella(result.getInt("id_tabella"));
         this.setFilm(new FilmModel(result));
         this.setTheater(new TheaterModel(result));
         this.setDate(new DateTimeModel(result));
     }
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
+    /**
+     * Get the value of id_tabella
+     *
+     * @return the value of id_tabella
+     */
+    public int getId_tabella() {
+        return id_tabella;
+    }
+
+    /**
+     * Set the value of id_tabella
+     *
+     * @param id_tabella new value of id_tabella
+     */
+    public void setId_tabella(int id_tabella) {
+        this.id_tabella = id_tabella;
+    }
+
     /**
      * Get the value of film
      *

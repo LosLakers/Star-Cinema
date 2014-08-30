@@ -235,6 +235,7 @@ public class ShowManager {
                 DateTimeModel date = new DateTimeModel(result);
                 model.setDate(date);
             }
+            model.setId_tabella(id_tabella);
             result.close();
             database.commit();
         } catch (Exception ex) {
@@ -243,6 +244,41 @@ public class ShowManager {
             database.close();
         }
         return model;
+    }
+
+    /**
+     * Recupero id_tabella in base a id_film, id_sala e id_data
+     *
+     * @param id_film Id del film
+     * @param id_sala Id della sala
+     * @param id_data Id della data
+     * @return Id della tabella corrispondente
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static int get(int id_film, int id_sala, int id_data)
+            throws NotFoundDBException, SQLException {
+
+        int id_tabella = 0;
+        DataBase database = DBService.getDataBase();
+        try {
+            String sql = "SELECT `id_tabella` "
+                    + "FROM `film_sala_programmazione` "
+                    + "WHERE `id_film`='" + id_film + "' AND "
+                    + "`id_sala`='" + id_sala + "' AND "
+                    + "`id_data`='" + id_data + "';";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                id_tabella = result.getInt("id_tabella");
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return id_tabella;
     }
 
     /**

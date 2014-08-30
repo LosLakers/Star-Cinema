@@ -15,14 +15,14 @@ public class TicketManager {
     /**
      * Inserisco gli ingressi acquistati nel database
      *
-     * @param id_tabella Usato per ricavare lo spettacolo di riferimento
+     * @param show Lo show a cui associo i biglietti dello spettacolo
      * @param username Utente che effettua l'acquisto
      * @param rows Lettera fila di ogni posto
      * @param numseat Numero di ogni posto
      * @return Gli id_ingresso di ogni posto prenotato
      * @throws Exception
      */
-    public static int[] add(int id_tabella, String username, List<String> rows, int[] numseat)
+    public static int[] add(FilmTheaterDateModel show, String username, List<String> rows, int[] numseat)
             throws Exception {
         if (rows.size() != numseat.length) {
             throw new Exception();
@@ -36,7 +36,7 @@ public class TicketManager {
                         + "FROM `film_sala_programmazione` AS FSP "
                         + "JOIN `ingressi` AS I ON FSP.id_data=I.id_data "
                         + "JOIN `posti` AS P ON I.id_posto=P.id_posto "
-                        + "WHERE FSP.id_tabella='" + id_tabella + "' AND "
+                        + "WHERE FSP.id_tabella='" + show.getId_tabella() + "' AND "
                         + "P.fila='" + util.Conversion.getDatabaseString(rows.get(i)) + "' AND "
                         + "P.numero='" + numseat[i] + "';";
                 ResultSet result = database.select(sql);
@@ -47,12 +47,11 @@ public class TicketManager {
             }
 
             // recupero id_film, id_data e id_sala necessari
-            FilmTheaterDateModel model = ShowManager.get(id_tabella);
-            TheaterModel theater = model.getTheater();
+            TheaterModel theater = show.getTheater();
             int id_sala = theater.getId_sala();
-            FilmModel film = model.getFilm();
+            FilmModel film = show.getFilm();
             int id_film = film.getId_film();
-            DateTimeModel data = model.getDate();
+            DateTimeModel data = show.getDate();
             int id_data = data.getId_data();
 
             // inserisco posto e ingresso nel sistema
@@ -102,52 +101,40 @@ public class TicketManager {
     // </editor-fold>
     /**
      * Tutti i posti prenotati associati a una terna (film,sala,orario) ricavata
-     * grazie a id_tabella
+     * grazie al modello di uno show
      *
-     * @param id_tabella L'id per ricavare (film,sala,orario)
+     * @param show Lo show di cui si ricercano i posti occupati
      * @return I posti prenotati ordinati per fila e numero
      * @throws NotFoundDBException
      * @throws SQLException
      */
-    public static List<String> getReserved(int id_tabella)
+    public static List<String> getReserved(FilmTheaterDateModel show)
             throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
         List<String> reserved = new ArrayList<>();
         try {
-            String sql = "SELECT * "
-                    + "FROM `film_sala_programmazione` AS FSP "
-                    + "JOIN `film` AS F ON FSP.id_film=F.id_film "
-                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
-                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
-                    + "WHERE FSP.id_tabella='" + id_tabella + "';";
-            ResultSet result = database.select(sql);
-            FilmTheaterDateModel model;
-            if (result.next()) {
-                model = new FilmTheaterDateModel(result);
-            } else {
-                throw new SQLException();
-            }
-            result.close();
-
             // ricerca posti occupati in base a (id_film,id_sala,id_data)
-            FilmModel film = model.getFilm();
-            TheaterModel theater = model.getTheater();
-            DateTimeModel date = model.getDate();
+            FilmModel film = show.getFilm();
+            TheaterModel theater = show.getTheater();
+            DateTimeModel date = show.getDate();
             /*
              SELECT * 
              FROM `ingressi` AS I 
              JOIN `posti` AS P ON I.id_posto=P.id_posto 
              WHERE I.id_film=id_film AND P.id_sala=id_sala AND I.id_data=id_data
              */
-            sql = "SELECT * "
+            String sql = "SELECT * "
                     + "FROM `ingressi` AS I "
                     + "JOIN `posti` AS P ON I.id_posto=P.id_posto "
                     + "WHERE I.id_film='" + film.getId_film() + "' AND "
                     + "P.id_sala='" + theater.getId_sala() + "' AND "
                     + "I.id_data='" + date.getId_data() + "' "
                     + "ORDER BY P.fila, P.numero;";
-            result = database.select(sql);
+            ResultSet result = database.select(sql);
+            /*
+             Da modificare con un modello dei posti a sedere
+             */
             while (result.next()) {
                 String seat = result.getString("fila") + "-" + result.getInt("numero");
                 reserved.add(seat);
@@ -164,39 +151,24 @@ public class TicketManager {
 
     /**
      * Tutti i posti prenotati associati ad un dato utente e a una terna
-     * (film,sala,orario) ricavata grazie a id_tabella
+     * (film,sala,orario) ricavata grazie al modello di uno show
      *
-     * @param id_tabella L'id per ricavare (film,sala,orario)
+     * @param show Il modello dello show
      * @param username L'identificativo utente di cui ricercare le prenotazioni
      * @return I posti prenotati dall'utente, ordinati per fila e numero
      * @throws NotFoundDBException
      * @throws SQLException
      */
-    public static List<String> getReserved(int id_tabella, String username)
+    public static List<String> getReserved(FilmTheaterDateModel show, String username)
             throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
         List<String> reserved = new ArrayList<>();
         try {
-            String sql = "SELECT * "
-                    + "FROM `film_sala_programmazione` AS FSP "
-                    + "JOIN `film` AS F ON FSP.id_film=F.id_film "
-                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
-                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
-                    + "WHERE FSP.id_tabella='" + id_tabella + "';";
-            ResultSet result = database.select(sql);
-            FilmTheaterDateModel model;
-            if (result.next()) {
-                model = new FilmTheaterDateModel(result);
-            } else {
-                throw new SQLException();
-            }
-            result.close();
-
             // ricerca posti occupati in base a (id_film,id_sala,id_data)
-            FilmModel film = model.getFilm();
-            TheaterModel theater = model.getTheater();
-            DateTimeModel date = model.getDate();
+            FilmModel film = show.getFilm();
+            TheaterModel theater = show.getTheater();
+            DateTimeModel date = show.getDate();
             /*
              SELECT * 
              FROM `ingressi` AS I 
@@ -204,7 +176,7 @@ public class TicketManager {
              WHERE I.id_film=id_film AND P.id_sala=id_sala AND I.id_data=id_data
              AND I.username=username
              */
-            sql = "SELECT * "
+            String sql = "SELECT * "
                     + "FROM `ingressi` AS I "
                     + "JOIN `posti` AS P ON I.id_posto=P.id_posto "
                     + "WHERE I.id_film='" + film.getId_film() + "' AND "
@@ -212,7 +184,10 @@ public class TicketManager {
                     + "I.id_data='" + date.getId_data() + "' AND "
                     + "I.username='" + util.Conversion.getDatabaseString(username) + "'"
                     + "ORDER BY P.fila, P.numero;";
-            result = database.select(sql);
+            ResultSet result = database.select(sql);
+            /*
+             Da cambiare con un modello dei singoli posti
+             */
             while (result.next()) {
                 String seat = result.getString("fila") + "-" + result.getInt("numero");
                 reserved.add(seat);

@@ -87,12 +87,13 @@ public class TicketManagement implements Serializable {
             }
             
             // verifico che l'utente possa effettivamente prenotare i posti
-            List<String> userReserved = TicketManager.getReserved(this.getId_tabella(), this.getUsername());
+            FilmTheaterDateModel show = ShowManager.get(this.getId_tabella());
+            List<String> userReserved = TicketManager.getReserved(show, this.getUsername());
             if (userReserved.size() + seat.length > Constants.MAX_TICKETS) {
                 throw new Exception();
             }
             
-            int[] id_ingresso = TicketManager.add(this.getId_tabella(), this.getUsername(), fila, posto);
+            int[] id_ingresso = TicketManager.add(show, this.getUsername(), fila, posto);
             
             // gestione abbonamento
             if (this.getSubscriptionSeat() > 0 && 
@@ -125,7 +126,8 @@ public class TicketManagement implements Serializable {
                 throw new Exception();
             }
 
-            List<String> userReserved = TicketManager.getReserved(this.getId_tabella(), this.getUsername());
+            FilmTheaterDateModel show = ShowManager.get(this.getId_tabella());
+            List<String> userReserved = TicketManager.getReserved(show, this.getUsername());
             // diminuisco contatore in base a reserved
             if (userReserved != null) {
                 this.setTicketCounter(Constants.MAX_TICKETS - userReserved.size());
@@ -142,7 +144,7 @@ public class TicketManagement implements Serializable {
             }
 
             // recupero i posti prenotati - formato [FILA_NUM]
-            List<String> reserved = TicketManager.getReserved(this.getId_tabella());
+            List<String> reserved = TicketManager.getReserved(show);
             this.setReserved(reserved.toArray(new String[reserved.size()]));
         } catch (Exception ex) {
             throw ex;
