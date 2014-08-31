@@ -24,6 +24,8 @@ public class LoginManagement implements Serializable {
     private String email;
     private String creditcard;
 
+    private int subscriptionticket;
+
     public LoginManagement() {
     }
 
@@ -51,7 +53,6 @@ public class LoginManagement implements Serializable {
     }
 
     // </editor-fold>
-    
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     public void updateUser() {
         try {
@@ -63,6 +64,10 @@ public class LoginManagement implements Serializable {
         }
     }
 
+    /**
+     * Recupero i dati dell'utente dal sistema con incluso la presenza o meno
+     * di un abbonamento
+     */
     public void getUser() {
         try {
             UserModel user = UserManager.get(this.getUsername(), this.getPassword());
@@ -75,13 +80,26 @@ public class LoginManagement implements Serializable {
                 int creditcard = user.getCreditcard();
                 this.setCreditcard(Integer.toString(creditcard));
             }
+            SubscriptionModel subscription = SubscriptionManager.get(this.getUsername());
+            if (subscription != null) {
+                this.setSubscriptionticket(subscription.getIngressi_disp());
+            } else {
+                this.setSubscriptionticket(-1);
+            }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            // da gestire
         }
     }
 
     // </editor-fold>
-
+    /**
+     * Verifica che nel sistema sia presente un utente con i dati passati come
+     * parametri
+     *
+     * @param username Username dell'utente
+     * @param password Password dell'utente
+     * @return true se l'utente è presente, false in caso contrario
+     */
     public Boolean authenticate(String username, String password) {
         Boolean authorized = false;
         try {
@@ -245,6 +263,24 @@ public class LoginManagement implements Serializable {
      */
     public void setCreditcard(String creditcard) {
         this.creditcard = creditcard;
+    }
+
+    /**
+     * Get the value of subscriptionticket
+     *
+     * @return the value of subscriptionticket
+     */
+    public int getSubscriptionticket() {
+        return subscriptionticket;
+    }
+
+    /**
+     * Set the value of subscriptionticket
+     *
+     * @param subscriptionticket new value of subscriptionticket
+     */
+    public void setSubscriptionticket(int subscriptionticket) {
+        this.subscriptionticket = subscriptionticket;
     }
 
     // </editor-fold>

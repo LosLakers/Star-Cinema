@@ -31,3 +31,8 @@ function backButton() {
     history.back();
     return false;
 }
+
+function parentSubmit() {
+    var form = this.parentNode;
+    form.submit();
+}

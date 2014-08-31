@@ -67,6 +67,11 @@ public class TicketManagement implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    /**
+     * Acquisto uno o più ticket con controllo sull'uso o meno di un abbonamento
+     * 
+     * @throws Exception 
+     */
     public void addTicket() throws Exception {
         try {
             // formatto i posti in lista di file e array di numeri
@@ -98,8 +103,8 @@ public class TicketManagement implements Serializable {
             // gestione abbonamento
             if (this.getSubscriptionSeat() > 0 && 
                     this.getSubscriptionSeat() <= Constants.MAX_TICKETS_SUBSCRIPTION) {
-                SubscriptionModel subscription = TicketManager.getSubscription(this.getUsername());
-                int topay = TicketManager.useSubscription(this.getUsername(), subscription, id_ingresso);
+                SubscriptionModel subscription = SubscriptionManager.get(this.getUsername());
+                int topay = SubscriptionManager.useSubscription(this.getUsername(), subscription, id_ingresso);
                 this.setTopay(topay);
             }
         } catch (Exception ex) {
@@ -135,7 +140,7 @@ public class TicketManagement implements Serializable {
                 this.setTicketCounter(Constants.MAX_TICKETS);
             }
             // recupero abbonamento - null se non esiste
-            SubscriptionModel subscription = TicketManager.getSubscription(this.getUsername());
+            SubscriptionModel subscription = SubscriptionManager.get(this.getUsername());
             if (subscription != null) {
                 // setto valori per posti disponibili
                 this.setSubscriptionSeat(subscription.getIngressi_disp());

@@ -57,11 +57,42 @@
                 <input type="submit" class="btn btn-primary" value="Aggiorna Profilo">
             </div>
         </form>
+        <div class="col-lg-4">
+            <!-- Gestione abbonamento -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Abbonamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (loginBean.getSubscriptionticket() == -1) {%>
+                    <tr>
+                        <td>
+                            <a href="addsubscription.jsp" class="btn btn-default">Acquista</a>
+                        </td>
+                    </tr>
+                    <%} else if (loginBean.getSubscriptionticket() == 0) {%>
+                    <tr>
+                        <td>0 Ingressi Disponibili</td>
+                        <td>
+                            <a href="addsubscription.jsp" class="btn btn-default">Rinnova</a>
+                        </td>
+                    </tr>
+                    <%} else {%>
+                    <tr>
+                        <td><%=loginBean.getSubscriptionticket()%> Ingressi Disponibili</td>
+                    </tr>
+                    <%}%>
+                </tbody>
+            </table>
+        </div>
         <!-- Opzioni Admin -->
-        <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
+        <div class="col-lg-4 col-md-4 ">
             <a href="addfilm.jsp" class="btn btn-default">Aggiungi Film</a>
         </div>
-    </div><br>
+    </div>
+    <br/>
     <div class="row">
         <div class="col-md-4">
             <label>Situazione Sale in Data Odierna</label><br>

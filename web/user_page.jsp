@@ -8,7 +8,7 @@
     }
 %>
 
-<% 
+<%
     if (authorized) {
         loginBean.setUsername(username);
         loginBean.setPassword(password);
@@ -22,7 +22,8 @@
 <div class="container">
     <br/>
     <div class="row">
-        <form class="col-xs-4" action="user_page.jsp" method="post">
+        <!-- Informazioni utente -->
+        <form class="col-lg-4 col-md-4" action="user_page.jsp" method="post">
             <div class="form-group">
                 <label class="control-label">Nome</label>
                 <div class="controls">
@@ -52,10 +53,40 @@
                 <button type="submit" class="btn btn-primary">Modifica</button>
         </form>
     </div>
-
-    <a href="#">Lista Biglietti Acquistati</a>
-    #Abbonamento
-    #ingressi disponibili
+    <div class="col-lg-4 col-md-4">
+        <!-- Gestione biglietti -->
+        <a href="#">Lista Biglietti Acquistati</a>
+    </div>
+    <div class="col-lg-4">
+        <!-- Gestione abbonamento -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Abbonamento</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (loginBean.getSubscriptionticket() == -1) {%>
+                <tr>
+                    <td>
+                        <a href="addsubscription.jsp" class="btn btn-default">Acquista</a>
+                    </td>
+                </tr>
+                <%} else if (loginBean.getSubscriptionticket() == 0) {%>
+                <tr>
+                    <td>0 Ingressi Disponibili</td>
+                    <td>
+                        <a href="addsubscription.jsp" class="btn btn-default">Rinnova</a>
+                    </td>
+                </tr>
+                <%} else {%>
+                <tr>
+                    <td><%=loginBean.getSubscriptionticket()%> Ingressi Disponibili</td>
+                </tr>
+                <%}%>
+            </tbody>
+        </table>
+    </div>
 </div>
 <%
     } else {
