@@ -22,11 +22,27 @@ if (link != null) {
 
         // elimino il link
         removeElement(this);
+        
+        // blocco la form dell'orario
+        var orari = document.getElementsByName('id_tabella');
+        for (var i = 0; i < orari.length; i++) {
+            orari[i].disabled = true;
+        }
+        var form_orari = document.forms[id = 'timeform'];
+        form_orari.addEventListener('submit', function(evt) {
+            formBlock(evt);
+        });
 
         // blocco date
         controlData(form, data);
     });
 }
+
+// back button
+var back = document.getElementById('backbutton');
+back.addEventListener('click', function() {
+    backButton();
+});
 
 function controlData(form, data) {
     var film = form.id_film;
@@ -53,9 +69,3 @@ function controlData(form, data) {
         }
     }
 }
-
-// back button
-var back = document.getElementById('backbutton');
-back.addEventListener('click', function() {
-    backButton();
-});
