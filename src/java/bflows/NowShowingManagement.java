@@ -135,7 +135,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
                     id_tabella[i] = ShowManager.get(tmp.getId_film(), theater.getId_sala(),
                             date.getId_data());
                 }
-                
+
                 // creo un modello filmTheaterDate e lo aggiungo nella lista filmTheaterDate
                 FilmTheaterDate film = new FilmTheaterDate(tmp, model, id_tabella);
                 filmTheaterDate.add(film);
@@ -227,8 +227,8 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             // messaggio di errore
         }
     }
-
     // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom per TheaterDate ">
     public int numberOfTheater() {
         return this.theaterDate.length;
@@ -269,8 +269,8 @@ public class NowShowingManagement extends BaseBean implements Serializable {
 
         return model;
     }
-
     // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom per FilmTheaterDate ">
     public int showFilms() {
         return this.filmTheaterDate.length;
@@ -359,8 +359,8 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         }
         return show;
     }
-
     // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of id_tabella
@@ -581,8 +581,8 @@ public class NowShowingManagement extends BaseBean implements Serializable {
     public void setFilms(int index, String films) {
         this.films[index] = films;
     }
-
     // </editor-fold>
+
 }
 
 class TheaterDate {

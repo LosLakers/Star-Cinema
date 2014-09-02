@@ -14,13 +14,13 @@
     }
     if (status.equals("updateShow")) {
         nowShowingBean.updateShow();
-        /*String redirect = String.format("slotsala.jsp?id_film=", id_film);
-         response.sendRedirect(redirect);*/
-    }
-    nowShowingBean.getShow();
-    nowShowingBean.populateTheater();
-    int num_sale = nowShowingBean.numberOfTheater();
-    String[] week = nowShowingBean.getWeek();
+        String redirect = "nowshowing.jsp";
+        response.sendRedirect(redirect);
+    } else {
+        nowShowingBean.getShow();
+        nowShowingBean.populateTheater();
+        int num_sale = nowShowingBean.numberOfTheater();
+        String[] week = nowShowingBean.getWeek();
 %>
 
 <!-- Jumbotron -->
@@ -213,6 +213,7 @@
 <script src="scripts/nowshowing_script.js"></script>
 <script src="scripts/utility.js"></script>
 <%
+        }
     } else { // redirect per evitare che un non admin abbia accesso
         String redirect = "home.jsp";
         response.sendRedirect(redirect);

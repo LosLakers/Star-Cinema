@@ -8,10 +8,16 @@
 
     if (authorized) {
         ticketBean.setUsername(username);
-        
-        if (status == null || !status.equals("addticket")) {
-            ticketBean.populateAdd();
+
+        if (status == null || !status.equals("updateticket")) {
+            ticketBean.populateUpdate();
         }
+        if (status.equals("updateticket")) {
+            ticketBean.updateTicket();
+%>
+<jsp:forward page="ticketlist.jsp"></jsp:forward>
+<%
+    }
 %>
 <div class="jumbotron">
     <div class="container">
@@ -23,7 +29,7 @@
 </div>
 <div class="container">
     <legend>Seleziona Posti a Sedere</legend>
-    <form id="seatform" action="pagamento.jsp" method="post">
+    <form id="seatform" action="updateticket.jsp" method="post">
         <!-- Selezione posti nella sala -->
         <table class="table">
             <thead>
@@ -73,31 +79,10 @@
                 %>
             </tbody>
         </table>
-        <input type="hidden" name="status" value="addticket" />
+        <input type="hidden" name="status" value="updateticket" />
         <input type="hidden" name="id_tabella" value="<%=ticketBean.getId_tabella()%>" />
-        <input type="hidden" name="username" value="<%=username%>" />
+        <input type="hidden" name="id_ingresso" value="<%=ticketBean.getId_ingresso()%>" />
         <br/>
-        <!-- Gestione abbonamento -->
-        <%
-            int abbonamento = ticketBean.getSubscriptionSeat();
-            if (abbonamento > 0) {
-        %>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="subscriptionSeat" value="<%=abbonamento%>">
-                Seleziona per usare abbonamento - <%=abbonamento%> ingressi disponibili
-            </label>
-        </div>
-        <br/>
-        <%} else if (abbonamento == 0) {%>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="subscriptionSeat" value="<%=abbonamento%>" disabled="disabled">
-                Impossibile usare abbonamento - <%=abbonamento%> ingressi disponibili
-            </label>
-        </div>
-        <br/>
-        <%}%>
         <button type="submit" form="seatform" class="btn btn-primary">Conferma</button>
         <a href="#" id="backbutton" class="btn btn-warning">Indietro</a>
     </form>

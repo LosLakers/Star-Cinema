@@ -1,8 +1,10 @@
 
 package blogics;
 
+import exceptions.NotFoundDBException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  *
@@ -17,6 +19,11 @@ public class TicketModel {
     private int id_abbonamento;
     private int id_film;
 
+    private DateTimeModel data;
+    private SeatModel seat;
+    private SubscriptionModel subscription;
+    private FilmModel film;
+
     /**
      * Costruttore basato sul risultato di una query
      * 
@@ -30,6 +37,15 @@ public class TicketModel {
         this.setUsername(result.getString("username"));
         this.setId_abbonamento(result.getInt("id_abbonamento"));
         this.setId_film(result.getInt("id_film"));
+        
+        try {
+            this.setData(ShowManager.getData(this.getId_data()));
+            this.setSeat(TicketManager.getSeat(this.getId_posto()));
+            this.setSubscription(SubscriptionManager.get(this.getId_abbonamento()));
+            this.setFilm(FilmManager.get(this.getId_film()));
+        } catch (NotFoundDBException | SQLException ex) {
+            // non fare niente
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
@@ -139,6 +155,78 @@ public class TicketModel {
      */
     public void setId_film(int id_film) {
         this.id_film = id_film;
+    }
+
+    /**
+     * Get the value of data
+     *
+     * @return the value of data
+     */
+    public DateTimeModel getData() {
+        return data;
+    }
+
+    /**
+     * Set the value of data
+     *
+     * @param data new value of data
+     */
+    public void setData(DateTimeModel data) {
+        this.data = data;
+    }
+
+    /**
+     * Get the value of seat
+     *
+     * @return the value of seat
+     */
+    public SeatModel getSeat() {
+        return seat;
+    }
+
+    /**
+     * Set the value of seat
+     *
+     * @param seat new value of seat
+     */
+    public void setSeat(SeatModel seat) {
+        this.seat = seat;
+    }
+
+    /**
+     * Get the value of subscription
+     *
+     * @return the value of subscription
+     */
+    public SubscriptionModel getSubscription() {
+        return subscription;
+    }
+
+    /**
+     * Set the value of subscription
+     *
+     * @param subscription new value of subscription
+     */
+    public void setSubscription(SubscriptionModel subscription) {
+        this.subscription = subscription;
+    }
+
+    /**
+     * Get the value of film
+     *
+     * @return the value of film
+     */
+    public FilmModel getFilm() {
+        return film;
+    }
+
+    /**
+     * Set the value of film
+     *
+     * @param film new value of film
+     */
+    public void setFilm(FilmModel film) {
+        this.film = film;
     }
 
     // </editor-fold>

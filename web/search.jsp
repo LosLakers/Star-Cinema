@@ -39,7 +39,7 @@
     <h4>Risultati per ricerca: <strong><%=searchString%></strong></h4>
     <br/>
     <%}%>
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Titolo</th>

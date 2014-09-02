@@ -6,10 +6,6 @@
     if (status.equals("edit") && authorized) {
         loginBean.updateUser();
     }
-
-    if (authorized) {
-
-    }
 %>
 
 <%
@@ -86,10 +82,35 @@
                     <%}%>
                 </tbody>
             </table>
+            <!-- Link alla lista ticket -->
+            <a href="ticketlist.jsp" class="btn btn-default">Lista Ingressi</a>
         </div>
         <!-- Opzioni Admin -->
         <div class="col-lg-4 col-md-4 ">
-            <a href="addfilm.jsp" class="btn btn-default">Aggiungi Film</a>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Opzioni Admin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="addfilm.jsp" class="btn btn-default">Aggiungi Film</a>  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#" class="btn btn-default">Situazione Sale</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#" class="btn btn-default">Situazione Date</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <br/>

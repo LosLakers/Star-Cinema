@@ -1,4 +1,3 @@
-
 package blogics;
 
 import exceptions.*;
@@ -15,16 +14,16 @@ public class SubscriptionManager {
     /**
      * Aggiungo un nuovo abbonamento nel sistema associato ad un utente e con un
      * certo numero di posti di ingresso
-     * 
+     *
      * @param username Identificativo dell'utente
      * @param ingressi Numero di ingressi del nuovo abbonamento
      * @return Id nel database dell'abbonamento
      * @throws NotFoundDBException
-     * @throws SQLException 
+     * @throws SQLException
      */
-    public static int add(String username, int ingressi) 
+    public static int add(String username, int ingressi)
             throws NotFoundDBException, SQLException {
-        
+
         DataBase database = DBService.getDataBase();
         int id = 0;
         try {
@@ -49,19 +48,19 @@ public class SubscriptionManager {
     /**
      * Aggiorno un abbonamento con username passato come parametro con un nuovo
      * numero di ingressi disponibili
-     * 
+     *
      * @param username Identificativo dell'utente
      * @param ingressi Nuovo numero di ingressi dell'abbonamento
-     * @throws NotFoundDBException 
+     * @throws NotFoundDBException
      */
-    public static void update(String username, int ingressi) 
+    public static void update(String username, int ingressi)
             throws NotFoundDBException {
-        
+
         DataBase database = DBService.getDataBase();
         try {
             String sql = "UPDATE `abbonamenti` "
-                    + "SET `ingressi_disp`='" + ingressi +"' "
-                    + "WHERE `username`='" + util.Conversion.getDatabaseString(username) +"'";
+                    + "SET `ingressi_disp`='" + ingressi + "' "
+                    + "WHERE `username`='" + util.Conversion.getDatabaseString(username) + "'";
             database.modify(sql);
             database.commit();
         } catch (NotFoundDBException ex) {
@@ -81,7 +80,7 @@ public class SubscriptionManager {
      */
     public static SubscriptionModel get(String username)
             throws NotFoundDBException, SQLException {
-        
+
         DataBase database = DBService.getDataBase();
         SubscriptionModel subscription = null;
         try {
@@ -101,7 +100,39 @@ public class SubscriptionManager {
         }
         return subscription;
     }
+
+    /**
+     * Recupero l'abbonamento associato all'id_abbonamento usato come parametro
+     *
+     * @param id_abbonamento Id dell'abbonamento nel database
+     * @return L'abbonamento se viene trovato, null se inesistente
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static SubscriptionModel get(int id_abbonamento)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        SubscriptionModel subscription = null;
+        try {
+            String sql = "SELECT * "
+                    + "FROM `abbonamenti` "
+                    + "WHERE `id_abbonamento`='" + id_abbonamento + "';";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                subscription = new SubscriptionModel(result);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return subscription;
+    }
     // </editor-fold>
+
     /**
      * Uso un abbonamento per pagare i biglietti acquistati
      *

@@ -94,7 +94,173 @@ public class TicketManager {
         return id_ingresso;
     }
 
+    /**
+     * Aggiorno l'ingresso passato come parametro nel database
+     *
+     * @param ticket L'ingresso da aggiornare
+     * @param id_film Identificativo del nuovo film
+     * @param id_data Identificativo della nuova data
+     * @param seat Nuovo posto nella sala
+     * @throws Exception
+     */
+    public static void update(TicketModel ticket, int id_film, int id_data, SeatModel seat)
+            throws Exception {
+
+        DataBase database = DBService.getDataBase();
+        try {
+            // controllo che non ci sia già un posto con quella fila e numero
+            String sql = "SELECT * "
+                    + "FROM `posti` "
+                    + "WHERE `fila`='" + util.Conversion.getDatabaseString(seat.getFila()) + "' "
+                    + "AND `numero`='" + seat.getNumero() + "' "
+                    + "AND `id_sala`='" + seat.getId_sala() + "'";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                throw new Exception();
+            }
+            result.close();
+
+            // controllo se è cambiata la sala oppure no
+            if (ticket.getId_film() != id_film || ticket.getId_data() != id_data) {
+                sql = "UPDATE `sale` AS S "
+                        + "INNER JOIN `posti` AS P ON S.id_sala=P.id_sala "
+                        + "SET `posti_disp`=`posti_disp`+1 "
+                        + "WHERE P.id_posto='" + ticket.getId_posto() + "'";
+                database.modify(sql);
+                
+                sql = "UPDATE `sale` "
+                        + "SET `posti_disp`=`posti_disp`-1 "
+                        + "WHERE `id_sala`='" + seat.getId_sala() + "'";
+                database.modify(sql);
+            }
+            
+            // aggiorno il posto di ticket con i nuovi dati
+            sql = "UPDATE `posti` "
+                    + "SET `fila`='" + util.Conversion.getDatabaseString(seat.getFila()) + "',"
+                    + "`numero`='" + seat.getNumero() + "',"
+                    + "`id_sala`='" + seat.getId_sala() + "' "
+                    + "WHERE `id_posto`='" + ticket.getId_posto() + "'";
+            database.modify(sql);
+
+            // aggiorno il ticket
+            sql = "UPDATE `ingressi` "
+                    + "SET `id_data`='" + id_data + "',"
+                    + "`id_film`='" + id_film + "' "
+                    + "WHERE `id_ingresso`='" + ticket.getId_ingresso() + "'";
+            database.modify(sql);
+            database.commit();
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+    }
+
+    /**
+     * Recupero il TicketModel a partire dall'id_ingresso
+     *
+     * @param id_ingresso Identificativo dell'ingreso che sto cercando
+     * @return L'ingresso se è presente nel database, null se non è presente
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static TicketModel get(int id_ingresso)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        TicketModel model = null;
+        try {
+            String sql = "SELECT * "
+                    + "FROM `ingressi` "
+                    + "WHERE `id_ingresso`='" + id_ingresso + "'";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = new TicketModel(result);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+
+    /**
+     * Recupero tutti gli ingressi associati ad un utente, ordinati per data,
+     * dalla più recente in poi, e per ora inizio
+     *
+     * @param username Username dell'utente
+     * @return La lista degli ingressi recuperati
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static List<TicketModel> get(String username)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        List<TicketModel> model = new ArrayList<>();
+        try {
+            /*
+             SELECT * 
+             FROM `ingressi` AS I 
+             JOIN `programmazione` AS P ON I.id_data=P.id_data 
+             WHERE I.username=username 
+             ORDER BY P.data DESC, P.ora_inizio
+             */
+            String sql = "SELECT * "
+                    + "FROM `ingressi` AS I "
+                    + "JOIN `programmazione` AS P ON I.id_data=P.id_data "
+                    + "WHERE I.username='" + util.Conversion.getDatabaseString(username) + "' "
+                    + "ORDER BY P.data DESC, P.ora_inizio";
+            ResultSet result = database.select(sql);
+            while (result.next()) {
+                TicketModel ticket = new TicketModel(result);
+                model.add(ticket);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
     // </editor-fold>
+
+    /**
+     * Recupero un posto associato ad un dato id_posto
+     *
+     * @param id_posto Id del posto
+     * @return Il posto se è presente nel database, null se non c'è
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static SeatModel getSeat(int id_posto)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        SeatModel model = null;
+        try {
+            String sql = "SELECT * "
+                    + "FROM `posti` "
+                    + "WHERE `id_posto`='" + id_posto + "'";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = new SeatModel(result);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+
     /**
      * Tutti i posti prenotati associati a una terna (film,sala,orario) ricavata
      * grazie al modello di uno show

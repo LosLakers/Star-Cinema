@@ -14,6 +14,8 @@ public class SeatModel {
     private int numero;
     private int id_sala;
 
+    private TheaterModel theater;
+
     public SeatModel() {
 
     }
@@ -31,6 +33,12 @@ public class SeatModel {
         this.setFila(fila);
         this.setNumero(numero);
         this.setId_sala(id_sala);
+        
+        try {
+            this.setTheater(ShowManager.getTheater(id_sala));
+        } catch (Exception ex) {
+            // non fare niente
+        }
     }
 
     /**
@@ -45,6 +53,12 @@ public class SeatModel {
         this.setFila(result.getString("fila"));
         this.setNumero(result.getInt("numero"));
         this.setId_sala(result.getInt("id_sala"));
+
+        try {
+            this.setTheater(ShowManager.getTheater(this.getId_sala()));
+        } catch (Exception ex) {
+            // non fare niente
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
@@ -120,5 +134,22 @@ public class SeatModel {
         this.id_sala = id_sala;
     }
 
+    /**
+     * Get the value of theater
+     *
+     * @return the value of theater
+     */
+    public TheaterModel getTheater() {
+        return theater;
+    }
+
+    /**
+     * Set the value of theater
+     *
+     * @param theater new value of theater
+     */
+    public void setTheater(TheaterModel theater) {
+        this.theater = theater;
+    }
     // </editor-fold>
 }

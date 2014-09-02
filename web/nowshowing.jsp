@@ -47,9 +47,9 @@
                 }
         %>
         <div class="tab-pane <%=active%>" id="<%=week[j]%>">
-            <table class="table table-bordered table-hover">
+            <table class="table table-striped table-hover">
                 <thead>
-                    <tr class="info">
+                    <tr class="success">
                         <th>
                             Film
                         </th>

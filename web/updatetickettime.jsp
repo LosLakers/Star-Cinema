@@ -10,13 +10,16 @@
 
 <%
     ticketBean.index();
+    if (status == null || !status.equals("changefilm")) {
+        ticketBean.getTicket();
+    }
     int[] id_film = ticketBean.ticketId_film();
     String[] week = ticketBean.getWeek();
 %>
 <div class="jumbotron">
     <div class="container">
         <!-- Form per cambio film e/o data -->
-        <form id="ticketfilm" class="form-inline" action="addtickettime.jsp" method="get">
+        <form id="ticketfilm" class="form-inline" action="updatetickettime.jsp" method="get">
             <!-- Selezione film -->
             <div class="col-lg-4 col-md-4">
                 <select name="id_film" class="form-control" required="required" disabled="disabled">
@@ -35,7 +38,7 @@
             <!-- Selezione data -->
             <div class="col-lg-3 col-md-3">
                 <select name="data" class="form-control" required="required" disabled="disabled">
-                    <option disabled="true">Seleziona una data...</option>
+                    <option disabled="disabled">Seleziona una data...</option>
                     <%
                         for (int j = 0; j < week.length; j++) {
                             String selected = "";
@@ -47,6 +50,8 @@
                     <%}%>
                 </select>
             </div>
+            <input type="hidden" name="id_ingresso" value="<%=ticketBean.getId_ingresso()%>" />
+            <input type="hidden" name="status" value="changefilm" />
             <a id="unlock" class="btn btn-default">Modifica</a>
         </form>
         <!-- Creazione hidden -->
@@ -83,7 +88,7 @@
         int[] id_tabella = ticketBean.getId_tab();
     %>
     <!-- Form per la selezione di orario e sala -->
-    <form id="timeform" action="addticket.jsp" method="post">
+    <form id="timeform" action="updateticket.jsp" method="post">
         <legend>Seleziona una fascia oraria</legend>
         <%
             for (int j = 0; j < orari.length; j++) {
@@ -101,6 +106,7 @@
         </div>
         <%}%>
         <br/>
+        <input type="hidden" name="id_ingresso" value="<%=ticketBean.getId_ingresso()%>"/>
         <input type="hidden" name="id_film" value="<%=ticketBean.getId_film()%>"/>
         <input type="hidden" name="data" value="<%=ticketBean.getData()%>"/>
         <button type="submit" form="timeform" class="btn btn-primary">Conferma</button>

@@ -327,6 +327,67 @@ public class ShowManager {
     // </editor-fold>
 
     /**
+     * Recupero una data in base all'id_data passato come parametro
+     *
+     * @param id_data Identificativo della data
+     * @return La data se è presente nel database, null se non è presente
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static DateTimeModel getData(int id_data)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        DateTimeModel model = null;
+        try {
+            String sql = "SELECT * "
+                    + "FROM `programmazione` "
+                    + "WHERE `id_data`='" + id_data + "'";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = new DateTimeModel(result);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+
+    /**
+     * Recupero una sala in base al suo id_sala
+     * @param id_sala Identificativo della sala
+     * @return La sala se è presente nel database, null se non è presente
+     * @throws NotFoundDBException
+     * @throws SQLException 
+     */
+    public static TheaterModel getTheater(int id_sala) 
+            throws NotFoundDBException, SQLException {
+        
+        DataBase database = DBService.getDataBase();
+        TheaterModel model = null;
+        try {
+            String sql = "SELECT * "
+                    + "FROM `sale` "
+                    + "WHERE `id_sala`='" + id_sala + "'";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = new TheaterModel(result);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+
+    /**
      * Recupero tutte le date associate ad una certa sala a partire da una data
      * di inizio fino a una di fine, ordinate per data e ora_inizio.
      *

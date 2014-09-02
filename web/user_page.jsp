@@ -55,7 +55,7 @@
     </div>
     <div class="col-lg-4 col-md-4">
         <!-- Gestione biglietti -->
-        <a href="#">Lista Biglietti Acquistati</a>
+        <a href="ticketlist.jsp" class="btn btn-default">Lista Ingressi</a>
     </div>
     <div class="col-lg-4">
         <!-- Gestione abbonamento -->

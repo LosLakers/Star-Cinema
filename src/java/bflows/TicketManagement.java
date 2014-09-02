@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class TicketManagement implements Serializable {
 
+    private int id_ingresso;
     private String username;
     private int id_film;
     private String data;
@@ -24,6 +25,9 @@ public class TicketManagement implements Serializable {
     private FilmDate[] film;
     private String[] week;
     private int[] id_tab;
+
+    // ticket utente
+    private Ticket[] tickets;
 
     // uso per controllo ticket che possono essere acquistati
     private int ticketCounter;
@@ -69,8 +73,8 @@ public class TicketManagement implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     /**
      * Acquisto uno o più ticket con controllo sull'uso o meno di un abbonamento
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     public void addTicket() throws Exception {
         try {
@@ -85,19 +89,19 @@ public class TicketManagement implements Serializable {
                 SeatModel model = new SeatModel(0, tmp[0], Integer.parseInt(tmp[1]), 0);
                 seats.add(model);
             }
-            
+
             // verifico che l'utente possa effettivamente prenotare i posti
             FilmTheaterDateModel show = ShowManager.get(this.getId_tabella());
             List<SeatModel> userReserved = TicketManager.getReserved(show, this.getUsername());
             if (userReserved.size() + seat.length > Constants.MAX_TICKETS) {
                 throw new Exception();
             }
-            
+
             int[] id_ingresso = TicketManager.add(show, this.getUsername(), seats);
-            
+
             // gestione abbonamento
-            if (this.getSubscriptionSeat() > 0 && 
-                    this.getSubscriptionSeat() <= Constants.MAX_TICKETS_SUBSCRIPTION) {
+            if (this.getSubscriptionSeat() > 0
+                    && this.getSubscriptionSeat() <= Constants.MAX_TICKETS_SUBSCRIPTION) {
                 SubscriptionModel subscription = SubscriptionManager.get(this.getUsername());
                 int topay = SubscriptionManager.useSubscription(this.getUsername(), subscription, id_ingresso);
                 this.setTopay(topay);
@@ -107,7 +111,76 @@ public class TicketManagement implements Serializable {
         }
     }
 
+    /**
+     * Aggiorno il ticket con le nuove informazioni
+     */
+    public void updateTicket() {
+        try {
+            FilmTheaterDateModel model = ShowManager.get(this.getId_tabella());
+            String[] tmpseat = this.getSeat();
+            // controllo che sia stato selezionato un solo posto
+            if (seat.length > 1 || seat.length == 0) {
+                throw new Exception();
+            }
+            tmpseat = tmpseat[0].split("-");
+            // recupero 
+            TheaterModel theater = model.getTheater();
+            SeatModel seat = new SeatModel(0, tmpseat[0], Integer.parseInt(tmpseat[1]),
+                    theater.getId_sala());
+            
+            FilmModel film = model.getFilm();
+            DateTimeModel date = model.getDate();
+            TicketModel ticket = TicketManager.get(this.getId_ingresso());
+            TicketManager.update(ticket, film.getId_film(), date.getId_data(),
+                    seat);
+        } catch (Exception ex) {
+            // da gestire
+        }
+    }
+
+    /**
+     * Recupero l'ingresso a partire dal suo id.
+     */
+    public void getTicket() {
+        try {
+            TicketModel ticket = TicketManager.get(this.getId_ingresso());
+            if (ticket != null) {
+                this.setId_film(ticket.getId_film());
+                DateTimeModel data = ShowManager.getData(ticket.getId_data());
+                this.setData(data.getData().format(DateTimeFormatter.ISO_LOCAL_DATE));
+            }
+        } catch (Exception ex) {
+            // da gestire
+        }
+    }
+
+    /**
+     * Recupero tutti gli ingressi associati ad un utente
+     */
+    public void getTicketList() {
+        try {
+            // recupero la lista dei ticket associati ad uno username
+            List<TicketModel> ticketlist = TicketManager.get(this.getUsername());
+
+            // creo un modello da passare alla jsp
+            List<Ticket> array = new ArrayList<>();
+            for (TicketModel ticket : ticketlist) {
+                DateTimeModel data = ticket.getData();
+                FilmModel film = ticket.getFilm();
+                SeatModel seat = ticket.getSeat();
+
+                Ticket tmp = new Ticket(ticket.getId_ingresso(), data, film, seat);
+                array.add(tmp);
+            }
+
+            // setto il modello
+            this.setTickets(array.toArray(new Ticket[array.size()]));
+        } catch (Exception ex) {
+            // da gestire
+        }
+    }
     // </editor-fold>
+
     /**
      * Popolo la sala di selezione dei posti. Recupero tutti i posti già
      * occupati da un utente, quelli prenotati da altri utenti e i posti ancora
@@ -115,18 +188,17 @@ public class TicketManagement implements Serializable {
      *
      * @throws java.lang.Exception
      */
-    public void populate() throws Exception {
+    public void populateAdd() throws Exception {
         try {
             // controllo che a id_tabella possa corrispondere id_film - data
-            FilmTheaterDateModel model = ShowManager.get(this.getId_tabella());
-            FilmModel film = model.getFilm();
-            DateTimeModel data = model.getDate();
+            FilmTheaterDateModel show = ShowManager.get(this.getId_tabella());
+            FilmModel film = show.getFilm();
+            DateTimeModel data = show.getDate();
             if (this.getId_film() != film.getId_film()
                     || !this.getData().equals(data.getData().format(DateTimeFormatter.ISO_LOCAL_DATE))) {
                 throw new Exception();
             }
 
-            FilmTheaterDateModel show = ShowManager.get(this.getId_tabella());
             List<SeatModel> userReserved = TicketManager.getReserved(show, this.getUsername());
             // diminuisco contatore in base a reserved
             if (userReserved != null) {
@@ -142,6 +214,33 @@ public class TicketManagement implements Serializable {
             } else {
                 this.setSubscriptionSeat(-1);
             }
+
+            // recupero i posti prenotati - creo formato [FILA-NUM]
+            List<SeatModel> reserved = TicketManager.getReserved(show);
+            String[] array = new String[reserved.size()];
+            for (int i = 0; i < reserved.size(); i++) {
+                SeatModel tmp = reserved.get(i);
+                array[i] = tmp.getFila() + "-" + tmp.getNumero();
+            }
+            this.setReserved(array);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    public void populateUpdate() throws Exception {
+        try {
+            // controllo che a id_tabella possa corrispondere id_film - data
+            FilmTheaterDateModel show = ShowManager.get(this.getId_tabella());
+            FilmModel film = show.getFilm();
+            DateTimeModel data = show.getDate();
+            if (this.getId_film() != film.getId_film()
+                    || !this.getData().equals(data.getData().format(DateTimeFormatter.ISO_LOCAL_DATE))) {
+                throw new Exception();
+            }
+
+            // solo un biglietto è prenotabile
+            this.setTicketCounter(1);
 
             // recupero i posti prenotati - creo formato [FILA-NUM]
             List<SeatModel> reserved = TicketManager.getReserved(show);
@@ -239,7 +338,55 @@ public class TicketManagement implements Serializable {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc=" Metodi Custom Ticket ">
+    public int ticket_Length() {
+        return this.tickets.length;
+    }
+
+    public int ticket_IdIngresso(int index) {
+        return this.tickets[index].getId_ingresso();
+    }
+
+    public String ticket_Data(int index) {
+        return this.tickets[index].getData();
+    }
+
+    public String ticket_Titolo(int index) {
+        return this.tickets[index].getTitolo();
+    }
+
+    public String ticket_Sala(int index) {
+        return this.tickets[index].getSala();
+    }
+
+    public String ticket_Orario(int index) {
+        return this.tickets[index].getOrario();
+    }
+
+    public String ticket_Posto(int index) {
+        return this.tickets[index].getPosto();
+    }
+    // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
+    /**
+     * Get the value of id_ingresso
+     *
+     * @return the value of id_ingresso
+     */
+    public int getId_ingresso() {
+        return id_ingresso;
+    }
+
+    /**
+     * Set the value of id_ingresso
+     *
+     * @param id_ingresso new value of id_ingresso
+     */
+    public void setId_ingresso(int id_ingresso) {
+        this.id_ingresso = id_ingresso;
+    }
+
     /**
      * Get the value of username
      *
@@ -445,6 +592,44 @@ public class TicketManagement implements Serializable {
     }
 
     /**
+     * Get the value of tickets
+     *
+     * @return the value of tickets
+     */
+    public Ticket[] getTickets() {
+        return tickets;
+    }
+
+    /**
+     * Set the value of tickets
+     *
+     * @param tickets new value of tickets
+     */
+    public void setTickets(Ticket[] tickets) {
+        this.tickets = tickets;
+    }
+
+    /**
+     * Get the value of tickets at specified index
+     *
+     * @param index the index of tickets
+     * @return the value of tickets at specified index
+     */
+    public Ticket getTickets(int index) {
+        return this.tickets[index];
+    }
+
+    /**
+     * Set the value of tickets at specified index.
+     *
+     * @param index the index of tickets
+     * @param tickets new value of tickets at specified index
+     */
+    public void setTickets(int index, Ticket tickets) {
+        this.tickets[index] = tickets;
+    }
+
+    /**
      * Get the value of ticketCounter
      *
      * @return the value of ticketCounter
@@ -517,7 +702,6 @@ public class TicketManagement implements Serializable {
     public void setSubscriptionSeat(int subscriptionSeat) {
         this.subscriptionSeat = subscriptionSeat;
     }
-
     // </editor-fold>
 }
 
@@ -619,5 +803,136 @@ class FilmDate {
         this.date[index] = date;
     }
 
+    // </editor-fold>
+}
+
+class Ticket {
+
+    private int id_ingresso;
+    private String data;
+    private String titolo;
+    private String sala;
+    private String posto;
+    private String orario;
+
+    public Ticket(int id_ingresso, DateTimeModel data, FilmModel film, SeatModel seat) {
+        this.setId_ingresso(id_ingresso);
+        this.setData(data.getData().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        this.setTitolo(film.getTitolo());
+        TheaterModel theater = seat.getTheater();
+        this.setSala("Sala #" + theater.getNumero_sala());
+        this.setPosto(seat.getFila() + "-" + seat.getNumero());
+        this.setOrario(data.getOra_inizio().format(DateTimeFormatter.ISO_LOCAL_TIME) + "-"
+                + data.getOra_fine().format(DateTimeFormatter.ISO_LOCAL_TIME));
+    }
+
+    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    /**
+     * Get the value of id_ingresso
+     *
+     * @return the value of id_ingresso
+     */
+    public int getId_ingresso() {
+        return id_ingresso;
+    }
+
+    /**
+     * Set the value of id_ingresso
+     *
+     * @param id_ingresso new value of id_ingresso
+     */
+    public void setId_ingresso(int id_ingresso) {
+        this.id_ingresso = id_ingresso;
+    }
+
+    /**
+     * Get the value of data
+     *
+     * @return the value of data
+     */
+    public String getData() {
+        return data;
+    }
+
+    /**
+     * Set the value of data
+     *
+     * @param data new value of data
+     */
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    /**
+     * Get the value of titolo
+     *
+     * @return the value of titolo
+     */
+    public String getTitolo() {
+        return titolo;
+    }
+
+    /**
+     * Set the value of titolo
+     *
+     * @param titolo new value of titolo
+     */
+    public void setTitolo(String titolo) {
+        this.titolo = titolo;
+    }
+
+    /**
+     * Get the value of sala
+     *
+     * @return the value of sala
+     */
+    public String getSala() {
+        return sala;
+    }
+
+    /**
+     * Set the value of sala
+     *
+     * @param sala new value of sala
+     */
+    public void setSala(String sala) {
+        this.sala = sala;
+    }
+
+    /**
+     * Get the value of posto
+     *
+     * @return the value of posto
+     */
+    public String getPosto() {
+        return posto;
+    }
+
+    /**
+     * Set the value of posto
+     *
+     * @param posto new value of posto
+     */
+    public void setPosto(String posto) {
+        this.posto = posto;
+    }
+
+    /**
+     * Get the value of orario
+     *
+     * @return the value of orario
+     */
+    public String getOrario() {
+        return orario;
+    }
+
+    /**
+     * Set the value of orario
+     *
+     * @param orario new value of orario
+     */
+    public void setOrario(String orario) {
+        this.orario = orario;
+    }
     // </editor-fold>
 }
