@@ -14,7 +14,7 @@
         <br/>
         <!-- Acquisto Biglietti -->
         <div class="col-lg-12 col-md-12">
-            <form id="ticketfilm" class="form-inline" action="addtickettime.jsp" method="post">
+            <form id="ticketfilm" class="form-inline" action="addtickettime.jsp" method="get">
                 <!-- Selezione film -->
                 <div class="col-lg-4 col-md-4">
                     <select name="id_film" class="form-control" required="required">

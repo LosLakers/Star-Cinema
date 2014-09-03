@@ -55,11 +55,13 @@
             </div>
         </div>
         <input type="submit" form="filmForm" class="btn btn-primary" value="Aggiungi"/>
-        <a href="<%=profile%>" class="btn btn-warning">Annulla</a>
+        <a href="#" id="backbutton" class="btn btn-warning">Annulla</a>
         <input type="hidden" name="status" value="addfilm"/>
     </form>
     <br/>
 </div>
+<script src="scripts/starcinema_utility.js"></script>
+<script src="scripts/utility.js"></script>
 <%
     } else {// redirect per evitare che un non admin abbia accesso
         String redirect = "home.jsp";

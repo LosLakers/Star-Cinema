@@ -51,8 +51,8 @@ public class LoginManagement implements Serializable {
     public void logout() {
         CookieManager.delete(cookies);
     }
-
     // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     public void updateUser() {
         try {
@@ -65,8 +65,8 @@ public class LoginManagement implements Serializable {
     }
 
     /**
-     * Recupero i dati dell'utente dal sistema con incluso la presenza o meno
-     * di un abbonamento
+     * Recupero i dati dell'utente dal sistema con incluso la presenza o meno di
+     * un abbonamento
      */
     public void getUser() {
         try {
@@ -90,8 +90,8 @@ public class LoginManagement implements Serializable {
             // da gestire
         }
     }
-
     // </editor-fold>
+
     /**
      * Verifica che nel sistema sia presente un utente con i dati passati come
      * parametri

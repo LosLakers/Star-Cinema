@@ -24,10 +24,13 @@
     if (filmBean.getId_commento() != 0) {
         firstComment = false;
     }
-    
+
     if (isAdmin && status.equals("admindelete")) {
         int id = Integer.parseInt(request.getParameter("toDelete"));
         filmBean.deleteComment(id);
+        // riporto l'utente alla scheda del film
+        String redirect = "film.jsp?id_film=" + filmBean.getId_film();
+        response.sendRedirect(redirect);
     }
 %>
 

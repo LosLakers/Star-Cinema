@@ -1,18 +1,25 @@
 package blogics;
 
 import exceptions.*;
+import java.io.IOException;
 import java.sql.*;
+import javax.mail.MessagingException;
 import services.database.*;
-
-import java.util.*;
-import javax.mail.*;
-import javax.mail.internet.*;
+import services.javaxmail.Email;
 
 public class UserManager {
 
     // <editor-fold defaultstate="collapsed" desc="CRUD">
+    /**
+     * Aggiungo un utente nel sistema con invio di una email di registrazione
+     *
+     * @param user L'utente che aggiungo al sistema
+     * @throws NotFoundDBException
+     * @throws MessagingException
+     * @throws IOException
+     */
     public static void add(UserModel user)
-            throws NotFoundDBException {
+            throws NotFoundDBException, MessagingException, IOException {
 
         DataBase database = DBService.getDataBase();
         try {
@@ -29,46 +36,23 @@ public class UserManager {
             database.commit();
 
             // invio mail di registrazione non funzionante
-            /*String from = "";
-            String to = user.getEmail();
-            String host = "smtp.mail.apac.microsoftonline.com";
-            Properties props = System.getProperties();
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.host", "smtp.live.com");
-            props.put("mail.smtp.user", "");
-            props.put("mail.smtp.password", "");
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.auth", "true");
-            Session session = Session.getInstance(props);
-            try {
-                // Create a default MimeMessage object.
-                MimeMessage message = new MimeMessage(session);
-
-                // Set From: header field of the header.
-                message.setFrom(new InternetAddress(from));
-
-                // Set To: header field of the header.
-                message.addRecipient(Message.RecipientType.TO,
-                        new InternetAddress(to));
-
-                // Set Subject: header field
-                message.setSubject("Registrazione Star Cinema");
-
-                // Now set the actual message
-                message.setText("Registrazione Completata con Successo");
-
-                // Send message
-                Transport.send(message);
-            } catch (MessagingException mex) {
-                mex.printStackTrace();
-            }*/
-        } catch (NotFoundDBException ex) {
+            String message = "Ti ringraziamo per esserti registrato al sito Star Cinema. "
+                    + "<br><br>Ti ricordiamo che il tuo username è " + user.getUsername();
+            String subject = "Registrazione STAR CINEMA";
+            Email.send(user.getEmail(), subject, message);
+        } catch (NotFoundDBException | MessagingException | IOException ex) {
             throw ex;
         } finally {
             database.close();
         }
     }
 
+    /**
+     * Aggiorno i dati di un utente
+     *
+     * @param user L'utente di cui voglio aggiornare i dati
+     * @throws NotFoundDBException
+     */
     public static void update(UserModel user)
             throws NotFoundDBException {
 
@@ -90,7 +74,46 @@ public class UserManager {
         }
     }
 
-    /* metodo per ottenere l'user dal database */
+    /**
+     * Recupero un utente solo dal suo username.
+     *
+     * @param username Identificativo dell'utente che voglio recuperare
+     * @return L'utente se è presente nel database, null se non è presente
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static UserModel get(String username) throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        UserModel model = null;
+        try {
+            String sql = "SELECT * "
+                    + "FROM `utenti` "
+                    + "WHERE `username`='" + util.Conversion.getDatabaseString(username) + "';";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = new UserModel(result);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+
+    /**
+     * Recupero l'utente dal sistema con verifica username e password, usato per
+     * autenticazione utente.
+     *
+     * @param username Username dell'utente
+     * @param password Password dell'utente
+     * @return L'utente se è presente nel database, null se non è presente
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
     public static UserModel get(String username, String password)
             throws NotFoundDBException, SQLException {
 
@@ -120,6 +143,6 @@ public class UserManager {
         }
         return user;
     }
-
     // </editor-fold>
+
 }

@@ -109,6 +109,7 @@
 </div>
 <script src="scripts/ticket.js"></script>
 <script src="scripts/utility.js"></script>
+<script src="scripts/starcinema_utility.js"></script>
 <%
     } else {
         String redirect = "login.jsp";

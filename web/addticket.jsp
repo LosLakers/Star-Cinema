@@ -105,6 +105,7 @@
 <input type="hidden" id="ticketcount" value="<%=ticketBean.getTicketCounter()%>"/>
 <script src="scripts/utility.js"></script>
 <script src="scripts/ticket_validation.js"></script>
+<script src="scripts/starcinema_utility.js"></script>
 <%
     } else {
         String redirect = "home.jsp";

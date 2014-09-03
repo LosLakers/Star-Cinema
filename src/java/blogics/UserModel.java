@@ -10,15 +10,10 @@ import services.database.*;
 public class UserModel {
 
     private String username;
-
     private String password;
-
     private String name;
-
     private String surname;
-
     private String email;
-
     private int creditcard;
 
     /* valore per distinguere un semplice utente da un admin */
@@ -28,6 +23,16 @@ public class UserModel {
     public UserModel() {
     }
 
+    /**
+     * Costruttore che prende in ingresso i singoli parametri
+     *
+     * @param username Username utente
+     * @param password Password utente
+     * @param name Nome dell'utente
+     * @param surname Cognome dell'utente
+     * @param email Email dell'utente
+     * @param creditcard Carta di Credito dell'utente
+     */
     public UserModel(String username, String password, String name, String surname, String email, int creditcard) {
         this.setUsername((username != null) ? username : "");
         this.setPassword((password != null) ? password : "");
@@ -38,24 +43,26 @@ public class UserModel {
         this.setAdmin(false);
     }
 
+    /**
+     * Costruttore che prende in ingresso il risultato di una query
+     *
+     * @param result Risultato di una query
+     */
     public UserModel(ResultSet result) {
         try {
-            if (result.getInt("active") != 0) {
-                this.setUsername(result.getString("username"));
-                this.setName(result.getString("name"));
-                this.setSurname(result.getString("surname"));
-                this.setPassword(result.getString("password"));
-                this.setEmail(result.getString("email"));
-                this.setCreditcard(result.getInt("credit_card"));
-                this.setAdmin(result.getString("role").equals("admin") ? true : false);
-            }
+            this.setUsername(result.getString("username"));
+            this.setName(result.getString("name"));
+            this.setSurname(result.getString("surname"));
+            this.setPassword(result.getString("password"));
+            this.setEmail(result.getString("email"));
+            this.setCreditcard(result.getInt("credit_card"));
+            this.setAdmin(result.getString("role").equals("admin") ? true : false);
         } catch (SQLException ex) {
             /* non ci devono essere campi senza valore */
         }
     }
-
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of username

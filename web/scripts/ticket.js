@@ -38,12 +38,6 @@ if (link != null) {
     });
 }
 
-// back button
-var back = document.getElementById('backbutton');
-back.addEventListener('click', function() {
-    backButton();
-});
-
 function controlData(form, data) {
     var film = form.id_film;
     // sblocco select data alla selezione di un film e mi posiziono nel valore di default

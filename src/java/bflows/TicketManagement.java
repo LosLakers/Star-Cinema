@@ -283,8 +283,9 @@ public class TicketManagement implements Serializable {
             for (FilmTheaterDateModel tmp : lista) {
                 TheaterModel theater = tmp.getTheater();
                 DateTimeModel date = tmp.getDate();
-                String stringa = date.getOra_inizio().format(DateTimeFormatter.ISO_LOCAL_TIME)
-                        + " - " + date.getOra_fine().format(DateTimeFormatter.ISO_LOCAL_TIME)
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                String stringa = date.getOra_inizio().format(formatter)
+                        + " - " + date.getOra_fine().format(formatter)
                         + " - Sala #" + theater.getNumero_sala() + " - Posti " + theater.getPosti_disp();
                 model.add(stringa);
             }
@@ -822,8 +823,9 @@ class Ticket {
         TheaterModel theater = seat.getTheater();
         this.setSala("Sala #" + theater.getNumero_sala());
         this.setPosto(seat.getFila() + "-" + seat.getNumero());
-        this.setOrario(data.getOra_inizio().format(DateTimeFormatter.ISO_LOCAL_TIME) + "-"
-                + data.getOra_fine().format(DateTimeFormatter.ISO_LOCAL_TIME));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        this.setOrario(data.getOra_inizio().format(formatter) + "-"
+                + data.getOra_fine().format(formatter));
     }
 
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">

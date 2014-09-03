@@ -3,11 +3,13 @@ package bflows;
 import blogics.*;
 import exceptions.NotFoundDBException;
 import java.beans.*;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.*;
 import java.time.*;
 import java.time.*;
 import java.time.format.*;
+import javax.mail.MessagingException;
 
 /**
  *
@@ -61,6 +63,9 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
+    /**
+     * L'admin elimina un film dal database
+     */
     public void deleteFilm() {
         try {
             FilmManager.delete(this.getId_film());
@@ -81,8 +86,8 @@ public class FilmManagement extends BaseBean implements Serializable {
             ex.printStackTrace();
         }
     }
-
     // </editor-fold>
+
     /**
      * Recupero la lista di tutti i film nel database
      */
@@ -126,7 +131,6 @@ public class FilmManagement extends BaseBean implements Serializable {
     public String filmList_titolo(int index) {
         return this.filmList[index].getTitolo();
     }
-
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Comment-Management ">
@@ -171,8 +175,11 @@ public class FilmManagement extends BaseBean implements Serializable {
      */
     public void deleteComment(int id_commento) {
         try {
-            CommentManager.delete(id_commento);
-        } catch (NotFoundDBException ex) {
+            CommentModel comment = CommentManager.get(id_commento);
+            UserModel user = UserManager.get(comment.getUsername());
+            FilmModel film = FilmManager.get(comment.getId_film());
+            CommentManager.delete(comment, user.getEmail(), film.getTitolo());
+        } catch (NotFoundDBException | SQLException | MessagingException | IOException ex) {
             // gestione errore
         }
     }
@@ -217,7 +224,6 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
         return commenti.length;
     }
-
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
@@ -497,6 +503,6 @@ public class FilmManagement extends BaseBean implements Serializable {
     public void setFilmList(int index, FilmModel filmList) {
         this.filmList[index] = filmList;
     }
-
     // </editor-fold>
+
 }
