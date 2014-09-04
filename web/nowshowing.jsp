@@ -50,15 +50,9 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="success">
-                        <th>
-                            Film
-                        </th>
-                        <th>
-                            Orari
-                        </th>
-                        <th>
-                            Sala - Posti Disponibili
-                        </th>
+                        <th>Film</th>
+                        <th>Orari</th>
+                        <th>Sala - Posti Disponibili</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,7 +95,8 @@
                                 Integer[] posti = nowShowingBean.showPosti(p, week[j]);
                                 for (int q = 0; q < num_sale.length; q++) {
                             %>
-                            Sala <%=num_sale[q]%> - <%=posti[q]%> || 
+                            Sala <%=num_sale[q]%> - <%=posti[q]%> ||
+                            <br/>
                             <%}%>
                         </td>
                     </tr>

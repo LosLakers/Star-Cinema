@@ -19,7 +19,7 @@
     } else {
         nowShowingBean.getShow();
         nowShowingBean.populateTheater();
-        int num_sale = nowShowingBean.numberOfTheater();
+        int num_sale = nowShowingBean.TheaterDate_Length();
         String[] week = nowShowingBean.getWeek();
 %>
 
@@ -122,7 +122,7 @@
                 href[j] = "#" + week[j];
             }
         %>
-        <h3>Controlla per ogni sala e per ogni data, gli orari di occupazione.</h3>
+        <legend>Controlla per ogni sala e per ogni data, gli orari di occupazione.</legend>
         <br/>
         <div class="col-lg-10 col-md-10">
             <!-- Nav tabs -->
@@ -141,7 +141,7 @@
         <div class="col-lg-10 col-md-10">
             <div class="tab-content">
                 <div class="tab-pane active" id="<%=week[0]%>">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-striped">
                         <thead>
                             <tr class="info">
                                 <th>
@@ -155,8 +155,8 @@
                         <tbody>
                             <%
                                 for (int j = 0; j < num_sale; j++) {
-                                    String[] inizio = nowShowingBean.oraInizioTheater(j + 1, week[0]);
-                                    String[] fine = nowShowingBean.oraFineTheater(j + 1, week[0]);
+                                    String[] inizio = nowShowingBean.TheaterDate_OraInizio(j + 1, week[0]);
+                                    String[] fine = nowShowingBean.TheaterDate_OraFine(j + 1, week[0]);
                             %>
                             <tr>
                                 <td>
@@ -188,8 +188,8 @@
                         <tbody>
                             <%
                                 for (int m = 0; m < num_sale; m++) {
-                                    String[] inizio = nowShowingBean.oraInizioTheater(m + 1, week[j]);
-                                    String[] fine = nowShowingBean.oraFineTheater(m + 1, week[j]);
+                                    String[] inizio = nowShowingBean.TheaterDate_OraInizio(m + 1, week[j]);
+                                    String[] fine = nowShowingBean.TheaterDate_OraFine(m + 1, week[j]);
                             %>
                             <tr>
                                 <td>

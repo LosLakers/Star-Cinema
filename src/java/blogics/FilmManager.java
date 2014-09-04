@@ -120,51 +120,58 @@ public class FilmManager {
 
         return film;
     }
-
-    /* metodo per ottenere un film dal titolo */
-    public static FilmModel get(String titolo)
+    
+    /**
+     * Recupero un film a cui è assegnato un id_data ed è in programmazione in una
+     * certa sala
+     * 
+     * @param id_data Identificativo della data
+     * @param num_sala Numero della sala
+     * @return Il film se è presente nel database, null se non c'è
+     * @throws NotFoundDBException
+     * @throws SQLException 
+     */
+    public static FilmModel get(int id_data, int num_sala) 
             throws NotFoundDBException, SQLException {
-
+        
         DataBase database = DBService.getDataBase();
-        FilmModel film = new FilmModel();
+        FilmModel model = null;
         try {
-            /* che succede se trovo più film con lo stesso titolo? */
-            String sql = " SELECT * "
-                    + " FROM FILM "
-                    + " WHERE "
-                    + " TITOLO = '" + util.Conversion.getDatabaseString(titolo) + "'";
-
+            String sql = "SELECT * "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
+                    + "JOIN `film` AS F ON FSP.id_film=F.id_film "
+                    + "WHERE FSP.id_data='" + id_data + "' AND "
+                    + "S.numero_sala='" + num_sala + "';";
             ResultSet result = database.select(sql);
-            if (result.next()) { // true c'è un'altra riga
-                film = new FilmModel(result);
+            if (result.next()) {
+                model = new FilmModel(result);
             }
             result.close();
             database.commit();
-        } catch (SQLException ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             throw ex;
         } finally {
             database.close();
         }
-
-        return film;
+        return model;
     }
-
     // </editor-fold>
-    // metodo per ottenere una lista di film con all'interno il titolo
+
     /**
-     *
-     * @param titolo
-     * @return
+     * Ricerco una lista di film che possono combaciare con il titolo inserito
+     * 
+     * @param titolo Il titolo di paragone
+     * @return La lista dei film se è presente nel database
      * @throws NotFoundDBException
      * @throws SQLException
      */
-    public static FilmModel[] searchFilm(String titolo)
+    public static List<FilmModel> searchFilm(String titolo)
             throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
-        FilmModel[] film = null;
+        List<FilmModel> list = new ArrayList<>();
         try {
-            List<FilmModel> list = new ArrayList<>();
             String sql = "SELECT * "
                     + "FROM `film` "
                     + "WHERE `titolo` LIKE "
@@ -177,17 +184,12 @@ public class FilmManager {
             }
             result.close();
             database.commit();
-
-            film = new FilmModel[list.size()];
-            for (int i = 0; i < list.size(); i++) {
-                film[i] = list.get(i);
-            }
         } catch (NotFoundDBException | SQLException ex) {
             throw ex;
         } finally {
             database.close();
         }
-        return film;
+        return list;
     }
 
     /**

@@ -101,12 +101,12 @@
                     </tr>
                     <tr>
                         <td>
-                            <a href="#" class="btn btn-default">Situazione Sale</a>
+                            <a href="situationtheater.jsp" class="btn btn-default">Situazione Sale</a>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <a href="#" class="btn btn-default">Situazione Date</a>
+                            <a href="situationdate.jsp" class="btn btn-default">Situazione Date</a>
                         </td>
                     </tr>
                 </tbody>

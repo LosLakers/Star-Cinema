@@ -48,8 +48,8 @@
 
 <!-- Gestione Header Film -->
 <div class="jumbotron">
-    <div class="row">
-        <div class="col-sm-offset-1 col-lg-5">
+    <div class="container">
+        <div class="col-lg-8 col-md-8">
             <h1><%=filmBean.getTitolo()%></h1>
             <% if (isAdmin) {%>
             <form id="adminForm" action="updatefilm.jsp">
@@ -64,26 +64,9 @@
             </form>
             <%}%>    
         </div>
-        <div class="col-lg-6">
-            <h2>Programmazione da Fare</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Orari</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Oggi</td>
-                        <td>9:00 - 12:00</td>
-                    </tr>
-                    <tr>
-                        <td>Domani</td>
-                        <td>10:00 - 13:00</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="col-lg-4 col-md-4">
+            <legend>Locandina</legend>
+            <img src="<%=filmBean.getLocandina()%>"/>
         </div>
     </div>
 </div>
@@ -92,19 +75,36 @@
     <!-- Gestione Film -->
     <div class="row">
         <div class="col-lg-4 col-md-4">
-            <h2>Locandina</h2>
-            <img src="<%=filmBean.getLocandina()%>"/>
-        </div>
-        <div class="col-lg-4 col-md-4">
-            <h2>Descrizione</h2>
+            <legend>Descrizione</legend>
             <p><%=filmBean.getDescrizione()%></p>
         </div>
         <div class="col-lg-4 col-md-4">
-            <h3>Durata</h3>
+            <legend>Durata</legend>
             <%=filmBean.getDurata()%>
             <br/>
             <br/>
             <a href="<%=filmBean.getTrailer()%>" class="btn btn-default">Guarda il trailer</a>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <legend>Oggi [DA FARE]</legend>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Orario</th>
+                        <th>Sala - Posti Disponibili</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>9:00 - 12:00</td>
+                        <td>Sala1 - 200</td>
+                    </tr>
+                    <tr>
+                        <td>10:00 - 13:00</td>
+                        <td>Sala1 - 200</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <!-- Gestione Commenti -->
@@ -114,7 +114,7 @@
         <!-- Primo Commento -->
         <div class="col-lg-6 col-md-6">
             <div class="row">
-                <h3>Inserisci Commento</h3>
+                <legend>Inserisci Commento</legend>
             </div>
             <br/>
             <form id="addcomment" method="post" action="film.jsp">
@@ -137,7 +137,7 @@
         <!-- Modifica Commento -->
         <div class="col-lg-6 col-md-6">
             <div class="row">
-                <h3><strong>Commento</strong></h3>
+                <legend>Modifica Commento</legend>
             </div>
             <br/>
             <form id="updatecomment" method="post" action="film.jsp">
@@ -161,6 +161,7 @@
         <%}%>    
     </div>
     <%}%>
+    <br/>
     <!-- Lista Commenti del Film -->
     <%
         int num_comments = filmBean.getComment_Length();
@@ -175,7 +176,7 @@
         }
     %>
     <div class="row">
-        <h2><strong>Commenti</strong></h2>
+        <legend>Commenti</legend>
         <div class="col-lg-12 col-md-12">
             <!-- Tab panes -->
             <div class="row">

@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.*;
 import java.time.*;
 import java.time.format.*;
+import java.util.List;
 import javax.mail.MessagingException;
 
 /**
@@ -42,6 +43,9 @@ public class FilmManagement extends BaseBean implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    /**
+     * Inserisco il film nel database
+     */
     public void addFilm() {
         try {
             FilmModel film = new FilmModel(0, this.getTitolo(), LocalTime.parse(this.getDurata()),
@@ -53,6 +57,9 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
+    /**
+     * Aggiorno le informazioni del film nel database
+     */
     public void updateFilm() {
         try {
             FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), LocalTime.parse(this.getDurata()),
@@ -74,13 +81,19 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
+    /**
+     * Recupero il film dal database tramite id_film
+     */
     public void getFilm() {
         try {
             FilmModel film = FilmManager.get(this.getId_film());
             this.setTitolo(film.getTitolo());
             this.setDescrizione(film.getDescrizione());
             this.setTrailer(film.getTrailer());
-            this.setDurata(film.getDurata().toString());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            this.setDurata(film.getDurata().format(formatter));
+
             this.setLocandina(film.getLocandina());
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -93,8 +106,8 @@ public class FilmManagement extends BaseBean implements Serializable {
      */
     public void index() {
         try {
-            FilmModel[] index = FilmManager.searchFilm("");
-            this.setFilmList(index);
+            List<FilmModel> index = FilmManager.searchFilm("");
+            this.setFilmList(index.toArray(new FilmModel[index.size()]));
         } catch (NotFoundDBException | SQLException ex) {
             // messaggio di errore
         }
@@ -111,8 +124,8 @@ public class FilmManagement extends BaseBean implements Serializable {
                 this.setFilmList(index);
             } catch (DateTimeParseException ex) {
                 String search = this.getSearchString();
-                FilmModel[] index = FilmManager.searchFilm(search);
-                this.setFilmList(index);
+                List<FilmModel> index = FilmManager.searchFilm(search);
+                this.setFilmList(index.toArray(new FilmModel[index.size()]));
             }
         } catch (NotFoundDBException | SQLException ex) {
             // messaggio di errore
@@ -314,9 +327,6 @@ public class FilmManagement extends BaseBean implements Serializable {
      * @param durata new value of durata
      */
     public void setDurata(String durata) {
-        if (durata.length() == 5) {
-            durata = durata + ":00";
-        }
         this.durata = durata;
     }
 

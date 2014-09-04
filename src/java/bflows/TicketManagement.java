@@ -47,8 +47,8 @@ public class TicketManagement implements Serializable {
             String[] week = new String[7];
             LocalDate day = LocalDate.now();
             for (int i = 0; i < week.length; i++) {
-                day = day.plusDays(1);
                 week[i] = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
+                day = day.plusDays(1);
             }
             this.setWeek(week);
             LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);

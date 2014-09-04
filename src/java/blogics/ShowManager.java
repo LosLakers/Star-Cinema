@@ -326,6 +326,7 @@ public class ShowManager {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc=" Gestione Date ">
     /**
      * Recupero una data in base all'id_data passato come parametro
      *
@@ -346,36 +347,6 @@ public class ShowManager {
             ResultSet result = database.select(sql);
             if (result.next()) {
                 model = new DateTimeModel(result);
-            }
-            result.close();
-            database.commit();
-        } catch (NotFoundDBException | SQLException ex) {
-            throw ex;
-        } finally {
-            database.close();
-        }
-        return model;
-    }
-
-    /**
-     * Recupero una sala in base al suo id_sala
-     * @param id_sala Identificativo della sala
-     * @return La sala se è presente nel database, null se non è presente
-     * @throws NotFoundDBException
-     * @throws SQLException 
-     */
-    public static TheaterModel getTheater(int id_sala) 
-            throws NotFoundDBException, SQLException {
-        
-        DataBase database = DBService.getDataBase();
-        TheaterModel model = null;
-        try {
-            String sql = "SELECT * "
-                    + "FROM `sale` "
-                    + "WHERE `id_sala`='" + id_sala + "'";
-            ResultSet result = database.select(sql);
-            if (result.next()) {
-                model = new TheaterModel(result);
             }
             result.close();
             database.commit();
@@ -482,6 +453,77 @@ public class ShowManager {
         }
         return model;
     }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc=" Gestione Sale ">
+    /**
+     * Recupero una sala in base al suo id_sala
+     *
+     * @param id_sala Identificativo della sala
+     * @return La sala se è presente nel database, null se non è presente
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static TheaterModel getTheater(int id_sala)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        TheaterModel model = null;
+        try {
+            String sql = "SELECT * "
+                    + "FROM `sale` "
+                    + "WHERE `id_sala`='" + id_sala + "'";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = new TheaterModel(result);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+    
+    /**
+     * Recupero il numero di posti disponibili nella sala con un certo numero che 
+     * trasmette il film dato nella data inserita.
+     * 
+     * @param id_film Identificativo del film
+     * @param id_data Identificativo della data
+     * @param num_sala Numero della sala di interesse
+     * @return Il numero di posti disponibili se presenti, -1 se non c'è
+     * @throws NotFoundDBException
+     * @throws SQLException 
+     */
+    public static int getPosti(int id_film, int id_data, int num_sala) throws NotFoundDBException, SQLException {
+        
+        DataBase database = DBService.getDataBase();
+        int model = -1;
+        try {
+            String sql = "SELECT S.posti_disp "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
+                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
+                    + "WHERE FSP.id_film='" + id_film + "' AND "
+                    + "FSP.id_data='" + id_data + "' AND "
+                    + "S.numero_sala='" + num_sala + "';";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = result.getInt(1);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+    // </editor-fold>
 
     /**
      * Recupero tutte le coppie Sala-Data associate ad un determinato film

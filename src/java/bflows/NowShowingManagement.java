@@ -44,10 +44,11 @@ public class NowShowingManagement extends BaseBean implements Serializable {
      */
     public void index() {
         try {
-            FilmModel[] films = FilmManager.searchFilm("");
-            String[] array = new String[films.length];
-            for (int i = 0; i < films.length; i++) {
-                String film = films[i].getId_film() + "_" + films[i].getTitolo();
+            List<FilmModel> films = FilmManager.searchFilm("");
+            String[] array = new String[films.size()];
+            for (int i = 0; i < films.size(); i++) {
+                FilmModel model = films.get(i);
+                String film = model.getId_film() + "_" + model.getTitolo();
                 array[i] = film;
             }
             this.setFilms(array);
@@ -66,8 +67,8 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             String[] week = new String[7];
             LocalDate day = LocalDate.now();
             for (int i = 0; i < week.length; i++) {
-                day = day.plusDays(1);
                 week[i] = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
+                day = day.plusDays(1);
             }
             this.setWeek(week);
             LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);
@@ -84,7 +85,20 @@ public class NowShowingManagement extends BaseBean implements Serializable {
                 sala.setNumero_sala(i + 1);
                 List<DateTimeModel> datetime = ShowManager.getDate(sala.getNumero_sala(),
                         firstDayOfTheWeek, lastDayOfTheWeek);
-                model[i] = new TheaterDate(sala, datetime);
+                List<FilmModel> film = new ArrayList<>();
+                int[] posti_disp = new int[datetime.size()];
+                for (int j = 0; j < datetime.size(); j++) {
+                    DateTimeModel date = datetime.get(j);
+                    // recupero il film con id_data e numero della sala [UNICO]
+                    film.add(FilmManager.get(date.getId_data(), sala.getNumero_sala()));
+                    /* 
+                     recupero i posti disponibili della sala con id_film, id_data e
+                     numero sala predefiniti [UNICO]
+                     */
+                    posti_disp[j] = ShowManager.getPosti(film.get(j).getId_film(),
+                            date.getId_data(), sala.getNumero_sala());
+                }
+                model[i] = new TheaterDate(sala, datetime, film, posti_disp);
             }
             // ricrea la proprietà con i get e set private in modo che non possano essere usati fuori
             this.theaterDate = model;
@@ -97,7 +111,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             FilmModel film = FilmManager.get(this.getId_film());
             this.setTitolo_film(film.getTitolo());
             this.setDurata_film(film.getDurata().toString());
-        } catch (NotFoundDBException | SQLException ex) {
+        } catch (Exception ex) {
             // gestione messaggi di errore
         }
     }
@@ -111,8 +125,8 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             String[] week = new String[7];
             LocalDate day = LocalDate.now();
             for (int i = 0; i < week.length; i++) {
-                day = day.plusDays(1);
                 week[i] = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
+                day = day.plusDays(1);
             }
             this.setWeek(week);
             LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);
@@ -230,11 +244,63 @@ public class NowShowingManagement extends BaseBean implements Serializable {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom per TheaterDate ">
-    public int numberOfTheater() {
+    /**
+     * Recupero il numero totale di sale
+     *
+     * @return La lunghezza dell'array TheaterDate, cioè il numero di sale
+     */
+    public int TheaterDate_Length() {
         return this.theaterDate.length;
     }
 
-    public String[] oraInizioTheater(int num_sala, String day) {
+    /**
+     * Recupero l'array delle date associate ad un elemento di TheaterDate
+     *
+     * @param index Indice dell'elemento
+     * @return L'array delle date
+     */
+    public String[] TheaterDate_Date(int index) {
+        return this.theaterDate[index].getDate();
+    }
+
+    /**
+     * Recupero l'array dei film associati ad un elemento di TheaterDate
+     *
+     * @param index Indice dell'elemento
+     * @return L'array dei film
+     */
+    public String[] TheaterDate_Film(int index) {
+        return this.theaterDate[index].getFilm();
+    }
+
+    /**
+     * Recupero l'array degli orari associati ad un elemento di TheaterDate
+     *
+     * @param index Indice dell'elemento
+     * @return L'array degli orari
+     */
+    public String[] TheaterDate_Orario(int index) {
+        String[] inizio = this.theaterDate[index].getOra_inizio();
+        String[] fine = this.theaterDate[index].getOra_fine();
+        String[] orario = new String[inizio.length];
+        for (int i = 0; i < inizio.length; i++) {
+            orario[i] = inizio[i] + "-" + fine[i];
+        }
+        return orario;
+    }
+
+    /**
+     * Recupero l'array dei posti disponibili associati ad un elemento di
+     * TheaterDate
+     *
+     * @param index Indice dell'elemento
+     * @return L'array dei posti disponibili
+     */
+    public int[] TheaterDate_Posti(int index) {
+        return this.theaterDate[index].getPosti_disp();
+    }
+
+    public String[] TheaterDate_OraInizio(int num_sala, String day) {
         List<String> oraInizio = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
             if (tmp.getNum_sala() == num_sala) {
@@ -252,7 +318,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return model;
     }
 
-    public String[] oraFineTheater(int num_sala, String day) {
+    public String[] TheaterDate_OraFine(int num_sala, String day) {
         List<String> oraFine = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
             if (tmp.getNum_sala() == num_sala) {
@@ -267,6 +333,43 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         String[] model = new String[oraFine.size()];
         model = oraFine.toArray(model);
 
+        return model;
+    }
+    
+    public String[] TheaterDate_Film(int num_sala, String day) {
+        List<String> film = new ArrayList<>();
+        for (TheaterDate tmp : this.theaterDate) {
+            if (tmp.getNum_sala() == num_sala) {
+                int num_date = tmp.getDate().length;
+                for (int i = 0; i < num_date; i++) {
+                    if (tmp.getDate(i).equals(day)) {
+                        film.add(tmp.getFilm(i));
+                    }
+                }
+            }
+        }
+        String[] model = new String[film.size()];
+        model = film.toArray(model);
+        
+        return model;
+    }
+    
+    public int[] TheaterDate_Posti(int num_sala, String day) {
+        List<Integer> posti = new ArrayList<>();
+        for (TheaterDate tmp : this.theaterDate) {
+            if (tmp.getNum_sala() == num_sala) {
+                int num_date = tmp.getDate().length;
+                for (int i = 0; i < num_date; i++) {
+                    if (tmp.getDate(i).equals(day)) {
+                        posti.add(tmp.getPosti_disp(i));
+                    }
+                }
+            }
+        }
+        int[] model = new int[posti.size()];
+        for (int i = 0; i < posti.size(); i++) {
+            model[i] = posti.get(i);
+        }
         return model;
     }
     // </editor-fold>
@@ -591,6 +694,8 @@ class TheaterDate {
     private String[] date;
     private String[] ora_inizio;
     private String[] ora_fine;
+    private int[] posti_disp;
+    private String[] film;
 
     /**
      * Costruttore di default
@@ -599,27 +704,42 @@ class TheaterDate {
     }
 
     /**
-     * Costruttore specifico che utilizza la sala e l'array di date ad essa
-     * associata per inizializzare l'elemento
+     * Costruttore specifico che ad ogni sala associa una lista di date, film e
+     * relativi posti disponibili
      *
-     * @param sala la sala di cui sono interessato
-     * @param data le date associate alla sala inserita come parametro
+     * @param sala Modello della sala
+     * @param data Lista delle date
+     * @param film Lista dei film
+     * @param posti_disp Array dei posti disponibili
+     * @throws Exception
      */
-    public TheaterDate(TheaterModel sala, List<DateTimeModel> data) {
+    public TheaterDate(TheaterModel sala, List<DateTimeModel> data, List<FilmModel> film, int[] posti_disp)
+            throws Exception {
+
         this.setNum_sala(sala.getNumero_sala());
         List<String> date = new ArrayList<>();
         List<String> inizio = new ArrayList<>();
         List<String> fine = new ArrayList<>();
         for (DateTimeModel model : data) {
-            date.add(model.getData().toString());
-            inizio.add(model.getOra_inizio().toString());
-            fine.add(model.getOra_fine().toString());
+            date.add(model.getData().format(DateTimeFormatter.ISO_LOCAL_DATE));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            inizio.add(model.getOra_inizio().format(formatter));
+            fine.add(model.getOra_fine().format(formatter));
         }
 
+        List<String> films = new ArrayList<>();
+        for (FilmModel model : film) {
+            films.add(model.getTitolo());
+        }
+        if (date.size() != films.size() || date.size() != posti_disp.length) {
+            throw new Exception();
+        }
         int size = data.size();
         this.setDate(date.toArray(new String[size]));
         this.setOra_inizio(inizio.toArray(new String[size]));
         this.setOra_fine(fine.toArray(new String[size]));
+        this.setFilm(films.toArray(new String[size]));
+        this.setPosti_disp(posti_disp);
     }
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
@@ -755,6 +875,81 @@ class TheaterDate {
         this.ora_fine[index] = ora_fine;
     }
 
+    /**
+     * Get the value of posti_disp
+     *
+     * @return the value of posti_disp
+     */
+    public int[] getPosti_disp() {
+        return posti_disp;
+    }
+
+    /**
+     * Set the value of posti_disp
+     *
+     * @param posti_disp new value of posti_disp
+     */
+    public void setPosti_disp(int[] posti_disp) {
+        this.posti_disp = posti_disp;
+    }
+
+    /**
+     * Get the value of posti_disp at specified index
+     *
+     * @param index the index of posti_disp
+     * @return the value of posti_disp at specified index
+     */
+    public int getPosti_disp(int index) {
+        return this.posti_disp[index];
+    }
+
+    /**
+     * Set the value of posti_disp at specified index.
+     *
+     * @param index the index of posti_disp
+     * @param posti_disp new value of posti_disp at specified index
+     */
+    public void setPosti_disp(int index, int posti_disp) {
+        this.posti_disp[index] = posti_disp;
+    }
+
+    /**
+     * Get the value of film
+     *
+     * @return the value of film
+     */
+    public String[] getFilm() {
+        return film;
+    }
+
+    /**
+     * Set the value of film
+     *
+     * @param film new value of film
+     */
+    public void setFilm(String[] film) {
+        this.film = film;
+    }
+
+    /**
+     * Get the value of film at specified index
+     *
+     * @param index the index of film
+     * @return the value of film at specified index
+     */
+    public String getFilm(int index) {
+        return this.film[index];
+    }
+
+    /**
+     * Set the value of film at specified index.
+     *
+     * @param index the index of film
+     * @param film new value of film at specified index
+     */
+    public void setFilm(int index, String film) {
+        this.film[index] = film;
+    }
     // </editor-fold>
 }
 

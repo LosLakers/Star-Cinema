@@ -38,7 +38,7 @@
                         <%}%>
                     </select>
                 </div>
-                <button type="submit" form="ticketfilm" class="form-group btn btn-default">Conferma</button>
+                <button type="submit" form="ticketfilm" class="form-group btn btn-primary">Conferma</button>
             </form>
             <!-- Creazione hidden -->
             <%
