@@ -14,8 +14,9 @@
         }
         if (status.equals("updateticket")) {
             ticketBean.updateTicket();
+            String redirect = "ticketlist.jsp";
+            response.sendRedirect(redirect);
 %>
-<jsp:forward page="ticketlist.jsp"></jsp:forward>
 <%
     }
 %>

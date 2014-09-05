@@ -18,6 +18,7 @@ form.addEventListener('submit', function(evt) {
     } else {
         // blocco form
         formBlock(evt);
+        alert('ora inizio deve essere sempre minore di ora fine');
     }
 });
 
@@ -27,6 +28,32 @@ form.addEventListener('submit', function(evt) {
  */
 var inizio = form.ora_inizio;
 inizio.addEventListener('change', function() {
+    // cambio valore di fine in base ad inizio inserito
+    var form = document.getElementById('showForm');
+    
+    // gestione ora fine
+    var durataFilm = document.getElementById('durata').innerHTML;
+    durataFilm = durataFilm.split(':');
+    var inizio = this.value.split(':');
+    var hours = Number(durataFilm[0]);
+    var minutes = Number(durataFilm[1]) + 30;
+    
+    if (minutes >= 60) {
+        hours++;
+        minutes = minutes - 60;
+    }
+    
+    var start = Number(inizio[0]) + hours;
+    var end = Number(inizio[1]) + minutes;
+    if (end >= 60) {
+        start++;
+        end = end - 60;
+    }
+    start = (start < 10) ? '0' + start : start;
+    end = (end < 10) ? '0' + end : end;
+    form.ora_fine.value = start + ':' + end;
+    
+    // controllo ora fine e ora inizio
     controlTime();
 });
 var fine = form.ora_fine;

@@ -173,7 +173,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
              * viene fatta dal manager
              */
             FilmModel film = FilmManager.get(this.getId_film());
-            DateTimeModel show = new DateTimeModel(0, LocalDate.parse(this.getData()),
+            DateTimeModel show = ShowManager.getDate(LocalDate.parse(this.getData()),
                     LocalTime.parse(this.getOra_inizio()), LocalTime.parse(this.getOra_fine()));
             TheaterModel theater = new TheaterModel(0, 0, this.getSala());
             ShowManager.add(film, show, theater);
@@ -202,11 +202,16 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             show.setData(LocalDate.parse(this.getData()));
             show.setOra_inizio(LocalTime.parse(this.getOra_inizio()));
             show.setOra_fine(LocalTime.parse(this.getOra_fine()));
+            show = ShowManager.getDate(show.getData(), show.getOra_inizio(), 
+                    show.getOra_fine());
 
             TheaterModel theater = model.getTheater();
             theater.setNumero_sala(this.getSala());
+            
+            model.setTheater(theater);
+            model.setDate(show);
 
-            ShowManager.update(film, show, theater);
+            ShowManager.update(model);
 
             this.setMessage("Aggiornamento avvenuto");
             this.setMessagetype("alert-success");
@@ -335,7 +340,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
 
         return model;
     }
-    
+
     public String[] TheaterDate_Film(int num_sala, String day) {
         List<String> film = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
@@ -350,10 +355,10 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         }
         String[] model = new String[film.size()];
         model = film.toArray(model);
-        
+
         return model;
     }
-    
+
     public int[] TheaterDate_Posti(int num_sala, String day) {
         List<Integer> posti = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {

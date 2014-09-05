@@ -67,17 +67,19 @@ public class ShowManager {
             }
             resultSet.close();
 
-            // inserimento data con recupero id_data
-            sql = "INSERT INTO `programmazione`"
-                    + "(`data`,`ora_inizio`,`ora_fine`) VALUES "
-                    + "('" + show.getData() + "',"
-                    + "'" + show.getOra_inizio() + "',"
-                    + "'" + show.getOra_fine() + "');";
-            resultSet = database.modifyPK(sql);
-            if (resultSet.next()) {
-                show.setId_data(resultSet.getInt(1));
+            // inserimento data con recupero id_data se show ha id_data = 0
+            if (show.getId_data() == 0) {
+                sql = "INSERT INTO `programmazione`"
+                        + "(`data`,`ora_inizio`,`ora_fine`) VALUES "
+                        + "('" + show.getData() + "',"
+                        + "'" + show.getOra_inizio() + "',"
+                        + "'" + show.getOra_fine() + "');";
+                resultSet = database.modifyPK(sql);
+                if (resultSet.next()) {
+                    show.setId_data(resultSet.getInt(1));
+                }
+                resultSet.close();
             }
-            resultSet.close();
 
             // inserimento sala con recupero id_sala
             sql = "INSERT INTO `sale`"
@@ -109,16 +111,19 @@ public class ShowManager {
     }
 
     /**
-     * Aggiorno la programmazione di un film in base ai modelli passati come
-     * parametri.
+     * Aggiorno la programmazione di un film in base al modelli passato come
+     * parametro. La data viene creata nel database nel caso non sia stata
+     * recuperata in precedenza
      *
-     * @param film film di cui voglio aggiornare la programmazione
-     * @param show nuova data di programmazione
-     * @param theater nuova sala di programmazione
+     * @param model Il modello da inserire nel database
      * @throws Exception
      */
-    public static void update(FilmModel film, DateTimeModel show, TheaterModel theater)
+    public static void update(FilmTheaterDateModel model)
             throws Exception {
+
+        DateTimeModel show = model.getDate();
+        TheaterModel theater = model.getTheater();
+        FilmModel film = model.getFilm();
 
         // controllo su validità data e ora inizio e fine
         LocalTime inizio = show.getOra_inizio();
@@ -138,35 +143,49 @@ public class ShowManager {
         DataBase database = DBService.getDataBase();
         try {
             // gestione inizio e fine rispetto agli altri orari
-            String sql = "SELECT P.ora_inizio, P.ora_fine "
+            String sql = "SELECT FSP.id_tabella, P.ora_inizio, P.ora_fine "
                     + "FROM `film_sala_programmazione` AS FSP "
                     + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
                     + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
                     + "WHERE `numero_sala`='" + theater.getNumero_sala() + "' AND "
                     + "P.data='" + show.getData() + "'"
                     + "ORDER BY P.ora_inizio;";
-            ResultSet resultSet = database.select(sql);
-            while (resultSet.next()) {
-                LocalTime _inizio = resultSet.getTime("ora_inizio").toLocalTime();
-                LocalTime _fine = resultSet.getTime("ora_fine").toLocalTime();
+            ResultSet result = database.select(sql);
+            while (result.next()) {
+                // evito il confronto con la vecchia data inserita
+                if (result.getInt("id_tabella") != model.getId_tabella()) {
+                    LocalTime _inizio = result.getTime("ora_inizio").toLocalTime();
+                    LocalTime _fine = result.getTime("ora_fine").toLocalTime();
 
-                // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
-                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine) && !inizio.equals(_inizio)) {
-                    throw new Exception();
-                }
-                // errore se il film è compreso nell'inizio di un altro film
-                if (inizio.isBefore(_inizio) && fine.isAfter(_inizio)) {
-                    throw new Exception();
+                    // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
+                    if (inizio.isAfter(_inizio) && inizio.isBefore(_fine) && !inizio.equals(_inizio)) {
+                        throw new Exception();
+                    }
+                    // errore se il film è compreso nell'inizio di un altro film
+                    if (inizio.isBefore(_inizio) && fine.isAfter(_inizio)) {
+                        throw new Exception();
+                    }
                 }
             }
-            resultSet.close();
+            result.close();
 
-            // aggiornamento data
-            sql = "UPDATE `programmazione` SET "
-                    + "`data`='" + show.getData() + "',"
-                    + "`ora_inizio`='" + show.getOra_inizio() + "',"
-                    + "`ora_fine`='" + show.getOra_fine() + "' "
-                    + "WHERE `id_data`='" + show.getId_data() + "';";
+            if (show.getId_data() == 0) {
+                // creo data
+                sql = "INSERT INTO `programmazione`"
+                        + "(`data`,`ora_inizio`,`ora_fine`) VALUES "
+                        + "('" + show.getData() + "',"
+                        + "'" + show.getOra_inizio() + "',"
+                        + "'" + show.getOra_fine() + "');";
+                result = database.modifyPK(sql);
+                if (result.next()) {
+                    show.setId_data(result.getInt(1));
+                }
+                result.close();
+            }
+            // aggiorno film-sala-programmazione con la nuova data
+            sql = "UPDATE `film_sala_programmazione` SET "
+                    + "`id_data`='" + show.getId_data() + "' "
+                    + "WHERE `id_tabella`='" + model.getId_tabella() + "';";
             database.modify(sql);
 
             // aggiornamento sala
@@ -195,6 +214,7 @@ public class ShowManager {
 
         DataBase database = DBService.getDataBase();
         FilmTheaterDateModel model = new FilmTheaterDateModel();
+        model.setId_tabella(id_tabella);
         try {
             String sql = "SELECT * "
                     + "FROM `film_sala_programmazione` "
@@ -359,6 +379,40 @@ public class ShowManager {
     }
 
     /**
+     * Recupero un modello di data e orario
+     *
+     * @param data La data che cerco
+     * @param inizio L'orario di inizio che cerco
+     * @param fine L'orario di fine che cerco
+     * @return Il modello di data trovato o un modello con id_data = 0
+     * @throws NotFoundDBException
+     * @throws SQLException
+     */
+    public static DateTimeModel getDate(LocalDate data, LocalTime inizio, LocalTime fine) throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        DateTimeModel model = new DateTimeModel(0, data, inizio, fine);
+        try {
+            String sql = "SELECT id_data "
+                    + "FROM `programmazione` "
+                    + "WHERE `data`='" + data + "' AND "
+                    + "`ora_inizio`='" + inizio + "' AND "
+                    + "`ora_fine`='" + fine + "';";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model.setId_data(result.getInt(1));
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+
+    /**
      * Recupero tutte le date associate ad una certa sala a partire da una data
      * di inizio fino a una di fine, ordinate per data e ora_inizio.
      *
@@ -486,20 +540,20 @@ public class ShowManager {
         }
         return model;
     }
-    
+
     /**
-     * Recupero il numero di posti disponibili nella sala con un certo numero che 
-     * trasmette il film dato nella data inserita.
-     * 
+     * Recupero il numero di posti disponibili nella sala con un certo numero
+     * che trasmette il film dato nella data inserita.
+     *
      * @param id_film Identificativo del film
      * @param id_data Identificativo della data
      * @param num_sala Numero della sala di interesse
      * @return Il numero di posti disponibili se presenti, -1 se non c'è
      * @throws NotFoundDBException
-     * @throws SQLException 
+     * @throws SQLException
      */
     public static int getPosti(int id_film, int id_data, int num_sala) throws NotFoundDBException, SQLException {
-        
+
         DataBase database = DBService.getDataBase();
         int model = -1;
         try {

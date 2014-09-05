@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.*;
 import java.time.*;
-import java.time.*;
 import java.time.format.*;
 import java.util.List;
 import javax.mail.MessagingException;
@@ -52,8 +51,8 @@ public class FilmManagement extends BaseBean implements Serializable {
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.add(film);
             this.setId_film(film.getId_film());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (NotFoundDBException | SQLException ex) {
+            // gestione eccezione
         }
     }
 
@@ -65,8 +64,8 @@ public class FilmManagement extends BaseBean implements Serializable {
             FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), LocalTime.parse(this.getDurata()),
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.update(film);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (NotFoundDBException ex) {
+            // gestione eccezione
         }
     }
 
@@ -76,8 +75,8 @@ public class FilmManagement extends BaseBean implements Serializable {
     public void deleteFilm() {
         try {
             FilmManager.delete(this.getId_film());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (NotFoundDBException ex) {
+            // gestione eccezione
         }
     }
 
@@ -95,8 +94,8 @@ public class FilmManagement extends BaseBean implements Serializable {
             this.setDurata(film.getDurata().format(formatter));
 
             this.setLocandina(film.getLocandina());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (NotFoundDBException | SQLException ex) {
+            // gestione eccezione
         }
     }
     // </editor-fold>
