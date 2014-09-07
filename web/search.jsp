@@ -10,6 +10,14 @@
     } else {
         filmBean.search();
     }
+    if (status.equals("deletefilm") && isAdmin) {
+%>
+<jsp:setProperty name="filmBean" property="id_film"/>
+<%
+        filmBean.deleteFilm();
+        String redirect = "search.jsp";
+        response.sendRedirect(redirect);
+    }
 %>
 
 <div class="jumbotron">
@@ -43,9 +51,9 @@
         <thead>
             <tr>
                 <th>Titolo</th>
-                <% if (isAdmin) {%>
+                    <% if (isAdmin) {%>
                 <th>Azioni disponibili</th>
-                <%}%>
+                    <%}%>
             </tr>
         </thead>
         <tbody>
@@ -53,9 +61,8 @@
                 int film_num = filmBean.filmList_length();
                 for (int j = 0; j < film_num; j++) {
                     String film_tit = filmBean.filmList_titolo(j);
+                    int id_film = filmBean.filmList_idfilm(j);
                     String href = "film.jsp?id_film=" + filmBean.filmList_idfilm(j);
-                    String modify = "updatefilm.jsp?id_film=" + filmBean.filmList_idfilm(j);
-                    String delete = "film.jsp?status=deletefilm&id_film=" + filmBean.filmList_idfilm(j);
                     String show = "addshow.jsp?id_film=" + filmBean.filmList_idfilm(j);
             %>
             <tr>
@@ -64,9 +71,18 @@
                 </td>
                 <% if (isAdmin) {%>
                 <td>
-                    <a href="<%=modify%>">Modifica</a> -
-                    <a href="<%=delete%>">Elimina</a> -
-                    <a href="<%=show%>">Aggiungi in Programmazione</a>
+                    <div class="row">
+                        <form class="col-lg-2 col-md-2" action="updatefilm.jsp" method="get">
+                            <input type="hidden" name="id_film" value="<%=id_film%>" />
+                            <button type="submit" class="btn btn-primary">Modifica</button>
+                        </form>
+                        <form class="col-lg-2 col-md-2" action="search.jsp" method="get">
+                            <input type="hidden" name="id_film" value="<%=id_film%>" />
+                            <input type="hidden" name="status" value="deletefilm" />
+                            <button type="submit" class="btn btn-danger">Elimina</button>
+                        </form>
+                        <a href="<%=show%>" class="btn btn-default">Aggiungi in Programmazione</a>
+                    </div>
                 </td>
                 <%}%>
             </tr>

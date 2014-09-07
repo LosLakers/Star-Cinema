@@ -57,11 +57,11 @@
                 </thead>
                 <tbody>
                     <%
-                        int num_film = nowShowingBean.showFilms();
+                        int num_film = nowShowingBean.FilmTheaterDate_Films();
                         for (int p = 0; p < num_film; p++) {
-                            if (nowShowingBean.show(p, week[j])) {
-                                String titolo = nowShowingBean.showTitolo(p);
-                                String href = "film.jsp?id_film=" + nowShowingBean.showIdFilm(p);
+                            if (nowShowingBean.FilmTheaterDate_Show(p, week[j])) {
+                                String titolo = nowShowingBean.FilmTheaterDate_Titolo(p);
+                                String href = "film.jsp?id_film=" + nowShowingBean.FilmTheaterDate_IdFilm(p);
                     %>
                     <tr>
                         <td>
@@ -69,16 +69,16 @@
                         </td>
                         <td>
                             <%
-                                String[] oraInizio = nowShowingBean.showOraInizio(p, week[j]);
-                                String[] oraFine = nowShowingBean.showOraFine(p, week[j]);
-                                int[] id_tabella = nowShowingBean.showIdTabella(p, week[j]);
+                                String[] oraInizio = nowShowingBean.FilmTheaterDate_OraInizio(p, week[j]);
+                                String[] oraFine = nowShowingBean.FilmTheaterDate_OraFine(p, week[j]);
+                                int[] id_tabella = nowShowingBean.FilmTheaterDate_IdTabella(p, week[j]);
                                 for (int q = 0; q < oraInizio.length; q++) {
                                     if (isAdmin) {
                             %>
-                            <form action="updateshow.jsp" method="post">
-                                <input type="hidden" name="id_film" value="<%=nowShowingBean.showIdFilm(p)%>" />
+                            <form class="col-lg-3 col-md-3" action="updateshow.jsp" method="post">
+                                <input type="hidden" name="id_film" value="<%=nowShowingBean.FilmTheaterDate_IdFilm(p)%>" />
                                 <input type="hidden" name="id_tabella" value="<%=id_tabella[q]%>" />
-                                <a href="javascript:;" onclick="parentNode.submit();"><%=oraInizio[q]%>-<%=oraFine[q]%></a>  ||
+                                <a href="javascript:;" onclick="parentNode.submit();"><%=oraInizio[q]%>-<%=oraFine[q]%></a> <->
                             </form>
                             <%
                             } else {
@@ -91,12 +91,11 @@
                         </td>
                         <td>
                             <%
-                                Integer[] num_sale = nowShowingBean.showSale(p, week[j]);
-                                Integer[] posti = nowShowingBean.showPosti(p, week[j]);
+                                Integer[] num_sale = nowShowingBean.FilmTheaterDate_Sale(p, week[j]);
+                                Integer[] posti = nowShowingBean.FilmTheaterDate_Posti(p, week[j]);
                                 for (int q = 0; q < num_sale.length; q++) {
                             %>
-                            Sala <%=num_sale[q]%> - <%=posti[q]%> ||
-                            <br/>
+                            Sala <%=num_sale[q]%> - <%=posti[q]%> || 
                             <%}%>
                         </td>
                     </tr>

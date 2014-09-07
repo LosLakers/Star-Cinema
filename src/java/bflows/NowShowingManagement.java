@@ -202,12 +202,12 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             show.setData(LocalDate.parse(this.getData()));
             show.setOra_inizio(LocalTime.parse(this.getOra_inizio()));
             show.setOra_fine(LocalTime.parse(this.getOra_fine()));
-            show = ShowManager.getDate(show.getData(), show.getOra_inizio(), 
+            show = ShowManager.getDate(show.getData(), show.getOra_inizio(),
                     show.getOra_fine());
 
             TheaterModel theater = model.getTheater();
             theater.setNumero_sala(this.getSala());
-            
+
             model.setTheater(theater);
             model.setDate(show);
 
@@ -380,19 +380,43 @@ public class NowShowingManagement extends BaseBean implements Serializable {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom per FilmTheaterDate ">
-    public int showFilms() {
+    /**
+     * Recupero il numero di film in programmazione
+     *
+     * @return Il numero di film
+     */
+    public int FilmTheaterDate_Films() {
         return this.filmTheaterDate.length;
     }
 
-    public String showTitolo(int index) {
+    /**
+     * Recupero il titolo di un film
+     *
+     * @param index L'indice nell'array
+     * @return Il titolo del film
+     */
+    public String FilmTheaterDate_Titolo(int index) {
         return this.filmTheaterDate[index].getTitolo();
     }
 
-    public int showIdFilm(int index) {
+    /**
+     * Recupero id di un film
+     *
+     * @param index L'indice nell'array
+     * @return Id del film
+     */
+    public int FilmTheaterDate_IdFilm(int index) {
         return this.filmTheaterDate[index].getId_film();
     }
 
-    public int[] showIdTabella(int index, String day) {
+    /**
+     * Recupero l'array con gli id della tabella nel database riferiti al film
+     *
+     * @param index L'indice nell'array
+     * @param day Il giorno che considero
+     * @return L'array con gli id tabella
+     */
+    public int[] FilmTheaterDate_IdTabella(int index, String day) {
         List<Integer> id_tabella = new ArrayList<>();
         FilmTheaterDate model = this.filmTheaterDate[index];
         for (int i = 0; i < model.getDate().length; i++) {
@@ -407,7 +431,14 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return tabella;
     }
 
-    public String[] showOraInizio(int index, String day) {
+    /**
+     * Recupero gli orari di inizio del film
+     *
+     * @param index L'indice nell'array
+     * @param day Il giorno che considero
+     * @return L'array con gli orari di inizio
+     */
+    public String[] FilmTheaterDate_OraInizio(int index, String day) {
         List<String> inizio = new ArrayList<>();
         FilmTheaterDate model = this.filmTheaterDate[index];
         int date = model.getDate().length;
@@ -419,7 +450,14 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return inizio.toArray(new String[inizio.size()]);
     }
 
-    public String[] showOraFine(int index, String day) {
+    /**
+     * Recupero gli orari di fine del film
+     *
+     * @param index L'indice nell'array
+     * @param day Il giorno che considero
+     * @return L'array con gli orari di fine
+     */
+    public String[] FilmTheaterDate_OraFine(int index, String day) {
         List<String> fine = new ArrayList<>();
         FilmTheaterDate model = this.filmTheaterDate[index];
         int date = model.getDate().length;
@@ -431,7 +469,14 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return fine.toArray(new String[fine.size()]);
     }
 
-    public Integer[] showSale(int index, String day) {
+    /**
+     * Recupero le sale di programmazione del film
+     *
+     * @param index L'indice nell'array
+     * @param day Il giorno che considero
+     * @return L'array con le sale di programmazione
+     */
+    public Integer[] FilmTheaterDate_Sale(int index, String day) {
         List<Integer> sale = new ArrayList<>();
         FilmTheaterDate model = this.filmTheaterDate[index];
         int date = model.getDate().length;
@@ -443,7 +488,14 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return sale.toArray(new Integer[sale.size()]);
     }
 
-    public Integer[] showPosti(int index, String day) {
+    /**
+     * Recupero l'array con i posti disponibili per il film
+     *
+     * @param index L'indice nell'array
+     * @param day Il giorno che considero
+     * @return L'array dei posti disponibili
+     */
+    public Integer[] FilmTheaterDate_Posti(int index, String day) {
         List<Integer> posti = new ArrayList<>();
         FilmTheaterDate model = this.filmTheaterDate[index];
         int date = model.getDate().length;
@@ -455,7 +507,14 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return posti.toArray(new Integer[posti.size()]);
     }
 
-    public Boolean show(int index, String day) {
+    /**
+     * Controllo che se un film è in programmazione o meno in un certo giorno
+     *
+     * @param index L'indice nell'array
+     * @param day Il giorno che considero
+     * @return true se è in programmazione, false se non lo è.
+     */
+    public Boolean FilmTheaterDate_Show(int index, String day) {
         Boolean show = false;
         FilmTheaterDate model = this.filmTheaterDate[index];
         int date = model.getDate().length;

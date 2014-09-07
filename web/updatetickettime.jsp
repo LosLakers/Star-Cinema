@@ -13,7 +13,7 @@
     if (status == null || !status.equals("changefilm")) {
         ticketBean.getTicket();
     }
-    int[] id_film = ticketBean.ticketId_film();
+    int[] id_film = ticketBean.FilmDate_IdFilm();
     String[] week = ticketBean.getWeek();
 %>
 <div class="jumbotron">
@@ -25,7 +25,7 @@
                 <select name="id_film" class="form-control" required="required" disabled="disabled">
                     <%
                         for (int j = 0; j < id_film.length; j++) {
-                            String titolo = ticketBean.ticketTitolo(id_film[j]);
+                            String titolo = ticketBean.FilmDate_Titolo(id_film[j]);
                             String selected = "";
                             if (id_film[j] == ticketBean.getId_film()) {
                                 selected = "selected=\"selected\"";
@@ -57,7 +57,7 @@
         <!-- Creazione hidden -->
         <%
             for (int j = 0; j < id_film.length; j++) {
-                String[] data = ticketBean.ticketDate(id_film[j]);
+                String[] data = ticketBean.FilmDate_Date(id_film[j]);
                 String hidden = "";
                 for (int p = 0; p < week.length; p++) {
                     Boolean check = true;

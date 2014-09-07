@@ -301,7 +301,7 @@ public class TicketManagement implements Serializable {
      *
      * @return L'array con tutti gli id_film
      */
-    public int[] ticketId_film() {
+    public int[] FilmDate_IdFilm() {
         int[] id_film = new int[this.film.length];
         for (int i = 0; i < id_film.length; i++) {
             id_film[i] = this.film[i].getId_film();
@@ -315,7 +315,7 @@ public class TicketManagement implements Serializable {
      * @param id_film Id del film di cui voglio recuperare il titolo
      * @return Il titolo del film
      */
-    public String ticketTitolo(int id_film) {
+    public String FilmDate_Titolo(int id_film) {
         FilmDate[] film = this.film;
         String titolo = "";
         for (FilmDate tmp : film) {
@@ -327,7 +327,12 @@ public class TicketManagement implements Serializable {
         return titolo;
     }
 
-    public String[] ticketDate(int id_film) {
+    /**
+     * Recupero la lista delle date in base all'id del film
+     * @param id_film Id del film
+     * @return Array delle date del film
+     */
+    public String[] FilmDate_Date(int id_film) {
         String[] date = null;
         for (FilmDate tmp : this.film) {
             if (tmp.getId_film() == id_film) {

@@ -7,7 +7,6 @@
 
 <%
     // controllo validità admin
-    status = request.getParameter("status");
     String id = request.getParameter("id_film");
 
     if (id == null || id.equals("0")) {
