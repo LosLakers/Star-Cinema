@@ -20,6 +20,15 @@
     </div>
 </div>
 <div class="container">
+    <!-- Gestione Errori Carta di Credito -->
+    <% if (status.equals("creditcarderror")) {%>
+    <div class="container">
+        <div class="alert alert-dismissable alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <p><strong>Inserire una carta di credito per effettuare acquisti nel sito</strong></p>
+        </div>
+    </div>
+    <%}%>
     <br/>
     <div class="row">
         <!-- Informazioni utente -->
@@ -51,41 +60,42 @@
                 <br/>
                 <input type="hidden" name="status" value="edit"/>
                 <button type="submit" class="btn btn-primary">Modifica</button>
+            </div>
         </form>
-    </div>
-    <div class="col-lg-4 col-md-4">
-        <!-- Gestione biglietti -->
-        <a href="ticketlist.jsp" class="btn btn-default">Lista Ingressi</a>
-    </div>
-    <div class="col-lg-4">
-        <!-- Gestione abbonamento -->
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Abbonamento</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (loginBean.getSubscriptionticket() == -1) {%>
-                <tr>
-                    <td>
-                        <a href="addsubscription.jsp" class="btn btn-default">Acquista</a>
-                    </td>
-                </tr>
-                <%} else if (loginBean.getSubscriptionticket() == 0) {%>
-                <tr>
-                    <td>0 Ingressi Disponibili</td>
-                    <td>
-                        <a href="addsubscription.jsp" class="btn btn-default">Rinnova</a>
-                    </td>
-                </tr>
-                <%} else {%>
-                <tr>
-                    <td><%=loginBean.getSubscriptionticket()%> Ingressi Disponibili</td>
-                </tr>
-                <%}%>
-            </tbody>
-        </table>
+        <div class="col-lg-4 col-md-4">
+            <!-- Gestione biglietti -->
+            <a href="ticketlist.jsp" class="btn btn-default">Lista Ingressi</a>
+        </div>
+        <div class="col-lg-4">
+            <!-- Gestione abbonamento -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Abbonamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (loginBean.getSubscriptionticket() == -1) {%>
+                    <tr>
+                        <td>
+                            <a href="addsubscription.jsp" class="btn btn-default">Acquista</a>
+                        </td>
+                    </tr>
+                    <%} else if (loginBean.getSubscriptionticket() == 0) {%>
+                    <tr>
+                        <td>0 Ingressi Disponibili</td>
+                        <td>
+                            <a href="addsubscription.jsp" class="btn btn-default">Rinnova</a>
+                        </td>
+                    </tr>
+                    <%} else {%>
+                    <tr>
+                        <td><%=loginBean.getSubscriptionticket()%> Ingressi Disponibili</td>
+                    </tr>
+                    <%}%>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <%

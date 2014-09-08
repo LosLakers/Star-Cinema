@@ -22,6 +22,7 @@
 
 <div class="jumbotron">
     <div class="container">
+        <!-- Gestione Ricerca -->
         <form id="filmsearch" class="col-lg-6">
             <div class="form-group">
                 <label class="control-label">Ricerca Film per Titolo</label>
@@ -47,9 +48,13 @@
     <h4>Risultati per ricerca: <strong><%=searchString%></strong></h4>
     <br/>
     <%}%>
+    <!-- Tabella Risultati -->
     <table class="table table-striped">
         <thead>
             <tr>
+                <% if (isAdmin) {%>
+                <th class="col-lg-1 col-md-1">Elimina</th>
+                    <%}%>
                 <th>Titolo</th>
                     <% if (isAdmin) {%>
                 <th>Azioni disponibili</th>
@@ -66,6 +71,11 @@
                     String show = "addshow.jsp?id_film=" + filmBean.filmList_idfilm(j);
             %>
             <tr>
+                <% if (isAdmin) {%>
+                <td class="col-lg-1 col-md-1">
+                    <input type="checkbox" name="film_delete" value="<%=id_film%>" />
+                </td>
+                <%}%>
                 <td>
                     <a href="<%=href%>"><%=film_tit%></a>
                 </td>
@@ -89,6 +99,13 @@
             <%}%>
         </tbody>
     </table>
+    <% if (isAdmin) {%>
+    <form id="multideletefilm">
+        <button type="submit" form="multideletefilm" class="btn btn-danger">Elimina</button>
+    </form>
+    <script src="scripts/utility.js"></script>
+    <script src="scripts/searchfilm_script.js"></script>
+    <%}%>
 </div>
 </body>
 </html>

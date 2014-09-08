@@ -3,6 +3,11 @@
 <%
     boolean authorized = loginBean.authenticate(username, password);
     if (authorized) {
+        loginBean.getUser();
+        if (loginBean.getCreditcard().equals("0")) {
+            String redirect = profile + "?status=creditcarderror";
+            response.sendRedirect(redirect);
+        } else {
 %>
 
 <jsp:useBean id="ticketBean" scope="page" class="bflows.TicketManagement"/>
@@ -111,6 +116,7 @@
 <script src="scripts/utility.js"></script>
 <script src="scripts/starcinema_utility.js"></script>
 <%
+        }
     } else {
         String redirect = "login.jsp";
         response.sendRedirect(redirect);

@@ -63,6 +63,8 @@
         } else {
             profile = "user_page.jsp";
         }
+        loginBean.setUsername(username);
+        loginBean.setPassword(password);
     }
 
     /* TODO */

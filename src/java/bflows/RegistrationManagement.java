@@ -11,20 +11,18 @@ import blogics.*;
 public class RegistrationManagement implements Serializable {
 
     private String username;
-
     private String password;
-
     private String name;
-
     private String surname;
-
     private String email;
-
     private String creditcard;
 
     public RegistrationManagement() {
     }
 
+    /**
+     * Registro un utente nel sistema
+     */
     public void registration() {
         try {
             int credit_card = this.getCreditcard() != null ? Integer.parseInt(this.getCreditcard()) : 0;

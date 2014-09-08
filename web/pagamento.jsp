@@ -1,9 +1,3 @@
-<%-- 
-    Document   : pagamento
-    Created on : 29-ago-2014, 17.38.06
-    Author     : Guido Pio
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 
@@ -40,9 +34,9 @@
         <p>
             Pagina di pagamento non implementata per mancanze di conoscenze a livello
             finanziario. Vengono solo mostrati i biglietti da pagare e si viene
-            reindirizzati alla home del sito
+            reindirizzati alla lista dei ticket acquistati
         </p>
         <p>Totale biglietti da pagare = <%=topay%></p>
-        <a href="home.jsp" class="btn btn-primary">Conferma</a>
+        <a href="ticketlist.jsp" class="btn btn-primary">Conferma</a>
     </body>
 </html>

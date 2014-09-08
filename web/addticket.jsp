@@ -7,11 +7,14 @@
     boolean authorized = loginBean.authenticate(username, password);
 
     if (authorized) {
-        ticketBean.setUsername(username);
-        
-        if (status == null || !status.equals("addticket")) {
+        loginBean.getUser();
+        if (loginBean.getCreditcard().equals("0")) {
+            String redirect = profile + "?status=creditcarderror";
+            response.sendRedirect(redirect);
+        } else {
+            ticketBean.setUsername(username);
             ticketBean.populateAdd();
-        }
+
 %>
 <div class="jumbotron">
     <div class="container">
@@ -107,6 +110,7 @@
 <script src="scripts/ticket_validation.js"></script>
 <script src="scripts/starcinema_utility.js"></script>
 <%
+        }
     } else {
         String redirect = "home.jsp";
         response.sendRedirect(redirect);

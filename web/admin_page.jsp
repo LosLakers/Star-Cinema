@@ -20,10 +20,19 @@
     </div>
 </div>
 <div class="container">
+    <!-- Gestione Errori Carta di Credito -->
+    <% if (status.equals("creditcarderror")) {%>
+    <div class="container">
+        <div class="alert alert-dismissable alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <p><strong>Inserire una carta di credito per effettuare acquisti nel sito</strong></p>
+        </div>
+    </div>
+    <%}%>
     <br/>
     <div class="row">
         <!-- Modifica Profilo -->
-        <form class="col-lg-4 col-md-4">
+        <form class="col-lg-4 col-md-4" method="post">
             <div class="form-group">
                 <label class="control-label">Nome</label>
                 <div class="controls">
@@ -45,7 +54,7 @@
                 <br/>
                 <label class="control-label">Carta di Credito</label>
                 <div class="controls">
-                    <input type="number" class="form-control" name="creditcard" placeholder="CreditCard" required="required" 
+                    <input type="number" class="form-control" name="creditcard" placeholder="CreditCard" 
                            value="<%=loginBean.getCreditcard()%>"/>
                 </div>
                 <br/>

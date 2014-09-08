@@ -7,7 +7,12 @@
     boolean authenticate = loginBean.authenticate(username, password);
 
     if (authenticate) {
-        subscriptionBean.getSubscription(username);
+        loginBean.getUser();
+        if (loginBean.getCreditcard().equals("0")) {
+            String redirect = profile + "?status=creditcarderror";
+            response.sendRedirect(redirect);
+        } else {
+            subscriptionBean.getSubscription(username);
 %>
 <div class="jumbotron">
     <div class="container"></div>
@@ -65,6 +70,7 @@
     <%}%>
 </div>
 <%
+        }
     } else {
         String redirect = "login.jsp";
         response.sendRedirect(redirect);

@@ -7,8 +7,6 @@ import java.io.Serializable;
 import blogics.*;
 import exceptions.*;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +28,9 @@ public class LoginManagement implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc=" LOGIN-LOGOUT ">
+    /**
+     * Effettuo il login nel sistema
+     */
     public void login() {
         try {
             UserModel user = UserManager.get(username, password);
@@ -48,16 +49,23 @@ public class LoginManagement implements Serializable {
         }
     }
 
+    /**
+     * Effettuo il logout dal sistema
+     */
     public void logout() {
         CookieManager.delete(cookies);
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    /**
+     * Aggiorno i dati di un utente nel sistema
+     */
     public void updateUser() {
         try {
+            String creditcard = this.getCreditcard() == null ? "0" : this.getCreditcard();
             UserModel newUser = new UserModel(this.getUsername(), this.getPassword(), this.getName(),
-                    this.getSurname(), this.getEmail(), Integer.parseInt(this.getCreditcard()));
+                    this.getSurname(), this.getEmail(), Integer.parseInt(creditcard));
             UserManager.update(newUser);
         } catch (Exception ex) {
             ex.printStackTrace();
