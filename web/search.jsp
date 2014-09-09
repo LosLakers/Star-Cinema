@@ -3,7 +3,7 @@
 <jsp:useBean id="filmBean" scope="page" class="bflows.FilmManagement"/>
 <jsp:setProperty name="filmBean" property="searchString"/>
 
-<%
+<%    
     String searchString = request.getParameter("searchString");
     if (searchString == null) {
         filmBean.index();
@@ -13,8 +13,16 @@
     if (status.equals("deletefilm") && isAdmin) {
 %>
 <jsp:setProperty name="filmBean" property="id_film"/>
-<%
+<%        
         filmBean.deleteFilm();
+        String redirect = "search.jsp";
+        response.sendRedirect(redirect);
+    }
+    if (status.equals("multidelete") && isAdmin) {
+%>
+<jsp:setProperty name="filmBean" property="deleteFilm" />
+<%        
+        filmBean.deleteMultiFilm();
         String redirect = "search.jsp";
         response.sendRedirect(redirect);
     }
@@ -73,7 +81,7 @@
             <tr>
                 <% if (isAdmin) {%>
                 <td class="col-lg-1 col-md-1">
-                    <input type="checkbox" name="film_delete" value="<%=id_film%>" />
+                    <input type="checkbox" name="deleteFilm" value="<%=id_film%>" />
                 </td>
                 <%}%>
                 <td>
@@ -101,6 +109,7 @@
     </table>
     <% if (isAdmin) {%>
     <form id="multideletefilm">
+        <input type="hidden" name="status" value="multidelete" />
         <button type="submit" form="multideletefilm" class="btn btn-danger">Elimina</button>
     </form>
     <script src="scripts/utility.js"></script>

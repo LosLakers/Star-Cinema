@@ -31,12 +31,11 @@ public class NowShowingManagement extends BaseBean implements Serializable {
     // proprietà da settare per programmazione film
     private FilmTheaterDate[] filmTheaterDate;
 
-    private String[] week;
-
     // proprietà da settare per lista film da aggiungere in programmazione
     private String[] films;
 
     public NowShowingManagement() {
+        super();
     }
 
     /**
@@ -63,17 +62,6 @@ public class NowShowingManagement extends BaseBean implements Serializable {
      */
     public void populateTheater() {
         try {
-            // Creo la settimana di programmazione che voglio vedere
-            String[] week = new String[7];
-            LocalDate day = LocalDate.now();
-            for (int i = 0; i < week.length; i++) {
-                week[i] = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
-                day = day.plusDays(1);
-            }
-            this.setWeek(week);
-            LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);
-            LocalDate lastDayOfTheWeek = day;
-
             /*
              Costruisco un numero di array di TheaterDateModel pari al numero
              delle posti del cinema. Per ogni array ricavo data e orario
@@ -84,7 +72,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
                 TheaterModel sala = new TheaterModel();
                 sala.setNumero_sala(i + 1);
                 List<DateTimeModel> datetime = ShowManager.getDate(sala.getNumero_sala(),
-                        firstDayOfTheWeek, lastDayOfTheWeek);
+                        this.getFirstDayOfTheWeek(), this.getLastDayOfTheWeek());
                 List<FilmModel> film = new ArrayList<>();
                 int[] posti_disp = new int[datetime.size()];
                 for (int j = 0; j < datetime.size(); j++) {
@@ -121,25 +109,15 @@ public class NowShowingManagement extends BaseBean implements Serializable {
      */
     public void populate() {
         try {
-            // Creo la settimana di programmazione che voglio vedere
-            String[] week = new String[7];
-            LocalDate day = LocalDate.now();
-            for (int i = 0; i < week.length; i++) {
-                week[i] = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
-                day = day.plusDays(1);
-            }
-            this.setWeek(week);
-            LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);
-            LocalDate lastDayOfTheWeek = day;
-
             // recupero la lista dei film in programmazione
-            List<FilmModel> films = FilmManager.getFilms(firstDayOfTheWeek, lastDayOfTheWeek);
+            List<FilmModel> films = FilmManager.getFilms(this.getFirstDayOfTheWeek(),
+                    this.getLastDayOfTheWeek());
             List<FilmTheaterDate> filmTheaterDate = new ArrayList<>();
 
             for (FilmModel tmp : films) {
                 // recupero l'array sala-data relativo al film
-                List<TheaterDateModel> model = ShowManager.getShowList(tmp, firstDayOfTheWeek,
-                        lastDayOfTheWeek);
+                List<TheaterDateModel> model = ShowManager.getShowList(tmp, this.getFirstDayOfTheWeek(),
+                        this.getLastDayOfTheWeek());
 
                 // recupero id_tabella
                 int[] id_tabella = new int[model.size()];
@@ -671,44 +649,6 @@ public class NowShowingManagement extends BaseBean implements Serializable {
      */
     public void setDurata_film(String durata_film) {
         this.durata_film = durata_film;
-    }
-
-    /**
-     * Get the value of week
-     *
-     * @return the value of week
-     */
-    public String[] getWeek() {
-        return week;
-    }
-
-    /**
-     * Set the value of week
-     *
-     * @param week new value of week
-     */
-    public void setWeek(String[] week) {
-        this.week = week;
-    }
-
-    /**
-     * Get the value of week at specified index
-     *
-     * @param index the index of week
-     * @return the value of week at specified index
-     */
-    public String getWeek(int index) {
-        return this.week[index];
-    }
-
-    /**
-     * Set the value of week at specified index.
-     *
-     * @param index the index of week
-     * @param week new value of week at specified index
-     */
-    public void setWeek(int index, String week) {
-        this.week[index] = week;
     }
 
     /**

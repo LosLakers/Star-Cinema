@@ -12,8 +12,7 @@ import java.util.List;
 import javax.mail.MessagingException;
 
 /**
- *
- * @author Guido Pio
+ * JavaBean per la gestione di un Film e dei suoi Commenti
  */
 public class FilmManagement extends BaseBean implements Serializable {
 
@@ -24,6 +23,12 @@ public class FilmManagement extends BaseBean implements Serializable {
     private String trailer;
     private String durata;
     private String locandina;
+
+    /* 
+     Utilizzato per eliminazione multipla, corrisponde ai vari id_film ma si è preferito
+     usare un altra proprietà per evitare usi strani di id_film
+     */
+    private int[] deleteFilm;
 
     // proprietà per la gestione del commento di un utente
     private int id_commento;
@@ -80,6 +85,14 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
+    public void deleteMultiFilm() {
+        try {
+            FilmManager.delete(this.getDeleteFilm());
+        } catch (Exception ex) {
+            // gestione eccezione
+        }
+    }
+    
     /**
      * Recupero il film dal database tramite id_film
      */
@@ -119,8 +132,8 @@ public class FilmManagement extends BaseBean implements Serializable {
         try {
             try {
                 LocalDate search = LocalDate.parse(this.getSearchString(), DateTimeFormatter.ISO_LOCAL_DATE);
-                FilmModel[] index = FilmManager.searchFilm(search);
-                this.setFilmList(index);
+                List<FilmModel> index = FilmManager.searchFilm(search);
+                this.setFilmList(index.toArray(new FilmModel[index.size()]));
             } catch (DateTimeParseException ex) {
                 String search = this.getSearchString();
                 List<FilmModel> index = FilmManager.searchFilm(search);
@@ -132,20 +145,40 @@ public class FilmManagement extends BaseBean implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom Film List ">
+    /**
+     * Recupero la lunghezza dell'array FilmList
+     *
+     * @return La lunghezza dell'array
+     */
     public int filmList_length() {
         return this.filmList.length;
     }
 
+    /**
+     * Recupero l'id di un elemento dell'array FilmList
+     *
+     * @param index Indice dell'elemento nell'array
+     * @return Id del film
+     */
     public int filmList_idfilm(int index) {
         return this.filmList[index].getId_film();
     }
 
+    /**
+     * Recupero il titolo di un elemento dell'array FilmList
+     *
+     * @param index Indice dell'elemento nell'array
+     * @return Il titolo del film
+     */
     public String filmList_titolo(int index) {
         return this.filmList[index].getTitolo();
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Comment-Management ">
+    /**
+     * Inserisco un commento
+     */
     public void addComment() {
         try {
             CommentModel commento = new CommentModel(0, this.getVoto(), this.getGiudizio(),
@@ -196,6 +229,10 @@ public class FilmManagement extends BaseBean implements Serializable {
         }
     }
 
+    /**
+     * Recupero il commento dell'utente e la lista dei commenti associati al
+     * film
+     */
     public void getComment() {
         try {
             CommentModel commento = CommentManager.get(this.getUser(), this.getId_film());
@@ -206,29 +243,59 @@ public class FilmManagement extends BaseBean implements Serializable {
             }
 
             // creo la lista dei commenti associati al film
-            this.setCommenti(CommentManager.getCommenti(this.getId_film()));
+            List<CommentModel> commenti = CommentManager.getCommenti(this.getId_film());
+            this.setCommenti(commenti.toArray(new CommentModel[commenti.size()]));
         } catch (Exception ex) {
             this.setMessage("Errore nel recupero dei commenti. Se il problema persiste contattare l'amministratore");
             this.setMessagetype("red");
         }
     }
 
+    /**
+     * Recupero id di un commento
+     *
+     * @param commento Il commento di interesse
+     * @return L'id del commento
+     */
     public int getComment_IdCommento(CommentModel commento) {
         return commento.getId_commento();
     }
 
+    /**
+     * Recupero il voto di un commento
+     *
+     * @param commento Il commento di interesse
+     * @return Il voto del commento
+     */
     public int getComment_Voto(CommentModel commento) {
         return commento.getVoto();
     }
 
+    /**
+     * Recupero il giudizio di un commento
+     *
+     * @param commento Il commento di interesse
+     * @return Il giudizio del commento
+     */
     public String getComment_Giudizio(CommentModel commento) {
         return commento.getGiudizio();
     }
 
+    /**
+     * Recupero l'utente che ha postato il commento
+     *
+     * @param commento Il commento di interesse
+     * @return L'username dell'utente del commento
+     */
     public String getComment_User(CommentModel commento) {
         return commento.getUsername();
     }
 
+    /**
+     * Recupero la lunghezza dell'array Commenti
+     *
+     * @return La lunghezza dell'array
+     */
     public int getComment_Length() {
         CommentModel[] commenti = this.getCommenti();
         if (commenti == null) {
@@ -345,6 +412,44 @@ public class FilmManagement extends BaseBean implements Serializable {
      */
     public void setLocandina(String locandina) {
         this.locandina = locandina;
+    }
+
+    /**
+     * Get the value of deleteFilm
+     *
+     * @return the value of deleteFilm
+     */
+    public int[] getDeleteFilm() {
+        return deleteFilm;
+    }
+
+    /**
+     * Set the value of deleteFilm
+     *
+     * @param deleteFilm new value of deleteFilm
+     */
+    public void setDeleteFilm(int[] deleteFilm) {
+        this.deleteFilm = deleteFilm;
+    }
+
+    /**
+     * Get the value of deleteFilm at specified index
+     *
+     * @param index the index of deleteFilm
+     * @return the value of deleteFilm at specified index
+     */
+    public int getDeleteFilm(int index) {
+        return this.deleteFilm[index];
+    }
+
+    /**
+     * Set the value of deleteFilm at specified index.
+     *
+     * @param index the index of deleteFilm
+     * @param deleteFilm new value of deleteFilm at specified index
+     */
+    public void setDeleteFilm(int index, int deleteFilm) {
+        this.deleteFilm[index] = deleteFilm;
     }
 
     /**

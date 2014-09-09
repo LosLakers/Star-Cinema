@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Guido Pio
  */
-public class TicketManagement implements Serializable {
+public class TicketManagement extends BaseBean implements Serializable {
 
     private int id_ingresso;
     private String username;
@@ -23,7 +23,6 @@ public class TicketManagement implements Serializable {
 
     // film in programmazione
     private FilmDate[] film;
-    private String[] week;
     private int[] id_tab;
 
     // ticket utente
@@ -35,6 +34,7 @@ public class TicketManagement implements Serializable {
     private int subscriptionSeat;
 
     public TicketManagement() {
+        super();
     }
 
     /**
@@ -43,24 +43,15 @@ public class TicketManagement implements Serializable {
      */
     public void index() {
         try {
-            // Creo la settimana di programmazione che voglio vedere
-            String[] week = new String[7];
-            LocalDate day = LocalDate.now();
-            for (int i = 0; i < week.length; i++) {
-                week[i] = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
-                day = day.plusDays(1);
-            }
-            this.setWeek(week);
-            LocalDate firstDayOfTheWeek = LocalDate.parse(week[0]);
-            LocalDate lastDayOfTheWeek = day;
-
             // recupero film in programmazione
-            List<FilmModel> films = FilmManager.getFilms(firstDayOfTheWeek, lastDayOfTheWeek);
+            List<FilmModel> films = FilmManager.getFilms(this.getFirstDayOfTheWeek(), 
+                    this.getLastDayOfTheWeek());
             List<FilmDate> filmDate = new ArrayList<>();
 
             for (FilmModel tmp : films) {
                 // recupero le date associate al film
-                List<DateTimeModel> date = ShowManager.getDate(tmp, firstDayOfTheWeek, lastDayOfTheWeek);
+                List<DateTimeModel> date = ShowManager.getDate(tmp, this.getFirstDayOfTheWeek(), 
+                        this.getLastDayOfTheWeek());
                 FilmDate film = new FilmDate(tmp.getId_film(), tmp.getTitolo(), date);
                 filmDate.add(film);
             }
@@ -519,44 +510,6 @@ public class TicketManagement implements Serializable {
      */
     public void setTopay(int topay) {
         this.topay = topay;
-    }
-
-    /**
-     * Get the value of week
-     *
-     * @return the value of week
-     */
-    public String[] getWeek() {
-        return week;
-    }
-
-    /**
-     * Set the value of week
-     *
-     * @param week new value of week
-     */
-    public void setWeek(String[] week) {
-        this.week = week;
-    }
-
-    /**
-     * Get the value of week at specified index
-     *
-     * @param index the index of week
-     * @return the value of week at specified index
-     */
-    public String getWeek(int index) {
-        return this.week[index];
-    }
-
-    /**
-     * Set the value of week at specified index.
-     *
-     * @param index the index of week
-     * @param week new value of week at specified index
-     */
-    public void setWeek(int index, String week) {
-        this.week[index] = week;
     }
 
     /**

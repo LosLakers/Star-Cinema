@@ -1,5 +1,5 @@
 // eliminazione multipla
-var checkbox = document.getElementsByName('film_delete');
+var checkbox = document.getElementsByName('deleteFilm');
 for (var i = 0; i < checkbox.length; i++) {
     checkbox[i].addEventListener('change', function() {
         var form = document.forms[id = 'multideletefilm'];
@@ -13,3 +13,16 @@ for (var i = 0; i < checkbox.length; i++) {
         }
     });
 }
+
+// blocco form se non ci sono selezioni
+var form = document.forms[id = 'multideletefilm'];
+form.addEventListener('submit', function(evt) {
+   var inputs = this.getElementsByTagName('input');
+   if (inputs.length > 1) { // c'è da considerare l'hidden
+       return true;
+   } else {
+       // blocco il submit
+       formBlock(evt);
+       alert('Selezionare almeno un film');
+   }
+});

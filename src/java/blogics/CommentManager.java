@@ -9,12 +9,18 @@ import services.database.*;
 import services.javaxmail.Email;
 
 /**
- *
- * @author Guido Pio
+ * Manager per la gestione dei commenti
  */
 public class CommentManager {
 
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    /**
+     * Aggiunta di un commento nel database
+     *
+     * @param model Il commento da aggiungere
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
+     */
     public static void add(CommentModel model)
             throws NotFoundDBException, SQLException {
 
@@ -55,12 +61,19 @@ public class CommentManager {
             }
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
         }
     }
 
+    /**
+     * Aggiornamento di un commento
+     *
+     * @param model Il commento da aggiornare
+     * @throws NotFoundDBException Eccezione
+     */
     public static void update(CommentModel model)
             throws NotFoundDBException {
 
@@ -75,12 +88,19 @@ public class CommentManager {
             database.modify(sql);
             database.commit();
         } catch (NotFoundDBException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
         }
     }
 
+    /**
+     * Eliminazione di un commento
+     *
+     * @param id_commento Identificativo del commento nel database
+     * @throws NotFoundDBException Eccezione
+     */
     public static void delete(int id_commento)
             throws NotFoundDBException {
 
@@ -92,12 +112,23 @@ public class CommentManager {
             database.modify(sql);
             database.commit();
         } catch (NotFoundDBException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
         }
     }
 
+    /**
+     * Eliminazione di un commento con notifica via email
+     *
+     * @param commento Il commento da eliminare
+     * @param userEmail L'email dell'utente
+     * @param titolo Il titolo del film
+     * @throws NotFoundDBException Eccezione
+     * @throws MessagingException Eccezione
+     * @throws IOException Eccezione
+     */
     public static void delete(CommentModel commento, String userEmail, String titolo)
             throws NotFoundDBException, MessagingException, IOException {
 
@@ -108,18 +139,27 @@ public class CommentManager {
                     + "WHERE `id_commento`='" + commento.getId_commento() + "';";
             database.modify(sql);
             database.commit();
-            
-            String message = "Il tuo commento al film " + titolo 
+
+            String message = "Il tuo commento al film " + titolo
                     + " è stato elimato da un amministratore perchè viola le regole del sito";
             String subject = "Eliminazione commento";
             Email.send(userEmail, subject, message);
         } catch (NotFoundDBException | MessagingException | IOException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
         }
     }
 
+    /**
+     * Recupero di un commento
+     *
+     * @param id_commento Identificativo del commento
+     * @return Il commento se presente nel database, null se non lo è
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
+     */
     public static CommentModel get(int id_commento)
             throws NotFoundDBException, SQLException {
 
@@ -136,6 +176,7 @@ public class CommentManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -143,11 +184,20 @@ public class CommentManager {
         return model;
     }
 
+    /**
+     * Recupero di un commento
+     *
+     * @param user Username dell'utente
+     * @param id_film Identificativo del film
+     * @return Il commento se è presente nel database, null se non lo è
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
+     */
     public static CommentModel get(String user, int id_film)
             throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
-        CommentModel commento = new CommentModel();
+        CommentModel commento = null;
         try {
             String sql = "SELECT * "
                     + "FROM `commenti` "
@@ -160,6 +210,7 @@ public class CommentManager {
             }
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -167,15 +218,21 @@ public class CommentManager {
         return commento;
     }
 
-    public static CommentModel[] getCommenti(int id_film)
+    /**
+     * Recupero di una lista di commenti associati ad un film
+     *
+     * @param id_film Identificativo del film
+     * @return La lista dei commenti
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
+     */
+    public static List<CommentModel> getCommenti(int id_film)
             throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
-        CommentModel[] commenti = null;
+        List<CommentModel> model = model = new ArrayList<>();
         try {
             // recupero la lista dei commenti per un dato film
-            List<CommentModel> commentList;
-            commentList = new ArrayList<>();
             String sql = "SELECT * "
                     + "FROM `commenti` "
                     + "WHERE "
@@ -184,22 +241,17 @@ public class CommentManager {
             // creo il vettore con i commenti trovati
             while (resultSet.next()) {
                 CommentModel tmp = new CommentModel(resultSet);
-                commentList.add(tmp);
+                model.add(tmp);
             }
             resultSet.close();
             database.commit();
-            commenti = new CommentModel[commentList.size()];
-            for (int i = 0; i < commenti.length; i++) {
-                commenti[i] = commentList.get(i);
-            }
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
-
         }
-        return commenti;
+        return model;
     }
-
     // </editor-fold>
 }

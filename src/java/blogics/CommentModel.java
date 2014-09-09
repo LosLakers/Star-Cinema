@@ -1,30 +1,31 @@
-
 package blogics;
 
 import java.sql.*;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- *
- * @author Guido Pio
+ * Modello di un commento nel database
  */
 public class CommentModel {
 
     private int id_commento;
-
     private int voto;
-
     private String giudizio;
-
     private String username;
-
     private int id_film;
 
+    // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public CommentModel() {
-        this.setId_commento(0);
     }
-    
+
+    /**
+     * Costruttore con parametri
+     *
+     * @param id_commento Identificativo
+     * @param voto Voto assegnato
+     * @param giudizio Descrizione del commento
+     * @param username Utente che inserisce il commento
+     * @param id_film Film a cui associare il commento
+     */
     public CommentModel(int id_commento, int voto, String giudizio, String username, int id_film) {
         this.setId_commento(id_commento);
         this.setVoto(voto);
@@ -32,19 +33,22 @@ public class CommentModel {
         this.setUsername(username);
         this.setId_film(id_film);
     }
-    
-    public CommentModel(ResultSet result) {
-        try {
-            this.setId_commento(result.getInt("id_commento"));
-            this.setVoto(result.getInt("voto"));
-            this.setGiudizio(result.getString("giudizio"));
-            this.setUsername(result.getString("username"));
-            this.setId_film(result.getInt("id_film"));
-        } catch (SQLException ex) {
-            /* nessun valore deve essere null */
-        }
+
+    /**
+     * Costruttore con parametri
+     *
+     * @param result Il risultato di una query nel database
+     * @throws SQLException Eccezione
+     */
+    public CommentModel(ResultSet result) throws SQLException {
+        this.setId_commento(result.getInt("id_commento"));
+        this.setVoto(result.getInt("voto"));
+        this.setGiudizio(result.getString("giudizio"));
+        this.setUsername(result.getString("username"));
+        this.setId_film(result.getInt("id_film"));
     }
-    
+    // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of id_commento
