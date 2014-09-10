@@ -81,18 +81,18 @@ public class FilmManagement extends BaseBean implements Serializable {
         try {
             FilmManager.delete(this.getId_film());
         } catch (NotFoundDBException ex) {
-            // gestione eccezione
+            this.setAlert(Message.DELETEERROR);
         }
     }
 
     public void deleteMultiFilm() {
         try {
             FilmManager.delete(this.getDeleteFilm());
-        } catch (Exception ex) {
-            // gestione eccezione
+        } catch (NotFoundDBException ex) {
+            this.setAlert(Message.DELETEERROR);
         }
     }
-    
+
     /**
      * Recupero il film dal database tramite id_film
      */
@@ -121,7 +121,7 @@ public class FilmManagement extends BaseBean implements Serializable {
             List<FilmModel> index = FilmManager.searchFilm("");
             this.setFilmList(index.toArray(new FilmModel[index.size()]));
         } catch (NotFoundDBException | SQLException ex) {
-            // messaggio di errore
+            // reindirizzamento a una pagina di errore nella jsp
         }
     }
 
@@ -140,7 +140,7 @@ public class FilmManagement extends BaseBean implements Serializable {
                 this.setFilmList(index.toArray(new FilmModel[index.size()]));
             }
         } catch (NotFoundDBException | SQLException ex) {
-            // messaggio di errore
+            this.setAlert(Message.SEARCHERROR);
         }
     }
 
@@ -185,11 +185,8 @@ public class FilmManagement extends BaseBean implements Serializable {
                     this.getUser(), this.getId_film());
             CommentManager.add(commento);
             this.setId_commento(commento.getId_commento());
-            this.setMessage("Inserimento avvenuto con successo");
-            this.setMessagetype("green");
-        } catch (Exception ex) {
-            this.setMessage("Riprovare l'inserimento. Se il problema persiste contattare l'amministratore");
-            this.setMessagetype("red");
+        } catch (NotFoundDBException | SQLException ex) {
+            this.setAlert(Message.COMMENTERROR);
         }
     }
 
@@ -201,11 +198,8 @@ public class FilmManagement extends BaseBean implements Serializable {
             CommentModel commento = new CommentModel(this.getId_commento(), this.getVoto(), this.getGiudizio(),
                     this.getUser(), this.getId_film());
             CommentManager.update(commento);
-            this.setMessage("Aggiornamento avvenuto con successo");
-            this.setMessagetype("green");
-        } catch (Exception ex) {
-            this.setMessage("Riprovare l'aggiornamento. Se il problema persiste contattare l'amministratore");
-            this.setMessagetype("red");
+        } catch (NotFoundDBException ex) {
+            this.setAlert(Message.COMMENTERROR);
         }
     }
 
@@ -225,7 +219,7 @@ public class FilmManagement extends BaseBean implements Serializable {
             FilmModel film = FilmManager.get(comment.getId_film());
             CommentManager.delete(comment, user.getEmail(), film.getTitolo());
         } catch (NotFoundDBException | SQLException | MessagingException | IOException ex) {
-            // gestione errore
+            this.setAlert(Message.DELETEERROR);
         }
     }
 
@@ -236,7 +230,7 @@ public class FilmManagement extends BaseBean implements Serializable {
     public void getComment() {
         try {
             CommentModel commento = CommentManager.get(this.getUser(), this.getId_film());
-            this.setId_commento(commento.getId_commento());
+            this.setId_commento(commento != null ? commento.getId_commento() : 0);
             if (this.getId_commento() != 0) {
                 this.setVoto(commento.getVoto());
                 this.setGiudizio(commento.getGiudizio());
@@ -246,8 +240,7 @@ public class FilmManagement extends BaseBean implements Serializable {
             List<CommentModel> commenti = CommentManager.getCommenti(this.getId_film());
             this.setCommenti(commenti.toArray(new CommentModel[commenti.size()]));
         } catch (Exception ex) {
-            this.setMessage("Errore nel recupero dei commenti. Se il problema persiste contattare l'amministratore");
-            this.setMessagetype("red");
+            this.setAlert(Message.COMMENTGETERROR);
         }
     }
 

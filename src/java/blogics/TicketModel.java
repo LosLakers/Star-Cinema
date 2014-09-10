@@ -1,14 +1,11 @@
-
 package blogics;
 
 import exceptions.NotFoundDBException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 /**
- *
- * @author Guido Pio
+ * Modello di un ingresso nel database
  */
 public class TicketModel {
 
@@ -26,9 +23,9 @@ public class TicketModel {
 
     /**
      * Costruttore basato sul risultato di una query
-     * 
-     * @param result        Risultato di una query
-     * @throws SQLException 
+     *
+     * @param result Risultato di una query
+     * @throws SQLException Eccezione
      */
     public TicketModel(ResultSet result) throws SQLException {
         this.setId_ingresso(result.getInt("id_ingresso"));
@@ -37,7 +34,7 @@ public class TicketModel {
         this.setUsername(result.getString("username"));
         this.setId_abbonamento(result.getInt("id_abbonamento"));
         this.setId_film(result.getInt("id_film"));
-        
+
         try {
             this.setData(ShowManager.getData(this.getId_data()));
             this.setSeat(TicketManager.getSeat(this.getId_posto()));

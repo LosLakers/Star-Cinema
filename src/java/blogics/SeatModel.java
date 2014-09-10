@@ -1,11 +1,11 @@
 package blogics;
 
+import exceptions.NotFoundDBException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
- * @author Guido Pio
+ * Modello Posto nel database
  */
 public class SeatModel {
 
@@ -17,7 +17,6 @@ public class SeatModel {
     private TheaterModel theater;
 
     public SeatModel() {
-
     }
 
     /**
@@ -33,10 +32,10 @@ public class SeatModel {
         this.setFila(fila);
         this.setNumero(numero);
         this.setId_sala(id_sala);
-        
+
         try {
             this.setTheater(ShowManager.getTheater(id_sala));
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // non fare niente
         }
     }
@@ -46,7 +45,7 @@ public class SeatModel {
      * database
      *
      * @param result Il risultato della chiamata al database
-     * @throws SQLException
+     * @throws SQLException Eccezione
      */
     public SeatModel(ResultSet result) throws SQLException {
         this.setId_posto(result.getInt("id_posto"));
@@ -56,7 +55,7 @@ public class SeatModel {
 
         try {
             this.setTheater(ShowManager.getTheater(this.getId_sala()));
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // non fare niente
         }
     }

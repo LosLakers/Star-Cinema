@@ -1,24 +1,22 @@
-
 package blogics;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
- * @author Guido Pio
+ * Modello di un Abbonamento nel database
  */
 public class SubscriptionModel {
-    
+
     private int id_abbonamento;
     private int ingressi_disp;
     private String username;
 
     /**
      * Costruttore basato sul risultato di una query
-     * 
-     * @param result        Risultato query
-     * @throws SQLException 
+     *
+     * @param result Risultato query
+     * @throws SQLException Eccezione
      */
     public SubscriptionModel(ResultSet result) throws SQLException {
         this.setId_abbonamento(result.getInt("id_abbonamento"));
@@ -82,5 +80,4 @@ public class SubscriptionModel {
     }
 
     // </editor-fold>
-
 }

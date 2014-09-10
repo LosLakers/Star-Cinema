@@ -4,8 +4,7 @@ import java.sql.*;
 import java.time.*;
 
 /**
- *
- * @author Guido Pio
+ * Modello per associare ad una data una certa sala
  */
 public class TheaterDateModel {
 
@@ -15,15 +14,18 @@ public class TheaterDateModel {
 
     // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public TheaterDateModel() {
-        this.setSala(new TheaterModel());
-        this.setData(new DateTimeModel());
     }
-    
+
+    /**
+     * Costruttore con parametri
+     *
+     * @param result Risultato di una query
+     * @throws SQLException Eccezione
+     */
     public TheaterDateModel(ResultSet result) throws SQLException {
         this.setSala(new TheaterModel(result));
         this.setData(new DateTimeModel(result));
     }
-
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
@@ -64,5 +66,4 @@ public class TheaterDateModel {
     }
 
     // </editor-fold>
-    
 }

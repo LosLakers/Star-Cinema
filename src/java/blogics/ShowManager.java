@@ -8,8 +8,7 @@ import java.util.*;
 import services.database.*;
 
 /**
- *
- * @author Guido Pio
+ * Manager per la gestione di uno show
  */
 public class ShowManager {
 
@@ -21,7 +20,7 @@ public class ShowManager {
      * @param film il film che voglio inserire in programmazione
      * @param show la data, l'orario di inizio e di fine da associare al film
      * @param theater la sala in cui il film deve essere proiettato
-     * @throws Exception
+     * @throws Exception Eccezione
      */
     public static void add(FilmModel film, DateTimeModel show, TheaterModel theater)
             throws Exception {
@@ -116,7 +115,7 @@ public class ShowManager {
      * recuperata in precedenza
      *
      * @param model Il modello da inserire nel database
-     * @throws Exception
+     * @throws Exception Eccezione
      */
     public static void update(FilmTheaterDateModel model)
             throws Exception {
@@ -207,7 +206,7 @@ public class ShowManager {
      *
      * @param id_tabella id_tabella nel database di cui voglio recuperare i dati
      * @return ritorno il modello del database ottenuto
-     * @throws Exception
+     * @throws Exception Eccezione
      */
     public static FilmTheaterDateModel get(int id_tabella)
             throws Exception {
@@ -273,8 +272,8 @@ public class ShowManager {
      * @param id_sala Id della sala
      * @param id_data Id della data
      * @return Id della tabella corrispondente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static int get(int id_film, int id_sala, int id_data)
             throws NotFoundDBException, SQLException {
@@ -308,8 +307,8 @@ public class ShowManager {
      * @param id_film Id del film che mi interessa
      * @param data Data di programmazione di cui sono interessato
      * @return Array contenente gli id_tabella
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static int[] get(int id_film, LocalDate data)
             throws NotFoundDBException, SQLException {
@@ -352,8 +351,8 @@ public class ShowManager {
      *
      * @param id_data Identificativo della data
      * @return La data se è presente nel database, null se non è presente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static DateTimeModel getData(int id_data)
             throws NotFoundDBException, SQLException {
@@ -385,10 +384,11 @@ public class ShowManager {
      * @param inizio L'orario di inizio che cerco
      * @param fine L'orario di fine che cerco
      * @return Il modello di data trovato o un modello con id_data = 0
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
-    public static DateTimeModel getDate(LocalDate data, LocalTime inizio, LocalTime fine) throws NotFoundDBException, SQLException {
+    public static DateTimeModel getDate(LocalDate data, LocalTime inizio, LocalTime fine)
+            throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
         DateTimeModel model = new DateTimeModel(0, data, inizio, fine);
@@ -420,8 +420,8 @@ public class ShowManager {
      * @param from Data di inizio
      * @param to Data di fine
      * @return Lista delle date associate alla sala
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static List<DateTimeModel> getDate(int num_sala, LocalDate from, LocalDate to)
             throws NotFoundDBException, SQLException {
@@ -468,8 +468,8 @@ public class ShowManager {
      * @param from Data da cui inizio
      * @param to Data da cui finisco
      * @return Lista delle date associate al film
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static List<DateTimeModel> getDate(FilmModel film, LocalDate from, LocalDate to)
             throws NotFoundDBException, SQLException {
@@ -515,8 +515,8 @@ public class ShowManager {
      *
      * @param id_sala Identificativo della sala
      * @return La sala se è presente nel database, null se non è presente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static TheaterModel getTheater(int id_sala)
             throws NotFoundDBException, SQLException {
@@ -540,43 +540,6 @@ public class ShowManager {
         }
         return model;
     }
-
-    /**
-     * Recupero il numero di posti disponibili nella sala con un certo numero
-     * che trasmette il film dato nella data inserita.
-     *
-     * @param id_film Identificativo del film
-     * @param id_data Identificativo della data
-     * @param num_sala Numero della sala di interesse
-     * @return Il numero di posti disponibili se presenti, -1 se non c'è
-     * @throws NotFoundDBException
-     * @throws SQLException
-     */
-    public static int getPosti(int id_film, int id_data, int num_sala) throws NotFoundDBException, SQLException {
-
-        DataBase database = DBService.getDataBase();
-        int model = -1;
-        try {
-            String sql = "SELECT S.posti_disp "
-                    + "FROM `film_sala_programmazione` AS FSP "
-                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
-                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
-                    + "WHERE FSP.id_film='" + id_film + "' AND "
-                    + "FSP.id_data='" + id_data + "' AND "
-                    + "S.numero_sala='" + num_sala + "';";
-            ResultSet result = database.select(sql);
-            if (result.next()) {
-                model = result.getInt(1);
-            }
-            result.close();
-            database.commit();
-        } catch (NotFoundDBException | SQLException ex) {
-            throw ex;
-        } finally {
-            database.close();
-        }
-        return model;
-    }
     // </editor-fold>
 
     /**
@@ -586,8 +549,8 @@ public class ShowManager {
      * @param from data da cui si vuole iniziare a ricercare
      * @param to data fino a cui si vuole ricercare
      * @return la lista delle coppie Sala-Data in programmazione
-     * @throws exceptions.NotFoundDBException
-     * @throws java.sql.SQLException
+     * @throws exceptions.NotFoundDBException Eccezione
+     * @throws java.sql.SQLException Eccezione
      */
     public static List<TheaterDateModel> getShowList(FilmModel film, LocalDate from, LocalDate to)
             throws NotFoundDBException, SQLException {

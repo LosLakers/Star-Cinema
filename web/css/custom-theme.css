@@ -24,3 +24,9 @@ input.error {
 option[disabled] {
     color: red;
 }
+
+.message {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+}

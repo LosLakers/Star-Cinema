@@ -5,8 +5,7 @@ import java.sql.*;
 import services.database.*;
 
 /**
- *
- * @author Guido Pio
+ * Manager per la gestione di un Abbonamento
  */
 public class SubscriptionManager {
 
@@ -18,8 +17,8 @@ public class SubscriptionManager {
      * @param username Identificativo dell'utente
      * @param ingressi Numero di ingressi del nuovo abbonamento
      * @return Id nel database dell'abbonamento
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static int add(String username, int ingressi)
             throws NotFoundDBException, SQLException {
@@ -51,7 +50,7 @@ public class SubscriptionManager {
      *
      * @param username Identificativo dell'utente
      * @param ingressi Nuovo numero di ingressi dell'abbonamento
-     * @throws NotFoundDBException
+     * @throws NotFoundDBException Eccezione
      */
     public static void update(String username, int ingressi)
             throws NotFoundDBException {
@@ -75,8 +74,8 @@ public class SubscriptionManager {
      *
      * @param username Utente di cui voglio trovare l'abbonamento
      * @return L'abbonamento se viene trovato, null se inesistente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static SubscriptionModel get(String username)
             throws NotFoundDBException, SQLException {
@@ -106,8 +105,8 @@ public class SubscriptionManager {
      *
      * @param id_abbonamento Id dell'abbonamento nel database
      * @return L'abbonamento se viene trovato, null se inesistente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static SubscriptionModel get(int id_abbonamento)
             throws NotFoundDBException, SQLException {
@@ -140,7 +139,7 @@ public class SubscriptionManager {
      * @param subscription Abbonamento usato
      * @param id_ingresso Ingressi acquistati
      * @return I biglietti ancora da pagare
-     * @throws Exception
+     * @throws Exception Eccezione
      */
     public static int useSubscription(String username, SubscriptionModel subscription, int... id_ingresso)
             throws Exception {

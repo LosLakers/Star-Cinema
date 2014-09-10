@@ -69,8 +69,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
              */
             TheaterDate[] model = new TheaterDate[Constants.NUMERO_SALE];
             for (int i = 0; i < Constants.NUMERO_SALE; i++) {
-                TheaterModel sala = new TheaterModel();
-                sala.setNumero_sala(i + 1);
+                TheaterModel sala = new TheaterModel(0, 0, i + 1);
                 List<DateTimeModel> datetime = ShowManager.getDate(sala.getNumero_sala(),
                         this.getFirstDayOfTheWeek(), this.getLastDayOfTheWeek());
                 List<FilmModel> film = new ArrayList<>();
@@ -83,7 +82,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
                      recupero i posti disponibili della sala con id_film, id_data e
                      numero sala predefiniti [UNICO]
                      */
-                    posti_disp[j] = ShowManager.getPosti(film.get(j).getId_film(),
+                    posti_disp[j] = TicketManager.getSeat(film.get(j).getId_film(),
                             date.getId_data(), sala.getNumero_sala());
                 }
                 model[i] = new TheaterDate(sala, datetime, film, posti_disp);
@@ -156,11 +155,9 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             TheaterModel theater = new TheaterModel(0, 0, this.getSala());
             ShowManager.add(film, show, theater);
 
-            this.setMessage("Sala-Data-Ora inserita con successo");
-            this.setMessagetype("alert-success");
+            this.setAlert(Message.INSERTSUCCESS);
         } catch (Exception ex) {
-            this.setMessage("Errore nell'inserimento.");
-            this.setMessagetype("alert-danger");
+            this.setAlert(Message.INSERTERROR);
         }
     }
 
@@ -191,8 +188,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
 
             ShowManager.update(model);
 
-            this.setMessage("Aggiornamento avvenuto");
-            this.setMessagetype("alert-success");
+            this.setAlert(Message.INSERTSUCCESS);
         } catch (Exception ex) {
             // messaggio di errore
         }

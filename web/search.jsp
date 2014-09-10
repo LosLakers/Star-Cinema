@@ -3,7 +3,7 @@
 <jsp:useBean id="filmBean" scope="page" class="bflows.FilmManagement"/>
 <jsp:setProperty name="filmBean" property="searchString"/>
 
-<%    
+<%
     String searchString = request.getParameter("searchString");
     if (searchString == null) {
         filmBean.index();
@@ -13,20 +13,37 @@
     if (status.equals("deletefilm") && isAdmin) {
 %>
 <jsp:setProperty name="filmBean" property="id_film"/>
-<%        
-        filmBean.deleteFilm();
-        String redirect = "search.jsp";
-        response.sendRedirect(redirect);
+<%      try {
+            filmBean.deleteFilm();
+            String redirect = "search.jsp";
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     }
     if (status.equals("multidelete") && isAdmin) {
 %>
 <jsp:setProperty name="filmBean" property="deleteFilm" />
-<%        
-        filmBean.deleteMultiFilm();
-        String redirect = "search.jsp";
-        response.sendRedirect(redirect);
+<%
+        try {
+            filmBean.deleteMultiFilm();
+            String redirect = "search.jsp";
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     }
 %>
+
+<% if (!filmBean.getMessage().equals("")) {%>
+<!-- Gestione Errori -->
+<div class="container">
+    <div class="col-md-12 col-lg-12">
+        <div class="alert alert-dismissable <%=filmBean.getMessagetype()%>">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <p class="message"><%=filmBean.getMessage()%></p>
+        </div>
+    </div>
+</div>
+<%}%>
 
 <div class="jumbotron">
     <div class="container">

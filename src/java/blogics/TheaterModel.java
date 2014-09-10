@@ -3,38 +3,44 @@ package blogics;
 import java.sql.*;
 
 /**
- *
- * @author Guido Pio
+ * Modello di una Sala nel database
  */
 public class TheaterModel {
 
     private int id_sala;
-
     private int posti_disp;
-
     private int numero_sala;
 
     // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public TheaterModel() {
-        this.setId_sala(0);
-        this.setPosti_disp(0);
-        this.setNumero_sala(0);
     }
 
+    /**
+     * Costruttore con parametri
+     *
+     * @param id_sala Identificativo sala
+     * @param posti_disp Numero posti sala
+     * @param numero_sala Numero della sala
+     */
     public TheaterModel(int id_sala, int posti_disp, int numero_sala) {
         this.setId_sala(id_sala);
         this.setPosti_disp(posti_disp);
         this.setNumero_sala(numero_sala);
     }
 
+    /**
+     * Costruttore con parametri
+     *
+     * @param result Risultato di una query
+     * @throws SQLException Eccezione
+     */
     public TheaterModel(ResultSet result) throws SQLException {
         this.setId_sala(result.getInt("id_sala"));
         this.setPosti_disp(result.getInt("posti_disp"));
         this.setNumero_sala(result.getInt("numero_sala"));
     }
-
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of id_sala

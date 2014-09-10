@@ -1,6 +1,7 @@
 <%@page info="Star Cinema" %>
 <%@page contentType="text/html" %>
 <%@page session="false" %>
+<%@page errorPage="errorpage.jsp" %>
 
 <jsp:useBean id="loginBean" scope="page" class="bflows.LoginManagement" />
 <jsp:setProperty name="loginBean" property="*" />

@@ -1,15 +1,16 @@
 package bflows;
 
 import blogics.*;
+import exceptions.NotFoundDBException;
 import global.*;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
- *
- * @author Guido Pio
+ * JavaBean per la gestione di un Ingresso
  */
 public class TicketManagement extends BaseBean implements Serializable {
 
@@ -44,19 +45,19 @@ public class TicketManagement extends BaseBean implements Serializable {
     public void index() {
         try {
             // recupero film in programmazione
-            List<FilmModel> films = FilmManager.getFilms(this.getFirstDayOfTheWeek(), 
+            List<FilmModel> films = FilmManager.getFilms(this.getFirstDayOfTheWeek(),
                     this.getLastDayOfTheWeek());
             List<FilmDate> filmDate = new ArrayList<>();
 
             for (FilmModel tmp : films) {
                 // recupero le date associate al film
-                List<DateTimeModel> date = ShowManager.getDate(tmp, this.getFirstDayOfTheWeek(), 
+                List<DateTimeModel> date = ShowManager.getDate(tmp, this.getFirstDayOfTheWeek(),
                         this.getLastDayOfTheWeek());
                 FilmDate film = new FilmDate(tmp.getId_film(), tmp.getTitolo(), date);
                 filmDate.add(film);
             }
             this.film = filmDate.toArray(new FilmDate[filmDate.size()]);
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // da gestire
         }
     }
@@ -65,7 +66,7 @@ public class TicketManagement extends BaseBean implements Serializable {
     /**
      * Acquisto uno o più ticket con controllo sull'uso o meno di un abbonamento
      *
-     * @throws Exception
+     * @throws Exception Eccezione
      */
     public void addTicket() throws Exception {
         try {
@@ -118,7 +119,7 @@ public class TicketManagement extends BaseBean implements Serializable {
             TheaterModel theater = model.getTheater();
             SeatModel seat = new SeatModel(0, tmpseat[0], Integer.parseInt(tmpseat[1]),
                     theater.getId_sala());
-            
+
             FilmModel film = model.getFilm();
             DateTimeModel date = model.getDate();
             TicketModel ticket = TicketManager.get(this.getId_ingresso());
@@ -177,7 +178,7 @@ public class TicketManagement extends BaseBean implements Serializable {
      * occupati da un utente, quelli prenotati da altri utenti e i posti ancora
      * prenotabili dall'utente.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Eccezione
      */
     public void populateAdd() throws Exception {
         try {
@@ -219,6 +220,13 @@ public class TicketManagement extends BaseBean implements Serializable {
         }
     }
 
+    /**
+     * Popolo la sala di selezione dei posti. Recupero tutti i posti già
+     * occupati da un utente, quelli prenotati da altri utenti e i posti ancora
+     * prenotabili dall'utente.
+     *
+     * @throws Exception Eccezione
+     */
     public void populateUpdate() throws Exception {
         try {
             // controllo che a id_tabella possa corrispondere id_film - data
@@ -251,7 +259,7 @@ public class TicketManagement extends BaseBean implements Serializable {
      * specificato nella data inserita
      *
      * @return L'array con gli orari
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Eccezione
      */
     public String[] populateTime() throws Exception {
         List<String> model = new ArrayList<>();
@@ -320,6 +328,7 @@ public class TicketManagement extends BaseBean implements Serializable {
 
     /**
      * Recupero la lista delle date in base all'id del film
+     *
      * @param id_film Id del film
      * @return Array delle date del film
      */
@@ -336,30 +345,71 @@ public class TicketManagement extends BaseBean implements Serializable {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Metodi Custom Ticket ">
+    /**
+     * Recupero lunghezza array Ticket
+     *
+     * @return Il numero di elementi nell'array
+     */
     public int ticket_Length() {
         return this.tickets.length;
     }
 
+    /**
+     * Recupero l'id di un elemento di Ticket
+     *
+     * @param index Indice dell'elemento
+     * @return Id dell'elemento
+     */
     public int ticket_IdIngresso(int index) {
         return this.tickets[index].getId_ingresso();
     }
 
+    /**
+     * Recupero la data di un elemento di Ticket
+     *
+     * @param index Indice dell'elemento
+     * @return La data dell'elemento
+     */
     public String ticket_Data(int index) {
         return this.tickets[index].getData();
     }
 
+    /**
+     * Recupero il titolo del film di un elemento di Ticket
+     *
+     * @param index Indice dell'elemento
+     * @return Il titolo del film dell'elemento
+     */
     public String ticket_Titolo(int index) {
         return this.tickets[index].getTitolo();
     }
 
+    /**
+     * Recupero la sala di un elemento di Ticket
+     *
+     * @param index Indice dell'elemento
+     * @return La sala dell'elemento
+     */
     public String ticket_Sala(int index) {
         return this.tickets[index].getSala();
     }
 
+    /**
+     * Recupero l'orario di un elemento di Ticket
+     *
+     * @param index Indice dell'elemento
+     * @return L'orario di un elemento
+     */
     public String ticket_Orario(int index) {
         return this.tickets[index].getOrario();
     }
 
+    /**
+     * Recupero il posto di un elemento di Ticket
+     *
+     * @param index Indice dell'elemento
+     * @return Il posto di un elemento
+     */
     public String ticket_Posto(int index) {
         return this.tickets[index].getPosto();
     }
@@ -670,6 +720,13 @@ class FilmDate {
     private String titolo;
     private String[] date;
 
+    /**
+     * Costruttore della classe
+     *
+     * @param id_film Identificativo del film
+     * @param titolo Titolo del film
+     * @param date Lista date e orari del film
+     */
     public FilmDate(int id_film, String titolo, List<DateTimeModel> date) {
         this.setId_film(id_film);
         this.setTitolo(titolo);
@@ -774,6 +831,14 @@ class Ticket {
     private String posto;
     private String orario;
 
+    /**
+     * Costruttore della classe
+     *
+     * @param id_ingresso Identificativo del ticket
+     * @param data Data e orario del ticket
+     * @param film Film del ticket
+     * @param seat Posto del ticket
+     */
     public Ticket(int id_ingresso, DateTimeModel data, FilmModel film, SeatModel seat) {
         this.setId_ingresso(id_ingresso);
         this.setData(data.getData().format(DateTimeFormatter.ISO_LOCAL_DATE));
@@ -786,7 +851,7 @@ class Ticket {
                 + data.getOra_fine().format(formatter));
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" CRUD ">
+    // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of id_ingresso
      *

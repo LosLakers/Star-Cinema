@@ -11,13 +11,28 @@ import java.time.format.DateTimeFormatter;
  */
 public class BaseBean implements Serializable {
 
+    // settimana di programmazione
     private String[] week;
     private final LocalDate firstDayOfTheWeek;
     private final LocalDate lastDayOfTheWeek;
 
+    // gestione errori
+    protected enum Message {
+
+        COMMENTERROR,
+        COMMENTGETERROR,
+        DELETESUCCESS,
+        DELETEERROR,
+        INSERTSUCCESS,
+        INSERTERROR,
+        SEARCHERROR,
+    }
     private String message = "";
     private String messagetype = "";
 
+    /**
+     * Costruttore di default
+     */
     public BaseBean() {
         // inizializzo la settimana
         String[] week = new String[7];
@@ -29,6 +44,58 @@ public class BaseBean implements Serializable {
         this.setWeek(week);
         this.firstDayOfTheWeek = LocalDate.now();
         this.lastDayOfTheWeek = day;
+    }
+
+    /**
+     * Utilizzato per il settaggio dei messaggi di un alert
+     *
+     * @param message Tipologia di alert dell'enum Message
+     */
+    protected void setAlert(Message message) {
+        switch (message) {
+            case COMMENTERROR:
+                this.message = "Errore nell'inserimento del commento, riprovare. "
+                        + "Se il problema persiste contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+
+            case COMMENTGETERROR:
+                this.message = "Errore nel recupero messaggi, riprovare. "
+                        + "Se il problema persite, contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+
+            case DELETESUCCESS:
+                this.message = "Eliminazione avvenuta con successo.";
+                this.messagetype = "alert-success";
+                break;
+
+            case DELETEERROR:
+                this.message = "Errore nell'eliminazione, riprovare.";
+                this.messagetype = "alert-danger";
+                break;
+
+            case INSERTSUCCESS:
+                this.message = "Inserimento avvenuto con successo.";
+                this.messagetype = "alert-success";
+                break;
+
+            case INSERTERROR:
+                this.message = "Errore nell'inserimento, riprovare. "
+                        + "Se il problema persiste contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+                
+            case SEARCHERROR:
+                this.message = "Errore nella ricerca, riprovare. "
+                        + "Se il problema persiste contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+                
+            default:
+                this.message = "";
+                this.messagetype = "";
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
@@ -98,30 +165,12 @@ public class BaseBean implements Serializable {
     }
 
     /**
-     * Set the value of message
-     *
-     * @param message new value of message
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
      * Get the value of messagetype
      *
      * @return the value of messagetype
      */
     public String getMessagetype() {
         return messagetype;
-    }
-
-    /**
-     * Set the value of messagetype
-     *
-     * @param messagetype new value of messagetype
-     */
-    public void setMessagetype(String messagetype) {
-        this.messagetype = messagetype;
     }
     // </editor-fold>
 }

@@ -3,8 +3,7 @@ package blogics;
 import java.sql.*;
 
 /**
- *
- * @author Guido Pio
+ * Modello per associare ad un film una data e una sala
  */
 public class FilmTheaterDateModel {
 
@@ -20,7 +19,7 @@ public class FilmTheaterDateModel {
      * Costruttore pubblico basato su risultato di una query
      *
      * @param result Risultato di una query
-     * @throws SQLException
+     * @throws SQLException Eccezione
      */
     public FilmTheaterDateModel(ResultSet result)
             throws SQLException {

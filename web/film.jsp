@@ -11,13 +11,23 @@
 %>
 <jsp:setProperty name="filmBean" property="*"/>
 <%
-        filmBean.addComment();
+        try {
+            filmBean.addComment();
+            String redirect = "film.jsp?id_film=" + filmBean.getId_film();
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     }
     if (status.equals("updatecommento")) {
 %>
 <jsp:setProperty name="filmBean" property="*"/>
 <%
-        filmBean.updateComment();
+        try {
+            filmBean.updateComment();
+            String redirect = "film.jsp?id_film=" + filmBean.getId_film();
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     }
 
     filmBean.getComment();
@@ -27,10 +37,13 @@
 
     if (isAdmin && status.equals("admindelete")) {
         int id = Integer.parseInt(request.getParameter("toDelete"));
-        filmBean.deleteComment(id);
-        // riporto l'utente alla scheda del film
-        String redirect = "film.jsp?id_film=" + filmBean.getId_film();
-        response.sendRedirect(redirect);
+        try {
+            filmBean.deleteComment(id);
+            // riporto l'utente alla scheda del film
+            String redirect = "film.jsp?id_film=" + filmBean.getId_film();
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     }
 %>
 
@@ -38,9 +51,9 @@
 <!-- Gestione Errori -->
 <div class="container">
     <div class="col-md-12 col-lg-12">
-        <div class="alert alert-success alert-dismissable">
+        <div class="alert alert-dismissable <%=filmBean.getMessagetype()%>">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-            <p class="message-success"><%=filmBean.getMessage()%></p>
+            <p class="message"><%=filmBean.getMessage()%></p>
         </div>
     </div>
 </div>
@@ -84,27 +97,6 @@
             <br/>
             <br/>
             <a href="<%=filmBean.getTrailer()%>" class="btn btn-default">Guarda il trailer</a>
-        </div>
-        <div class="col-lg-4 col-md-4">
-            <legend>Oggi [DA FARE]</legend>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Orario</th>
-                        <th>Sala - Posti Disponibili</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>9:00 - 12:00</td>
-                        <td>Sala1 - 200</td>
-                    </tr>
-                    <tr>
-                        <td>10:00 - 13:00</td>
-                        <td>Sala1 - 200</td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
     <!-- Gestione Commenti -->

@@ -4,27 +4,27 @@ import java.sql.*;
 import java.time.*;
 
 /**
- *
- * @author Guido Pio
+ * Modello di Data e Orario nel database
  */
 public class DateTimeModel {
 
     private int id_data;
-
     private LocalDate data;
-
     private LocalTime ora_inizio;
-
     private LocalTime ora_fine;
 
     // <editor-fold defaultstate="collapsed" desc=" CONSTRUCTORS ">
     public DateTimeModel() {
-        this.setId_data(0);
-        this.setData(LocalDate.now());
-        this.setOra_inizio(LocalTime.now());
-        this.setOra_fine(LocalTime.now());
     }
 
+    /**
+     * Costruttore con parametri
+     *
+     * @param id_data Identificativo modello
+     * @param data Data
+     * @param ora_inizio Ora di inizio
+     * @param ora_fine Ora di fine
+     */
     public DateTimeModel(int id_data, LocalDate data, LocalTime ora_inizio, LocalTime ora_fine) {
         this.setId_data(id_data);
         this.setData(data);
@@ -32,15 +32,20 @@ public class DateTimeModel {
         this.setOra_fine(ora_fine);
     }
 
+    /**
+     * Costruttore con parametri
+     *
+     * @param result Risultato di una query
+     * @throws SQLException Eccezione
+     */
     public DateTimeModel(ResultSet result) throws SQLException {
         this.setId_data(result.getInt("id_data"));
         this.setData(result.getDate("data").toLocalDate());
         this.setOra_inizio(result.getTime("ora_inizio").toLocalTime());
         this.setOra_fine(result.getTime("ora_fine").toLocalTime());
     }
-
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc=" GETTER-SETTER ">
     /**
      * Get the value of id_data

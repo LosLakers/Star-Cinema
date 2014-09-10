@@ -6,8 +6,7 @@ import java.util.*;
 import services.database.*;
 
 /**
- *
- * @author Guido Pio
+ * Manager per la gestione di Ingressi e Posti
  */
 public class TicketManager {
 
@@ -19,7 +18,7 @@ public class TicketManager {
      * @param username Utente che effettua l'acquisto
      * @param seats La lista dei posti che si vuole acquistare
      * @return Gli id_ingresso di ogni posto prenotato
-     * @throws Exception
+     * @throws Exception Eccezione
      */
     public static int[] add(FilmTheaterDateModel show, String username, List<SeatModel> seats)
             throws Exception {
@@ -101,7 +100,7 @@ public class TicketManager {
      * @param id_film Identificativo del nuovo film
      * @param id_data Identificativo della nuova data
      * @param seat Nuovo posto nella sala
-     * @throws Exception
+     * @throws Exception Eccezione
      */
     public static void update(TicketModel ticket, int id_film, int id_data, SeatModel seat)
             throws Exception {
@@ -127,13 +126,13 @@ public class TicketManager {
                         + "SET `posti_disp`=`posti_disp`+1 "
                         + "WHERE P.id_posto='" + ticket.getId_posto() + "'";
                 database.modify(sql);
-                
+
                 sql = "UPDATE `sale` "
                         + "SET `posti_disp`=`posti_disp`-1 "
                         + "WHERE `id_sala`='" + seat.getId_sala() + "'";
                 database.modify(sql);
             }
-            
+
             // aggiorno il posto di ticket con i nuovi dati
             sql = "UPDATE `posti` "
                     + "SET `fila`='" + util.Conversion.getDatabaseString(seat.getFila()) + "',"
@@ -161,8 +160,8 @@ public class TicketManager {
      *
      * @param id_ingresso Identificativo dell'ingreso che sto cercando
      * @return L'ingresso se è presente nel database, null se non è presente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static TicketModel get(int id_ingresso)
             throws NotFoundDBException, SQLException {
@@ -193,8 +192,8 @@ public class TicketManager {
      *
      * @param username Username dell'utente
      * @return La lista degli ingressi recuperati
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static List<TicketModel> get(String username)
             throws NotFoundDBException, SQLException {
@@ -230,13 +229,14 @@ public class TicketManager {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc=" Gestione Posti ">
     /**
      * Recupero un posto associato ad un dato id_posto
      *
      * @param id_posto Id del posto
      * @return Il posto se è presente nel database, null se non c'è
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static SeatModel getSeat(int id_posto)
             throws NotFoundDBException, SQLException {
@@ -262,13 +262,51 @@ public class TicketManager {
     }
 
     /**
+     * Recupero il numero di posti disponibili nella sala con un certo numero
+     * che trasmette il film dato nella data inserita.
+     *
+     * @param id_film Identificativo del film
+     * @param id_data Identificativo della data
+     * @param num_sala Numero della sala di interesse
+     * @return Il numero di posti disponibili se presenti, -1 se non c'è
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
+     */
+    public static int getSeat(int id_film, int id_data, int num_sala)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        int model = -1;
+        try {
+            String sql = "SELECT S.posti_disp "
+                    + "FROM `film_sala_programmazione` AS FSP "
+                    + "JOIN `sale` AS S ON FSP.id_sala=S.id_sala "
+                    + "JOIN `programmazione` AS P ON FSP.id_data=P.id_data "
+                    + "WHERE FSP.id_film='" + id_film + "' AND "
+                    + "FSP.id_data='" + id_data + "' AND "
+                    + "S.numero_sala='" + num_sala + "';";
+            ResultSet result = database.select(sql);
+            if (result.next()) {
+                model = result.getInt(1);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
+
+    /**
      * Tutti i posti prenotati associati a una terna (film,sala,orario) ricavata
      * grazie al modello di uno show
      *
      * @param show Lo show di cui si ricercano i posti occupati
      * @return I posti prenotati ordinati per fila e numero
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static List<SeatModel> getReserved(FilmTheaterDateModel show)
             throws NotFoundDBException, SQLException {
@@ -318,8 +356,8 @@ public class TicketManager {
      * @param show Il modello dello show
      * @param username L'identificativo utente di cui ricercare le prenotazioni
      * @return I posti prenotati dall'utente, ordinati per fila e numero
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static List<SeatModel> getReserved(FilmTheaterDateModel show, String username)
             throws NotFoundDBException, SQLException {
@@ -360,4 +398,5 @@ public class TicketManager {
         }
         return reserved;
     }
+    // </editor-fold>
 }
