@@ -10,8 +10,7 @@ import java.util.*;
 import java.sql.*;
 
 /**
- *
- * @author Guido Pio
+ * JavaBean per la gestione della programmazione e dei vari spettacoli
  */
 public class NowShowingManagement extends BaseBean implements Serializable {
 
@@ -142,8 +141,10 @@ public class NowShowingManagement extends BaseBean implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     /**
      * Aggiungo uno show nel database tramite le property da ottenere
+     *
+     * @throws java.lang.Exception Eccezione
      */
-    public void addShow() {
+    public void addShow() throws Exception {
         try {
             /**
              * controllo su validità della data e degli orari di inizio e fine
@@ -158,13 +159,15 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             this.setAlert(Message.INSERTSUCCESS);
         } catch (Exception ex) {
             this.setAlert(Message.INSERTERROR);
+            throw ex;
         }
     }
 
     /**
      * Aggiorno uno show nel database tramite le property da ottenere
+     * @throws java.lang.Exception Eccezione
      */
-    public void updateShow() {
+    public void updateShow() throws Exception {
         try {
             FilmTheaterDateModel model = ShowManager.get(this.getId_tabella());
 
@@ -187,10 +190,9 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             model.setDate(show);
 
             ShowManager.update(model);
-
-            this.setAlert(Message.INSERTSUCCESS);
         } catch (Exception ex) {
-            // messaggio di errore
+            this.setAlert(Message.UPDATEERROR);
+            throw ex;
         }
     }
 
@@ -279,6 +281,13 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return this.theaterDate[index].getPosti_disp();
     }
 
+    /**
+     * Recupera l'ora di inizio associati ad una sala in un certo giorno
+     *
+     * @param num_sala Il numero della sala
+     * @param day Il giorno preso in considerazione
+     * @return L'array con tutti gli orari di inizio associati
+     */
     public String[] TheaterDate_OraInizio(int num_sala, String day) {
         List<String> oraInizio = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
@@ -297,6 +306,13 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return model;
     }
 
+    /**
+     * Recupera l'ora di fine associati ad una sala in un certo giorno
+     *
+     * @param num_sala Il numero della sala
+     * @param day Il giorno preso in considerazione
+     * @return L'array con tutti gli orari di fine associati
+     */
     public String[] TheaterDate_OraFine(int num_sala, String day) {
         List<String> oraFine = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
@@ -315,6 +331,13 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return model;
     }
 
+    /**
+     * Recupera i film associati ad una sala in un certo giorno
+     *
+     * @param num_sala Il numero della sala
+     * @param day Il giorno preso in considerazione
+     * @return L'array con tutti i film associati
+     */
     public String[] TheaterDate_Film(int num_sala, String day) {
         List<String> film = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {
@@ -333,6 +356,13 @@ public class NowShowingManagement extends BaseBean implements Serializable {
         return model;
     }
 
+    /**
+     * Recupera i posti disponibili associati ad una sala in un certo giorno
+     *
+     * @param num_sala Il numero della sala
+     * @param day Il giorno preso in considerazione
+     * @return L'array con tutti i posti disponibili
+     */
     public int[] TheaterDate_Posti(int num_sala, String day) {
         List<Integer> posti = new ArrayList<>();
         for (TheaterDate tmp : this.theaterDate) {

@@ -13,9 +13,12 @@
             ticketBean.populateUpdate();
         }
         if (status.equals("updateticket")) {
-            ticketBean.updateTicket();
-            String redirect = "ticketlist.jsp";
-            response.sendRedirect(redirect);
+            try {
+                ticketBean.updateTicket();
+                String redirect = "ticketlist.jsp";
+                response.sendRedirect(redirect);
+            } catch (Exception ex) {
+            }
 %>
 <%
     }
@@ -28,6 +31,15 @@
         </p>
     </div>
 </div>
+<% if (!ticketBean.getMessage().equals("")) {%>
+<!-- Gestione Errori -->
+<div class="container">
+    <div class="alert alert-dismissable <%=ticketBean.getMessagetype()%>">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+        <p class="message"><%=ticketBean.getMessage()%></p>
+    </div>
+</div>
+<%}%>
 <div class="container">
     <legend>Seleziona Posti a Sedere</legend>
     <form id="seatform" action="updateticket.jsp" method="post">

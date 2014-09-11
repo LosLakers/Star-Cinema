@@ -10,11 +10,24 @@
     status = request.getParameter("status");
 
     if (status != null && status.equals("addfilm")) {
-        filmBean.addFilm();
-        String redirect = "film.jsp?id_film=" + filmBean.getId_film();
-        response.sendRedirect(redirect);
+        try {
+            filmBean.addFilm();
+            String redirect = "film.jsp?id_film=" + filmBean.getId_film();
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     }
 %>
+
+<% if (!filmBean.getMessage().equals("")) {%>
+<!-- Gestione Errori -->
+<div class="container">
+    <div class="alert alert-dismissable <%=filmBean.getMessagetype()%>">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+        <p class="message"><%=filmBean.getMessage()%></p>
+    </div>
+</div>
+<%}%>
 
 <div class="jumbotron">
     <div class="container">

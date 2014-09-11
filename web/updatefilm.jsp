@@ -14,11 +14,16 @@
         response.sendRedirect(redirect);
     }
     if (status.equals("updatefilm")) {
+        try {
         filmBean.updateFilm();
-    } else if (status.equals("deletefilm")) {
+        } catch (Exception ex) {}
+    }
+    if (status.equals("deletefilm")) {
+        try {
         filmBean.deleteFilm();
         String redirect = "search.jsp";
         response.sendRedirect(redirect);
+        } catch (Exception ex) {}
     }
 
     filmBean.getFilm();
@@ -30,6 +35,15 @@
         <h1>Aggiorna Film</h1>
     </div>
 </div>  
+<% if (!filmBean.getMessage().equals("")) {%>
+<!-- Gestione Errori -->
+<div class="container">
+    <div class="alert alert-dismissable <%=filmBean.getMessagetype()%>">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+        <p class="message"><%=filmBean.getMessage()%></p>
+    </div>
+</div>
+<%}%>
 <div class="container">
     <form id="filmForm" class="inline-form" method="post" action="updatefilm.jsp">
         <div class="row">

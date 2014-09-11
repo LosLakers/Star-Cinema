@@ -13,9 +13,12 @@
         response.sendRedirect(redirect);
     }
     if (status.equals("updateShow")) {
-        nowShowingBean.updateShow();
-        String redirect = "nowshowing.jsp";
-        response.sendRedirect(redirect);
+        try {
+            nowShowingBean.updateShow();
+            String redirect = "nowshowing.jsp";
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     } else {
         nowShowingBean.getShow();
         nowShowingBean.populateTheater();
@@ -39,7 +42,7 @@
 <div class="container">
     <div class="alert alert-dismissable <%=nowShowingBean.getMessagetype()%>">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-        <p><strong><%=nowShowingBean.getMessage()%></strong></p>
+        <p class="message"><%=nowShowingBean.getMessage()%></p>
     </div>
 </div>
 <%}%>

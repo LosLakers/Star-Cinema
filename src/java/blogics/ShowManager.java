@@ -103,6 +103,7 @@ public class ShowManager {
 
             database.commit();
         } catch (Exception ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -195,6 +196,7 @@ public class ShowManager {
 
             database.commit();
         } catch (Exception ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -258,6 +260,7 @@ public class ShowManager {
             result.close();
             database.commit();
         } catch (Exception ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -293,6 +296,7 @@ public class ShowManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -337,6 +341,7 @@ public class ShowManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -370,6 +375,7 @@ public class ShowManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -405,6 +411,7 @@ public class ShowManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -453,6 +460,7 @@ public class ShowManager {
             resultSet.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -501,6 +509,7 @@ public class ShowManager {
             resultSet.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -534,6 +543,7 @@ public class ShowManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -582,6 +592,7 @@ public class ShowManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();

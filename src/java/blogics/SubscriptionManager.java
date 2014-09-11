@@ -37,6 +37,7 @@ public class SubscriptionManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -63,6 +64,7 @@ public class SubscriptionManager {
             database.modify(sql);
             database.commit();
         } catch (NotFoundDBException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -93,6 +95,7 @@ public class SubscriptionManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -124,6 +127,7 @@ public class SubscriptionManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -181,6 +185,7 @@ public class SubscriptionManager {
                 topay = id_ingresso.length - subscription.getIngressi_disp();
             }
         } catch (NotFoundDBException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();

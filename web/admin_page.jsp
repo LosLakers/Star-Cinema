@@ -3,13 +3,13 @@
 <%
     boolean authorized = loginBean.authenticate(username, password);
 
-    if (status.equals("edit") && authorized) {
-        loginBean.updateUser();
-    }
-%>
-
-<%
     if (authorized) {
+        if (status.equals("edit")) {
+            try {
+                loginBean.updateUser();
+            } catch (Exception ex) {
+            }
+        }
         loginBean.setUsername(username);
         loginBean.setPassword(password);
         loginBean.getUser();
@@ -25,7 +25,16 @@
     <div class="container">
         <div class="alert alert-dismissable alert-danger">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-            <p><strong>Inserire una carta di credito per effettuare acquisti nel sito</strong></p>
+            <p class="message">Inserire una carta di credito per effettuare acquisti nel sito</p>
+        </div>
+    </div>
+    <%}%>
+    <% if (!loginBean.getMessage().equals("")) {%>
+    <!-- Gestione Errori -->
+    <div class="container">
+        <div class="alert alert-dismissable <%=loginBean.getMessagetype()%>">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <p class="message"><%=loginBean.getMessage()%></p>
         </div>
     </div>
     <%}%>

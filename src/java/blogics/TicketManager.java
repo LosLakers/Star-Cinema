@@ -86,6 +86,7 @@ public class TicketManager {
             database.modify(sql);
             database.commit();
         } catch (Exception ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -149,6 +150,7 @@ public class TicketManager {
             database.modify(sql);
             database.commit();
         } catch (Exception ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -179,6 +181,7 @@ public class TicketManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -221,6 +224,7 @@ public class TicketManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -254,6 +258,7 @@ public class TicketManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -292,6 +297,7 @@ public class TicketManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -342,6 +348,7 @@ public class TicketManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -392,6 +399,7 @@ public class TicketManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();

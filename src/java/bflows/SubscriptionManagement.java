@@ -3,13 +3,14 @@ package bflows;
 import java.beans.*;
 import java.io.Serializable;
 import blogics.*;
+import exceptions.NotFoundDBException;
 import global.Constants;
+import java.sql.SQLException;
 
 /**
- *
- * @author Guido Pio
+ * JavaBean per la gestione di un abbonamento
  */
-public class SubscriptionManagement implements Serializable {
+public class SubscriptionManagement extends BaseBean implements Serializable {
 
     private int id_abbonamento;
     private int num_ticket;
@@ -31,11 +32,16 @@ public class SubscriptionManagement implements Serializable {
                 this.setId_abbonamento(id);
                 this.setNum_ticket(Constants.MAX_TICKETS_SUBSCRIPTION);
             }
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // da gestire
         }
     }
 
+    /**
+     * Aggiorno un abbonamento associato ad un utente
+     *
+     * @param username Identificativo dell'utente
+     */
     public void updateSubscription(String username) {
         try {
             SubscriptionModel subscription = SubscriptionManager.get(username);
@@ -45,7 +51,7 @@ public class SubscriptionManagement implements Serializable {
                 this.setNum_ticket(Constants.MAX_TICKETS_SUBSCRIPTION);
                 this.setId_abbonamento(subscription.getId_abbonamento());
             }
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // da gestire
         }
     }
@@ -53,8 +59,7 @@ public class SubscriptionManagement implements Serializable {
     /**
      * Recupero o meno un abbonamento associato ad un utente
      *
-     * @param username Lo username dell'utente di cui voglio recuperare
-     * l'abbonamento
+     * @param username Identificativo dell'utente
      */
     public void getSubscription(String username) {
         try {
@@ -66,7 +71,7 @@ public class SubscriptionManagement implements Serializable {
                 this.setId_abbonamento(0);
                 this.setNum_ticket(-1);
             }
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // da gestire
         }
     }

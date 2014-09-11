@@ -12,9 +12,10 @@
         response.sendRedirect(redirect);
     }
     if (status.equals("addShow")) {
-        nowShowingBean.addShow();
-        /*String redirect = String.format("slotsala.jsp?id_film=", id_film);
-         response.sendRedirect(redirect);*/
+        try {
+            nowShowingBean.addShow();
+        } catch (Exception ex) {
+        }
     }
     nowShowingBean.populateTheater();
     int num_sale = nowShowingBean.TheaterDate_Length();
@@ -32,15 +33,17 @@
         </p>
     </div>
 </div>
+
 <% if (!nowShowingBean.getMessage().equals("")) {%>
 <!-- Gestione Errori -->
 <div class="container">
     <div class="alert alert-dismissable <%=nowShowingBean.getMessagetype()%>">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-        <p><strong><%=nowShowingBean.getMessage()%></strong></p>
+        <p class="message"><%=nowShowingBean.getMessage()%></p>
     </div>
 </div>
 <%}%>
+
 <div class="container">
     <div class="row">
         <form id="showForm" method="post" action="addshow.jsp">

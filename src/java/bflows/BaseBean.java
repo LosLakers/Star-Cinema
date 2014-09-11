@@ -26,6 +26,10 @@ public class BaseBean implements Serializable {
         INSERTSUCCESS,
         INSERTERROR,
         SEARCHERROR,
+        TICKETLISTERROR,
+        UPDATESUCCESS,
+        UPDATEERROR,
+        USEREXIST,
     }
     private String message = "";
     private String messagetype = "";
@@ -85,13 +89,35 @@ public class BaseBean implements Serializable {
                         + "Se il problema persiste contattare un Amministratore";
                 this.messagetype = "alert-danger";
                 break;
-                
+
             case SEARCHERROR:
                 this.message = "Errore nella ricerca, riprovare. "
                         + "Se il problema persiste contattare un Amministratore";
                 this.messagetype = "alert-danger";
                 break;
-                
+
+            case TICKETLISTERROR:
+                this.message = "Errore recupero biglietti, riprovare. "
+                        + "Se il problema persiste contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+
+            case UPDATESUCCESS:
+                this.message = "Aggiornamento avvenuto con successo.";
+                this.messagetype = "alert-success";
+                break;
+
+            case UPDATEERROR:
+                this.message = "Errore nell'aggiornamento, riprovare.";
+                this.messagetype = "alert-danger";
+                break;
+
+            case USEREXIST:
+                this.message = "L'Username inserito è già in utilizzo. "
+                        + "Inserire un nuovo Username.";
+                this.messagetype = "alert-danger";
+                break;
+
             default:
                 this.message = "";
                 this.messagetype = "";

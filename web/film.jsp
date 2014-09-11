@@ -50,11 +50,9 @@
 <% if (!filmBean.getMessage().equals("")) {%>
 <!-- Gestione Errori -->
 <div class="container">
-    <div class="col-md-12 col-lg-12">
-        <div class="alert alert-dismissable <%=filmBean.getMessagetype()%>">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-            <p class="message"><%=filmBean.getMessage()%></p>
-        </div>
+    <div class="alert alert-dismissable <%=filmBean.getMessagetype()%>">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+        <p class="message"><%=filmBean.getMessage()%></p>
     </div>
 </div>
 <%}%>

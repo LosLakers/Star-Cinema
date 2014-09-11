@@ -6,13 +6,14 @@ import java.io.Serializable;
 
 import blogics.*;
 import exceptions.*;
+import java.io.IOException;
 import java.sql.SQLException;
+import javax.mail.MessagingException;
 
 /**
- *
- * @author Guido Pio
+ * JavaBean per la gestione di un utente
  */
-public class LoginManagement implements Serializable {
+public class LoginManagement extends BaseBean implements Serializable {
 
     private String username;
     private String password;
@@ -59,16 +60,48 @@ public class LoginManagement implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     /**
-     * Aggiorno i dati di un utente nel sistema
+     * Inserisco un utente nel sistema
+     * @throws java.lang.Exception Eccezione
      */
-    public void updateUser() {
+    public void addUser() throws Exception {
+
+        UserModel user = null;
+        try {
+            user = UserManager.get(this.getUsername());
+        } catch (NotFoundDBException | SQLException ex) {
+            this.setAlert(Message.INSERTERROR);
+            throw ex;
+        }
+        if (user != null) {
+            this.setAlert(Message.USEREXIST);
+            throw new Exception();
+        }
+        try {
+            int credit_card = this.getCreditcard() != null ? Integer.parseInt(this.getCreditcard()) : 0;
+            user = new UserModel(this.getUsername(), this.getPassword(), this.getName(),
+                    this.getSurname(), this.getEmail(), credit_card);
+            UserManager.add(user);
+        } catch (NotFoundDBException | IOException | NumberFormatException | MessagingException ex) {
+            this.setAlert(Message.INSERTERROR);
+            throw ex;
+        }
+    }
+
+    /**
+     * Aggiorno i dati di un utente nel sistema
+     *
+     * @throws exceptions.NotFoundDBException Eccezione
+     */
+    public void updateUser() throws NumberFormatException, NotFoundDBException {
         try {
             String creditcard = this.getCreditcard() == null ? "0" : this.getCreditcard();
             UserModel newUser = new UserModel(this.getUsername(), this.getPassword(), this.getName(),
                     this.getSurname(), this.getEmail(), Integer.parseInt(creditcard));
             UserManager.update(newUser);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            this.setAlert(Message.UPDATESUCCESS);
+        } catch (NumberFormatException | NotFoundDBException ex) {
+            this.setAlert(Message.UPDATEERROR);
+            throw ex;
         }
     }
 
@@ -94,7 +127,7 @@ public class LoginManagement implements Serializable {
             } else {
                 this.setSubscriptionticket(-1);
             }
-        } catch (Exception ex) {
+        } catch (NotFoundDBException | SQLException ex) {
             // da gestire
         }
     }
@@ -122,6 +155,12 @@ public class LoginManagement implements Serializable {
         }
     }
 
+    /**
+     * Recupero il valore di un cookie dal nome
+     *
+     * @param name Nome associato al cookie
+     * @return Valore del cookie
+     */
     public String getCookieValue(String name) {
         return CookieManager.getValue(name, cookies);
     }

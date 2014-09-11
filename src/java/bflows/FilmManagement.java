@@ -49,15 +49,19 @@ public class FilmManagement extends BaseBean implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     /**
      * Inserisco il film nel database
+     *
+     * @throws exceptions.NotFoundDBException Eccezione
+     * @throws java.sql.SQLException Eccezione
      */
-    public void addFilm() {
+    public void addFilm() throws NotFoundDBException, SQLException {
         try {
             FilmModel film = new FilmModel(0, this.getTitolo(), LocalTime.parse(this.getDurata()),
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.add(film);
             this.setId_film(film.getId_film());
         } catch (NotFoundDBException | SQLException ex) {
-            // gestione eccezione
+            this.setAlert(Message.INSERTERROR);
+            throw ex;
         }
     }
 
@@ -69,27 +73,37 @@ public class FilmManagement extends BaseBean implements Serializable {
             FilmModel film = new FilmModel(this.getId_film(), this.getTitolo(), LocalTime.parse(this.getDurata()),
                     this.getDescrizione(), this.getTrailer(), this.getLocandina());
             FilmManager.update(film);
+            this.setAlert(Message.UPDATESUCCESS);
         } catch (NotFoundDBException ex) {
-            // gestione eccezione
+            this.setAlert(Message.UPDATEERROR);
         }
     }
 
     /**
      * L'admin elimina un film dal database
+     *
+     * @throws exceptions.NotFoundDBException Eccezione
      */
-    public void deleteFilm() {
+    public void deleteFilm() throws NotFoundDBException {
         try {
             FilmManager.delete(this.getId_film());
         } catch (NotFoundDBException ex) {
             this.setAlert(Message.DELETEERROR);
+            throw ex;
         }
     }
 
-    public void deleteMultiFilm() {
+    /**
+     * L'admin elimina uno o più film dal database
+     *
+     * @throws NotFoundDBException Eccezione
+     */
+    public void deleteMultiFilm() throws NotFoundDBException {
         try {
             FilmManager.delete(this.getDeleteFilm());
         } catch (NotFoundDBException ex) {
             this.setAlert(Message.DELETEERROR);
+            throw ex;
         }
     }
 
@@ -178,8 +192,11 @@ public class FilmManagement extends BaseBean implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" Comment-Management ">
     /**
      * Inserisco un commento
+     *
+     * @throws exceptions.NotFoundDBException Eccezione
+     * @throws java.sql.SQLException Eccezione
      */
-    public void addComment() {
+    public void addComment() throws NotFoundDBException, SQLException {
         try {
             CommentModel commento = new CommentModel(0, this.getVoto(), this.getGiudizio(),
                     this.getUser(), this.getId_film());
@@ -187,19 +204,23 @@ public class FilmManagement extends BaseBean implements Serializable {
             this.setId_commento(commento.getId_commento());
         } catch (NotFoundDBException | SQLException ex) {
             this.setAlert(Message.COMMENTERROR);
+            throw ex;
         }
     }
 
     /**
      * Aggiorno un commento inserito da un utente
+     *
+     * @throws exceptions.NotFoundDBException Eccezione
      */
-    public void updateComment() {
+    public void updateComment() throws NotFoundDBException {
         try {
             CommentModel commento = new CommentModel(this.getId_commento(), this.getVoto(), this.getGiudizio(),
                     this.getUser(), this.getId_film());
             CommentManager.update(commento);
         } catch (NotFoundDBException ex) {
             this.setAlert(Message.COMMENTERROR);
+            throw ex;
         }
     }
 
@@ -211,8 +232,13 @@ public class FilmManagement extends BaseBean implements Serializable {
      * Un admin elimina dal sistema il commento con id inserito come parametro.
      *
      * @param id_commento Id del commento da eliminare
+     * @throws exceptions.NotFoundDBException Eccezione
+     * @throws java.sql.SQLException Eccezione
+     * @throws javax.mail.MessagingException Eccezione
+     * @throws java.io.IOException Eccezione
      */
-    public void deleteComment(int id_commento) {
+    public void deleteComment(int id_commento)
+            throws NotFoundDBException, SQLException, MessagingException, IOException {
         try {
             CommentModel comment = CommentManager.get(id_commento);
             UserModel user = UserManager.get(comment.getUsername());
@@ -220,6 +246,7 @@ public class FilmManagement extends BaseBean implements Serializable {
             CommentManager.delete(comment, user.getEmail(), film.getTitolo());
         } catch (NotFoundDBException | SQLException | MessagingException | IOException ex) {
             this.setAlert(Message.DELETEERROR);
+            throw ex;
         }
     }
 

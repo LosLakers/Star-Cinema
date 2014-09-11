@@ -105,8 +105,9 @@ public class TicketManagement extends BaseBean implements Serializable {
 
     /**
      * Aggiorno il ticket con le nuove informazioni
+     * @throws java.lang.Exception Eccezione
      */
-    public void updateTicket() {
+    public void updateTicket() throws Exception {
         try {
             FilmTheaterDateModel model = ShowManager.get(this.getId_tabella());
             String[] tmpseat = this.getSeat();
@@ -126,7 +127,8 @@ public class TicketManagement extends BaseBean implements Serializable {
             TicketManager.update(ticket, film.getId_film(), date.getId_data(),
                     seat);
         } catch (Exception ex) {
-            // da gestire
+            this.setAlert(Message.UPDATEERROR);
+            throw ex;
         }
     }
 
@@ -148,8 +150,10 @@ public class TicketManagement extends BaseBean implements Serializable {
 
     /**
      * Recupero tutti gli ingressi associati ad un utente
+     * @throws exceptions.NotFoundDBException Eccezione
+     * @throws java.sql.SQLException Eccezione
      */
-    public void getTicketList() {
+    public void getTicketList() throws NotFoundDBException, SQLException {
         try {
             // recupero la lista dei ticket associati ad uno username
             List<TicketModel> ticketlist = TicketManager.get(this.getUsername());
@@ -167,8 +171,9 @@ public class TicketManagement extends BaseBean implements Serializable {
 
             // setto il modello
             this.setTickets(array.toArray(new Ticket[array.size()]));
-        } catch (Exception ex) {
-            // da gestire
+        } catch (NotFoundDBException | SQLException ex) {
+            this.setAlert(Message.TICKETLISTERROR);
+            throw ex;
         }
     }
     // </editor-fold>

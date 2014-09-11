@@ -1,22 +1,31 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page isErrorPage="true"%>
-<!DOCTYPE html>
+<%@page isErrorPage="true" import="java.io.*" contentType="text/html"%>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <%@include file="default.html" %>
         <title>Pagina di Errore</title>
     </head>
     <body>
+        <div class="jumbotron">
+            <div class="container">
+                <p>
+                    Si è verificato un errore. Si prega di provare a ricaricare la pagina.
+                    <br/>
+                    Se il problema persiste contattare un amministratore segnalando il codice seguente
+                </p>
+            </div>
+        </div>
         <div class="container">
-            <p>
-                Si Ã¨ verificato un errore. Si prega di provare a ricaricare la pagina.
-                <br/>
-                Se il problema persiste contattare un amministratore segnalando il codice seguente
-            </p>
             <br/>
-            <code>
-                <%=exception.getMessage()%>
-            </code>
+            <legend>StackTrace</legend>
+            <br/>
+            <%
+                StringWriter stringWriter = new StringWriter();
+                PrintWriter printWriter = new PrintWriter(stringWriter);
+                exception.printStackTrace(printWriter);
+                out.println(stringWriter);
+                printWriter.close();
+                stringWriter.close();
+            %>
         </div>
     </body>
 </html>

@@ -7,6 +7,9 @@ import javax.mail.MessagingException;
 import services.database.*;
 import services.javaxmail.Email;
 
+/**
+ * Manager per la gestione di un utente nel database
+ */
 public class UserManager {
 
     // <editor-fold defaultstate="collapsed" desc="CRUD">
@@ -14,9 +17,9 @@ public class UserManager {
      * Aggiungo un utente nel sistema con invio di una email di registrazione
      *
      * @param user L'utente che aggiungo al sistema
-     * @throws NotFoundDBException
-     * @throws MessagingException
-     * @throws IOException
+     * @throws NotFoundDBException Eccezione
+     * @throws MessagingException Eccezione
+     * @throws IOException Eccezione
      */
     public static void add(UserModel user)
             throws NotFoundDBException, MessagingException, IOException {
@@ -41,6 +44,7 @@ public class UserManager {
             String subject = "Registrazione STAR CINEMA";
             Email.send(user.getEmail(), subject, message);
         } catch (NotFoundDBException | MessagingException | IOException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -51,7 +55,7 @@ public class UserManager {
      * Aggiorno i dati di un utente
      *
      * @param user L'utente di cui voglio aggiornare i dati
-     * @throws NotFoundDBException
+     * @throws NotFoundDBException Eccezione
      */
     public static void update(UserModel user)
             throws NotFoundDBException {
@@ -68,6 +72,7 @@ public class UserManager {
             database.commit();
             database.close();
         } catch (NotFoundDBException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -79,10 +84,11 @@ public class UserManager {
      *
      * @param username Identificativo dell'utente che voglio recuperare
      * @return L'utente se è presente nel database, null se non è presente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
-    public static UserModel get(String username) throws NotFoundDBException, SQLException {
+    public static UserModel get(String username) 
+            throws NotFoundDBException, SQLException {
 
         DataBase database = DBService.getDataBase();
         UserModel model = null;
@@ -97,6 +103,7 @@ public class UserManager {
             result.close();
             database.commit();
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();
@@ -111,8 +118,8 @@ public class UserManager {
      * @param username Username dell'utente
      * @param password Password dell'utente
      * @return L'utente se è presente nel database, null se non è presente
-     * @throws NotFoundDBException
-     * @throws SQLException
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
      */
     public static UserModel get(String username, String password)
             throws NotFoundDBException, SQLException {
@@ -137,6 +144,7 @@ public class UserManager {
                 throw new NotFoundDBException("");
             }
         } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
             throw ex;
         } finally {
             database.close();

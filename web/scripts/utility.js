@@ -32,7 +32,7 @@ function backButton() {
     return false;
 }
 
-function parentSubmit() {
-    var form = this.parentNode;
+function parentSubmit(link) {
+    var form = link.parentNode;
     form.submit();
 }

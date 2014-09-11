@@ -7,12 +7,21 @@
     boolean authenticate = loginBean.authenticate(username, password);
     if (authenticate) {
         ticketBean.setUsername(username);
-        ticketBean.getTicketList();
+        try {
+            ticketBean.getTicketList();
+        } catch (Exception ex) {
+        }
 %>
 <div class="jumbotron">
+    <% if (!ticketBean.getMessage().equals("")) {%>
+    <!-- Gestione Errori -->
     <div class="container">
-
+        <div class="alert alert-dismissable <%=ticketBean.getMessagetype()%>">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+            <p class="message"><%=ticketBean.getMessage()%></p>
+        </div>
     </div>
+    <%}%>
 </div>
 <div class="container">
     <legend>Lista Ingressi</legend>

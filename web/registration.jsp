@@ -2,20 +2,20 @@
 <%@page contentType="text/html" %>
 <%@page session="false" %>
 
-<jsp:useBean id="registrationManagement" scope="page" class="bflows.RegistrationManagement" />
-<jsp:setProperty name="registrationManagement" property="*" />
+<jsp:useBean id="loginBean" scope="page" class="bflows.LoginManagement" />
+<jsp:setProperty name="loginBean" property="*" />
 
 <%
-    Boolean registration = false;
     String status = request.getParameter("status");
 
     if (status != null && status.equals("registrato")) {
-        registration = true;
-        registrationManagement.registration();
-        String redirect = new String("home.jsp");
-        response.sendRedirect(redirect);
+        try {
+            loginBean.addUser();
+            String redirect = "home.jsp";
+            response.sendRedirect(redirect);
+        } catch (Exception ex) {
+        }
     }
-
 %>
 
 <!DOCTYPE html>
@@ -27,16 +27,25 @@
     <body>
         <div class="jumbotron">
             <div class="container">
-                <% if (!registration) {%>
                 <h1>Registrazione</h1>
             </div>
         </div>
+        <% if (!loginBean.getMessage().equals("")) {%>
+        <!-- Gestione Errori -->
+        <div class="container">
+            <div class="alert alert-dismissable <%=loginBean.getMessagetype()%>">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                <p class="message"><%=loginBean.getMessage()%></p>
+            </div>
+        </div>
+        <%}%>
         <div class="container">
             <form id="registration" name="registrationForm" method="post" action="registration.jsp">
                 <input type="hidden" name="status" value="registrato" />
                 <div class="input-group">
                     <span class="label label-info">Inserisci Username</span>
-                    <input type="text" class="form-control" name="username" placeholder="Username" required="required"/>
+                    <input type="text" class="form-control" name="username" placeholder="Username" 
+                           required="required"/>
                 </div>
                 <br/>
                 <div class="input-group">
@@ -53,17 +62,20 @@
                 <br/>
                 <div class="input-group">
                     <span class="label label-info">Inserisci Nome</span>
-                    <input type="text" class="form-control" name="name" placeholder="Nome" required="required" />
+                    <input type="text" class="form-control" name="name" placeholder="Nome" 
+                           required="required" />
                 </div>
                 <br/>
                 <div class="input-group">
                     <span class="label label-info">Inserisci Cognome</span>
-                    <input type="text" class="form-control" name="surname" placeholder="Cognome" required="required" />
+                    <input type="text" class="form-control" name="surname" placeholder="Cognome" 
+                           required="required" />
                 </div>
                 <br/>
                 <div class="input-group">
                     <span class="label label-info">Inserisci E-mail</span>
-                    <input type="email" class="form-control" name="email" placeholder="E-mail" />
+                    <input type="email" class="form-control" name="email" placeholder="E-mail"  
+                           required="required"/>
                 </div>
                 <br/>
                 <div class="input-group">
@@ -76,9 +88,8 @@
                 <br/>
                 <br/>
             </form>
-            <%}%>
         </div>
-<script src="scripts/validation_registration.js"></script>
-<script src="scripts/utility.js"></script>
-</body>
+        <script src="scripts/validation_registration.js"></script>
+        <script src="scripts/utility.js"></script>
+    </body>
 </html>
