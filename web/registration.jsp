@@ -1,6 +1,7 @@
 <%@page info="Registration Page" %>
 <%@page contentType="text/html" %>
 <%@page session="false" %>
+<%@page errorPage="errorpage.jsp" %>
 
 <jsp:useBean id="loginBean" scope="page" class="bflows.LoginManagement" />
 <jsp:setProperty name="loginBean" property="*" />
@@ -22,6 +23,7 @@
 <html>
     <head>
         <%@include file="default.html" %>
+        <link href="css/custom-theme.css" rel="stylesheet">
         <title>Registrazione Star Cinema</title>
     </head>
     <body>

@@ -4,9 +4,7 @@
 <jsp:setProperty name="ticketBean" property="*"/>
 
 <%
-    boolean authorized = loginBean.authenticate(username, password);
-
-    if (authorized) {
+    if (loggedIn) {
         ticketBean.setUsername(username);
 
         if (status == null || !status.equals("updateticket")) {

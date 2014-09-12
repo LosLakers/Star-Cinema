@@ -16,7 +16,7 @@ public class DBService extends Object {
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection connection = DriverManager.getConnection(Constants.DB_CONNECTION_STRING);               
         return new DataBase(connection);
-      } catch (Exception e) {
+      } catch (NotFoundDBException | ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException e) {
         throw new NotFoundDBException("DBService: Impossibile creare la Connessione al DataBase: " + e);
       }
     }

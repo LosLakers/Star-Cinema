@@ -44,7 +44,8 @@
             </div>
             <div class="col-lg-4 col-md-4">
                 <span class="label label-info">Inserisci Durata Film</span>
-                <input type="time" class="form-control" name="durata" required="required"/>
+                <input type="time" class="form-control" name="durata" placeholder="hh:mm"
+                       required="required"/>
             </div>
         </div>  
         <br/>

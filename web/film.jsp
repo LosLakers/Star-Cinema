@@ -98,7 +98,7 @@
         </div>
     </div>
     <!-- Gestione Commenti -->
-    <% if (!username.equals("")) {%>
+    <% if (loggedIn) {%>
     <div class="row">
         <% if (firstComment) {%>
         <!-- Primo Commento -->

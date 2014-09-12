@@ -1,4 +1,6 @@
 <%@page isErrorPage="true" import="java.io.*" contentType="text/html"%>
+<%@page session="false" %>
+
 <html>
     <head>
         <%@include file="default.html" %>

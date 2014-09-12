@@ -1,17 +1,13 @@
 <%@include file="login_navbar.jsp" %>
 
 <%
-    boolean authorized = loginBean.authenticate(username, password);
-
-    if (authorized) {
+    if (loggedIn) {
         if (status.equals("edit")) {
             try {
                 loginBean.updateUser();
             } catch (Exception ex) {
             }
         }
-        loginBean.setUsername(username);
-        loginBean.setPassword(password);
         loginBean.getUser();
 %>
 <div class="jumbotron">

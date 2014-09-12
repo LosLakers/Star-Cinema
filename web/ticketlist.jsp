@@ -4,8 +4,7 @@
 <jsp:useBean id="ticketBean" scope="page" class="bflows.TicketManagement" />
 
 <%
-    boolean authenticate = loginBean.authenticate(username, password);
-    if (authenticate) {
+    if (loggedIn) {
         ticketBean.setUsername(username);
         try {
             ticketBean.getTicketList();

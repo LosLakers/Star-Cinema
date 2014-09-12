@@ -18,9 +18,9 @@ import javax.mail.internet.MimeMessage;
  */
 public class Email {
 
-    static Properties mailServerProperties;
-    static Session getMailSession;
-    static MimeMessage generateMailMessage;
+    private static Properties mailServerProperties;
+    private static Session getMailSession;
+    private static MimeMessage generateMailMessage;
 
     /**
      * Invio una email con un soggetto e un testo inseriti come parametri
@@ -28,9 +28,9 @@ public class Email {
      * @param email La email a cui inviare il messaggio
      * @param subject Il soggetto della email
      * @param message Il messaggio della email
-     * @throws AddressException
-     * @throws MessagingException
-     * @throws IOException
+     * @throws AddressException Eccezione
+     * @throws MessagingException Eccezione
+     * @throws IOException Eccezione
      */
     public static void send(String email, String subject, String message)
             throws AddressException, MessagingException, IOException {

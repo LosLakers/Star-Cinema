@@ -1,8 +1,7 @@
 <%@include file="login_navbar.jsp" %>
 
 <%
-    boolean authorized = loginBean.authenticate(username, password);
-    if (authorized) {
+    if (loggedIn) {
 %>
 
 <jsp:useBean id="ticketBean" scope="page" class="bflows.TicketManagement"/>

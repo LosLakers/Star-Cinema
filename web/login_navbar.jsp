@@ -16,56 +16,59 @@
 
     boolean loggedIn = (cookies != null);
 
-    int i;
-    String status;
-    // da usare in futuro per mantenere la sessione anche alla chiusura del browser
-    //String ricordami = request.getParameter("ricordami");
-
     /* gestione dello status con cui arrivo nella pagina */
-    status = request.getParameter("status");
+    String status = request.getParameter("status");
     if (status == null) {
         status = "view";
     }
 
     if (status.equals("login")) {
-        loginBean.login();
-        if (loginBean.getCookies() != null) {
-            for (i = 0; i < loginBean.getCookies().length; i++) {
-                response.addCookie(loginBean.getCookie(i));
+        try {
+            loginBean.login();
+            if (loginBean.getCookies() != null) {
+                for (int i = 0; i < loginBean.getCookies().length; i++) {
+                    response.addCookie(loginBean.getCookie(i));
+                }
+                cookies = loginBean.getCookies();
+                loggedIn = true;
             }
-            cookies = loginBean.getCookies();
-            loggedIn = true;
-            username = loginBean.getCookieValue("username");
-            password = loginBean.getCookieValue("password");
-            isAdmin = loginBean.getCookieValue("admin").equals("true") ? true : false;
+        } catch (Exception ex) {
         }
     }
 
     if (status.equals("logout")) {
         if (loggedIn) {
             loginBean.setCookies(cookies);
-            loginBean.logout();
-            for (i = 0; i < loginBean.getCookies().length; i++) {
-                response.addCookie(loginBean.getCookie(i));
+            username = loginBean.getCookieValue("username");
+            password = loginBean.getCookieValue("password");
+            if (loginBean.authenticate(username, password)) {
+                loginBean.logout();
+                for (int i = 0; i < loginBean.getCookies().length; i++) {
+                    response.addCookie(loginBean.getCookie(i));
+                }
             }
-
             loggedIn = false;
         }
     }
 
     /* gestione di eventuali cookie già settati o settati durante il login */
-    if (cookies != null) {
+    if (loggedIn) {
         loginBean.setCookies(cookies);
         username = loginBean.getCookieValue("username");
         password = loginBean.getCookieValue("password");
-        if (loginBean.getCookieValue("admin").equals("true")) {
-            isAdmin = true;
-            profile = "admin_page.jsp";
+        if (loginBean.authenticate(username, password)) {
+            String admin = loginBean.getCookieValue("admin");
+            if (admin != null && admin.equals("true")) {
+                isAdmin = true;
+                profile = "admin_page.jsp";
+            } else {
+                profile = "user_page.jsp";
+            }
+            loginBean.setUsername(username);
+            loginBean.setPassword(password);
         } else {
-            profile = "user_page.jsp";
+            loggedIn = false;
         }
-        loginBean.setUsername(username);
-        loginBean.setPassword(password);
     }
 
     /* TODO */
@@ -149,3 +152,12 @@
                 </div>
             </div>
         </div>
+        <% if (!loginBean.getMessage().equals("")) {%>
+        <!-- Gestione Errori -->
+        <div class="container">
+            <div class="alert alert-dismissable <%=loginBean.getMessagetype()%>">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                <p class="message"><%=loginBean.getMessage()%></p>
+            </div>
+        </div>
+        <%}%>

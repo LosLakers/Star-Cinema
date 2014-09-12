@@ -1,8 +1,7 @@
 <%@include file="login_navbar.jsp" %>
 
 <%
-    boolean authorized = loginBean.authenticate(username, password);
-    if (authorized) {
+    if (loggedIn) {
         loginBean.getUser();
         if (loginBean.getCreditcard().equals("0")) {
             String redirect = profile + "?status=creditcarderror";

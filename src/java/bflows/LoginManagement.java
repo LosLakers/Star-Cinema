@@ -31,22 +31,41 @@ public class LoginManagement extends BaseBean implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" LOGIN-LOGOUT ">
     /**
      * Effettuo il login nel sistema
+     *
+     * @throws exceptions.NotFoundDBException Eccezione
+     * @throws java.sql.SQLException Eccezione
      */
-    public void login() {
+    public void login() throws NotFoundDBException, SQLException {
         try {
-            UserModel user = UserManager.get(username, password);
+            UserModel user = UserManager.get(this.getUsername(), this.getPassword());
 
             if (user != null) {
-                String[] property = {"username", "password", "admin"};
-                cookies = CookieManager.add(property, user.getUsername(), user.getPassword(),
-                        user.isAdmin() ? "true" : "false");
+                if (user.isAdmin()) {
+                    String[] property = {"username", "password", "admin"};
+                    Cookie[] cookies = CookieManager.add(property, user.getUsername(), 
+                            user.getPassword(), user.isAdmin() ? "true" : "false");
+                    for (Cookie tmp : cookies) {
+                        // per gli admin i cookie hanno una giornata di vita
+                        tmp.setMaxAge(24*60*60);
+                    }
+                    this.setCookies(cookies);
+                } else {
+                    String[] property = {"username", "password"};
+                    this.setCookies(CookieManager.add(property, user.getUsername(), 
+                            user.getPassword()));
+                }
                 this.setName(user.getName());
                 this.setSurname(user.getSurname());
                 this.setEmail(user.getEmail());
                 this.setCreditcard(Integer.toString(user.getCreditcard()));
+                this.setAlert(Message.LOGINSUCCESS);
             }
-        } catch (NotFoundDBException | SQLException ex) {
-            // da gestire
+        } catch (NotFoundDBException ex) {
+            this.setAlert(Message.LOGINUNSUCCESS);
+            throw ex;
+        } catch (SQLException ex) {
+            this.setAlert(Message.LOGINERROR);
+            throw ex;
         }
     }
 
@@ -61,6 +80,7 @@ public class LoginManagement extends BaseBean implements Serializable {
     // <editor-fold defaultstate="collapsed" desc=" CRUD ">
     /**
      * Inserisco un utente nel sistema
+     *
      * @throws java.lang.Exception Eccezione
      */
     public void addUser() throws Exception {

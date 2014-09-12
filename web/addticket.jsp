@@ -4,9 +4,7 @@
 <jsp:setProperty name="ticketBean" property="*"/>
 
 <%
-    boolean authorized = loginBean.authenticate(username, password);
-
-    if (authorized) {
+    if (loggedIn) {
         loginBean.getUser();
         if (loginBean.getCreditcard().equals("0")) {
             String redirect = profile + "?status=creditcarderror";

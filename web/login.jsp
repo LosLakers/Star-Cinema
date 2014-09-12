@@ -1,3 +1,8 @@
+<%@page info="Star Cinema" %>
+<%@page contentType="text/html" %>
+<%@page session="false" %>
+<%@page errorPage="errorpage.jsp" %>
+
 <%
     String status = request.getParameter("status");
     Boolean registrato = false;

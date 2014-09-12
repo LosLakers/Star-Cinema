@@ -4,9 +4,7 @@
 <jsp:setProperty name="subscriptionBean" property="*" />
 
 <%
-    boolean authenticate = loginBean.authenticate(username, password);
-
-    if (authenticate) {
+    if (loggedIn) {
         loginBean.getUser();
         if (loginBean.getCreditcard().equals("0")) {
             String redirect = profile + "?status=creditcarderror";

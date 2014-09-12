@@ -25,6 +25,9 @@ public class BaseBean implements Serializable {
         DELETEERROR,
         INSERTSUCCESS,
         INSERTERROR,
+        LOGINSUCCESS,
+        LOGINUNSUCCESS,
+        LOGINERROR,
         SEARCHERROR,
         TICKETLISTERROR,
         UPDATESUCCESS,
@@ -86,6 +89,22 @@ public class BaseBean implements Serializable {
 
             case INSERTERROR:
                 this.message = "Errore nell'inserimento, riprovare. "
+                        + "Se il problema persiste contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+
+            case LOGINSUCCESS:
+                this.message = "Login effettuato con successo.";
+                this.messagetype = "alert-success";
+                break;
+
+            case LOGINUNSUCCESS:
+                this.message = "Errore nello Username e/o nella Password. Riprovare";
+                this.messagetype = "alert-danger";
+                break;
+
+            case LOGINERROR:
+                this.message = "Errore nell'effettuare il login, riprovare. "
                         + "Se il problema persiste contattare un Amministratore";
                 this.messagetype = "alert-danger";
                 break;

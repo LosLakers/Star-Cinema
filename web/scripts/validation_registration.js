@@ -17,7 +17,7 @@ pass.addEventListener('change', function() {
     passwordCheck();
 });
 
-var conf_pass = form.conf_pass;
+var conf_pass = form.conf_password;
 conf_pass.addEventListener('change', function() {
     passwordCheck();
 });
