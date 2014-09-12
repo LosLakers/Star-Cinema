@@ -76,6 +76,7 @@
     String uri = request.getRequestURI();
     String currentPage = uri.substring(uri.lastIndexOf("/") + 1);
     String queryString = (request.getQueryString() != null) ? "?" + request.getQueryString() : "";
+    uri = uri + queryString;
 %>
 
 <!DOCTYPE html>
@@ -128,7 +129,7 @@
                     </ul>
                     <%if (!loggedIn) {%>
                     <!-- Utente non loggato -->
-                    <form name="loginForm" action="home.jsp" class="navbar-form navbar-right" method="post">
+                    <form name="loginForm" action="<%=uri%>" class="navbar-form navbar-right" method="post">
                         <input type="hidden" name="status" value="login"/>
                         <div class="form-group">
                             <input type="text" name="username" placeholder="Username" class="form-control" required="required"/>

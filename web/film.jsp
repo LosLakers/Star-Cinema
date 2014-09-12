@@ -77,7 +77,7 @@
         </div>
         <div class="col-lg-4 col-md-4">
             <legend>Locandina</legend>
-            <img src="<%=filmBean.getLocandina()%>"/>
+            <img src="images/<%=filmBean.getLocandina()%>"/>
         </div>
     </div>
 </div>

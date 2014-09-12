@@ -33,6 +33,9 @@
 <div class="jumbotron">
     <div class="container">
         <h1>Aggiorna Film</h1>
+        <p>Per l'inserimento della locandina, salvare il file nella cartella <strong>web/images</strong> 
+            del progetto e inserire solo il nome del film seguito dall'estensione
+        </p>
     </div>
 </div>  
 <% if (!filmBean.getMessage().equals("")) {%>
