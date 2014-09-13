@@ -6,8 +6,9 @@
 <%
     if (loggedIn) {
         ticketBean.setUsername(username);
+        String backpage = "updatetickettime.jsp?id_ingresso=" + ticketBean.getId_ingresso();
 
-        if (status == null || !status.equals("updateticket")) {
+        if (!status.equals("updateticket")) {
             ticketBean.populateUpdate();
         }
         if (status.equals("updateticket")) {
@@ -95,7 +96,7 @@
         <input type="hidden" name="id_ingresso" value="<%=ticketBean.getId_ingresso()%>" />
         <br/>
         <button type="submit" form="seatform" class="btn btn-primary">Conferma</button>
-        <a href="#" id="backbutton" class="btn btn-warning">Indietro</a>
+        <a href="<%=backpage%>" class="btn btn-warning">Indietro</a>
     </form>
 </div>
 <input type="hidden" id="ticketcount" value="<%=ticketBean.getTicketCounter()%>"/>

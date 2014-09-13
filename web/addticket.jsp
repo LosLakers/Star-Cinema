@@ -6,10 +6,11 @@
 <%
     if (loggedIn) {
         loginBean.getUser();
-        if (loginBean.getCreditcard().equals("0")) {
-            String redirect = profile + "?status=creditcarderror";
-            response.sendRedirect(redirect);
+        if (loginBean.getCreditcard().equals("0")) {;
+            response.sendRedirect(response.encodeRedirectURL(profile + "?status=" + "creditcarderror"));
         } else {
+            String backpage = "addtickettime.jsp?id_film=" + ticketBean.getId_film() +
+                    "&data=" + ticketBean.getData();
             ticketBean.setUsername(username);
             ticketBean.populateAdd();
 
@@ -100,7 +101,7 @@
         <br/>
         <%}%>
         <button type="submit" form="seatform" class="btn btn-primary">Conferma</button>
-        <a href="#" id="backbutton" class="btn btn-warning">Indietro</a>
+        <a href="<%=backpage%>" class="btn btn-warning">Indietro</a>
     </form>
 </div>
 <input type="hidden" id="ticketcount" value="<%=ticketBean.getTicketCounter()%>"/>

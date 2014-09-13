@@ -18,13 +18,6 @@
         filmBean.updateFilm();
         } catch (Exception ex) {}
     }
-    if (status.equals("deletefilm")) {
-        try {
-        filmBean.deleteFilm();
-        String redirect = "search.jsp";
-        response.sendRedirect(redirect);
-        } catch (Exception ex) {}
-    }
 
     filmBean.getFilm();
 
@@ -34,7 +27,7 @@
     <div class="container">
         <h1>Aggiorna Film</h1>
         <p>Per l'inserimento della locandina, salvare il file nella cartella <strong>web/images</strong> 
-            del progetto e inserire solo il nome del film seguito dall'estensione
+            del progetto e inserire solo il nome del film seguito dall'estensione .jpg
         </p>
     </div>
 </div>  
@@ -69,8 +62,8 @@
                        required="required" value="<%=filmBean.getTrailer()%>" />
             </div>
             <div class="form-group col-lg-4 col-md-4">
-                <span class="label label-info">Inserisci URL Locandina</span>
-                <input type="url" class="form-control" name="locandina" placeholder="URL Locandina" 
+                <span class="label label-info">Inserisci Locandina</span>
+                <input type="text" class="form-control" name="locandina" placeholder="Locandina" 
                        required="required" value="<%=filmBean.getLocandina()%>" />
             </div>
         </div>  
@@ -82,16 +75,11 @@
             </div>
         </div>
         <input type="submit" form="filmForm" class="btn btn-primary" value="Aggiorna"/>
-        <a href="<%=profile%>" class="btn btn-warning">Torna al Profilo</a>
+        <a href="film.jsp?id_film=<%=filmBean.getId_film()%>" class="btn btn-warning">Annulla</a>
         <input type="hidden" name="status" value="updatefilm"/>
         <input type="hidden" name="id_film" value="<%=id%>"/>
     </form>
     <br/>
-    <form id="deleteFilm" class="inline-form" method="post" action="update.jsp">
-        <input type="submit" form="deleteFilm" class="btn btn-danger" value="Elimina"/>
-        <input type="hidden" name="status" value="deletefilm"/>
-        <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
-    </form>
 </div>
 <%
     } else {// redirect per evitare che un non admin abbia accesso

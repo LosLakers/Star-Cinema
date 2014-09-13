@@ -62,22 +62,13 @@
     <div class="container">
         <div class="col-lg-8 col-md-8">
             <h1><%=filmBean.getTitolo()%></h1>
-            <% if (isAdmin) {%>
-            <form id="adminForm" action="updatefilm.jsp">
-                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
-                <input type="hidden" name="status" value="edit"/>
-                <button form="adminForm" type="submit" class="btn btn-primary">Modifica Film</button>
-            </form>
-            <br/>
-            <form id="showForm" action="slotsala.jsp">
-                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
-                <button form="showForm" type="submit" class="btn btn-default">Aggiungi Spettacolo</button>
-            </form>
-            <%}%>    
         </div>
         <div class="col-lg-4 col-md-4">
             <legend>Locandina</legend>
             <img src="images/<%=filmBean.getLocandina()%>"/>
+            <br/>
+            <br/>
+            <a href="<%=filmBean.getTrailer()%>" class="btn btn-default">Guarda il trailer</a>
         </div>
     </div>
 </div>
@@ -92,11 +83,23 @@
         <div class="col-lg-4 col-md-4">
             <legend>Durata</legend>
             <%=filmBean.getDurata()%>
-            <br/>
-            <br/>
-            <a href="<%=filmBean.getTrailer()%>" class="btn btn-default">Guarda il trailer</a>
         </div>
-    </div>
+        <% if (isAdmin) {%>
+        <div class="col-lg-4 col-md-4">
+            <legend>Opzioni</legend>
+            <form id="adminForm" action="updatefilm.jsp">
+                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
+                <input type="hidden" name="status" value="edit"/>
+                <button form="adminForm" type="submit" class="btn btn-primary">Modifica Film</button>
+            </form>
+            <br/>
+            <form id="showForm" action="slotsala.jsp">
+                <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
+                <button form="showForm" type="submit" class="btn btn-default">Aggiungi Spettacolo</button>
+            </form>
+        </div>
+        <%}%>    
+    </div> 
     <!-- Gestione Commenti -->
     <% if (loggedIn) {%>
     <div class="row">

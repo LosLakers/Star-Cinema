@@ -37,7 +37,7 @@
     <br/>
     <div class="row">
         <!-- Informazioni utente -->
-        <form class="col-lg-4 col-md-4" action="user_page.jsp" method="post">
+        <form class="col-lg-4 col-md-4" action="<%=profile%>" method="post">
             <div class="form-group">
                 <label class="control-label">Nome</label>
                 <div class="controls">
@@ -69,6 +69,7 @@
         </form>
         <div class="col-lg-4 col-md-4">
             <!-- Gestione biglietti -->
+            <legend>Ingressi</legend>
             <a href="ticketlist.jsp" class="btn btn-default">Lista Ingressi</a>
         </div>
         <div class="col-lg-4">

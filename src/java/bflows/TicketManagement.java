@@ -97,6 +97,8 @@ public class TicketManagement extends BaseBean implements Serializable {
                 SubscriptionModel subscription = SubscriptionManager.get(this.getUsername());
                 int topay = SubscriptionManager.useSubscription(this.getUsername(), subscription, id_ingresso);
                 this.setTopay(topay);
+            } else {
+                this.setTopay(id_ingresso.length);
             }
         } catch (Exception ex) {
             // gestione eccezione

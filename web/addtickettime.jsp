@@ -108,7 +108,7 @@
         <input type="hidden" name="id_film" value="<%=ticketBean.getId_film()%>"/>
         <input type="hidden" name="data" value="<%=ticketBean.getData()%>"/>
         <button type="submit" form="timeform" class="btn btn-primary">Conferma</button>
-        <a href="#" id="backbutton" class="btn btn-warning">Indietro</a>
+        <a href="home.jsp" class="btn btn-warning">Annulla</a>
     </form>
 </div>
 <script src="scripts/ticket.js"></script>

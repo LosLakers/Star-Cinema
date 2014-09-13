@@ -90,7 +90,7 @@
             <br/>
             <div class="col-lg-12 col-md-12">
                 <button type="submit" class="btn btn-primary">Conferma</button>
-                <a href="#" class="btn btn-warning">Annulla</a>
+                <a href="nowshowing.jsp" class="btn btn-warning">Annulla</a>
             </div>
         </form>
     </div>

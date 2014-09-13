@@ -37,7 +37,7 @@
     <br/>
     <div class="row">
         <!-- Modifica Profilo -->
-        <form class="col-lg-4 col-md-4" method="post">
+        <form class="col-lg-4 col-md-4" action="<%=profile%>" method="post">
             <div class="form-group">
                 <label class="control-label">Nome</label>
                 <div class="controls">

@@ -33,7 +33,7 @@
     <div class="container">
         <h1>Film</h1>
         <p>Per l'inserimento della locandina, salvare il file nella cartella <strong>web/images</strong> 
-            del progetto e inserire solo il nome del film seguito dall'estensione
+            del progetto e inserire solo il nome del film seguito dall'estensione .jpg
         </p>
     </div>
 </div>  
@@ -59,8 +59,8 @@
                        required="required"/>
             </div>
             <div class="form-group col-lg-4 col-md-4">
-                <span class="label label-info">Inserisci URL Locandina</span>
-                <input type="url" class="form-control" name="locandina" placeholder="URL Locandina" 
+                <span class="label label-info">Inserisci Locandina</span>
+                <input type="text" class="form-control" name="locandina" placeholder="Locandina" 
                        required="required"/>
             </div>
         </div>  
@@ -72,7 +72,7 @@
             </div>
         </div>
         <input type="submit" form="filmForm" class="btn btn-primary" value="Aggiungi"/>
-        <a href="#" id="backbutton" class="btn btn-warning">Annulla</a>
+        <a href="<%=profile%>" class="btn btn-warning">Annulla</a>
         <input type="hidden" name="status" value="addfilm"/>
     </form>
     <br/>

@@ -45,9 +45,12 @@
             <form id="registration" name="registrationForm" method="post" action="registration.jsp">
                 <input type="hidden" name="status" value="registrato" />
                 <div class="input-group">
+                    <%
+                        String username = loginBean.getUsername() != null ? loginBean.getUsername() : "";
+                    %>
                     <span class="label label-info">Inserisci Username</span>
                     <input type="text" class="form-control" name="username" placeholder="Username" 
-                           required="required"/>
+                           value="<%=username%>" required="required"/>
                 </div>
                 <br/>
                 <div class="input-group">
@@ -63,26 +66,39 @@
                 </div>
                 <br/>
                 <div class="input-group">
+                    <%
+                    String name = loginBean.getName() != null ? loginBean.getName() : "";
+                    %>
                     <span class="label label-info">Inserisci Nome</span>
                     <input type="text" class="form-control" name="name" placeholder="Nome" 
-                           required="required" />
+                           value="<%=name%>" required="required" />
                 </div>
                 <br/>
                 <div class="input-group">
+                    <%
+                        String surname = loginBean.getSurname() != null ? loginBean.getSurname() : "";
+                    %>
                     <span class="label label-info">Inserisci Cognome</span>
                     <input type="text" class="form-control" name="surname" placeholder="Cognome" 
-                           required="required" />
+                           value="<%=surname%>" required="required" />
                 </div>
                 <br/>
                 <div class="input-group">
+                    <%
+                        String email = loginBean.getEmail() != null ? loginBean.getEmail() : "";
+                    %>
                     <span class="label label-info">Inserisci E-mail</span>
                     <input type="email" class="form-control" name="email" placeholder="E-mail"  
-                           required="required"/>
+                           value="<%=email%>" required="required"/>
                 </div>
                 <br/>
                 <div class="input-group">
+                    <%
+                        String creditcard = loginBean.getCreditcard() != null ? loginBean.getCreditcard() : "";
+                        %>
                     <span class="label label-info">Inserisci Numero Carta di Credito</span>
-                    <input type="number" class="form-control" name="creditcard" placeholder="Carta di Credito"/>
+                    <input type="number" class="form-control" name="creditcard" placeholder="Carta di Credito"
+                           value="<%=creditcard%>"/>
                 </div>
                 <br/>
                 <input type="submit" class="btn btn-primary" value="Registrami"></input>
