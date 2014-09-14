@@ -91,7 +91,6 @@
                     String film_tit = filmBean.filmList_titolo(j);
                     int id_film = filmBean.filmList_idfilm(j);
                     String href = "film.jsp?id_film=" + filmBean.filmList_idfilm(j);
-                    String show = "addshow.jsp?id_film=" + filmBean.filmList_idfilm(j);
             %>
             <tr>
                 <% if (isAdmin) {%>
@@ -105,16 +104,15 @@
                 <% if (isAdmin) {%>
                 <td>
                     <div class="row">
-                        <form class="col-lg-2 col-md-2" action="updatefilm.jsp" method="get">
+                        <form class="col-lg-3 col-md-3" action="updatefilm.jsp" method="get">
                             <input type="hidden" name="id_film" value="<%=id_film%>" />
                             <button type="submit" class="btn btn-primary">Modifica</button>
                         </form>
-                        <form class="col-lg-2 col-md-2" action="search.jsp" method="get">
+                        <form class="col-lg-3 col-md-3" action="search.jsp" method="get">
                             <input type="hidden" name="id_film" value="<%=id_film%>" />
                             <input type="hidden" name="status" value="deletefilm" />
                             <button type="submit" class="btn btn-danger">Elimina</button>
                         </form>
-                        <a href="<%=show%>" class="btn btn-default">Aggiungi in Programmazione</a>
                     </div>
                 </td>
                 <%}%>

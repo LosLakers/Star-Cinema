@@ -75,12 +75,12 @@
                                 for (int q = 0; q < oraInizio.length; q++) {
                                     if (isAdmin) {
                             %>
-                            <form class="col-lg-3 col-md-3" action="updateshow.jsp" method="post">
+                            <form class="col-lg-4 col-md-4" action="updateshow.jsp" method="post">
                                 <input type="hidden" name="id_film" value="<%=nowShowingBean.FilmTheaterDate_IdFilm(p)%>" />
                                 <input type="hidden" name="id_tabella" value="<%=id_tabella[q]%>" />
                                 <a href="#" class="submit-link"><%=oraInizio[q]%>-<%=oraFine[q]%></a>
+                                ||
                             </form>
-                            <->
                             <%
                             } else {
                             %>

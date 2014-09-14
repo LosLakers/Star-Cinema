@@ -63,27 +63,6 @@
         <div class="col-lg-8 col-md-8">
             <h1><%=filmBean.getTitolo()%></h1>
         </div>
-        <div class="col-lg-4 col-md-4">
-            <legend>Locandina</legend>
-            <img src="images/<%=filmBean.getLocandina()%>"/>
-            <br/>
-            <br/>
-            <a href="<%=filmBean.getTrailer()%>" class="btn btn-default">Guarda il trailer</a>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Gestione Film -->
-    <div class="row">
-        <div class="col-lg-4 col-md-4">
-            <legend>Descrizione</legend>
-            <p><%=filmBean.getDescrizione()%></p>
-        </div>
-        <div class="col-lg-4 col-md-4">
-            <legend>Durata</legend>
-            <%=filmBean.getDurata()%>
-        </div>
         <% if (isAdmin) {%>
         <div class="col-lg-4 col-md-4">
             <legend>Opzioni</legend>
@@ -98,7 +77,27 @@
                 <button form="showForm" type="submit" class="btn btn-default">Aggiungi Spettacolo</button>
             </form>
         </div>
-        <%}%>    
+        <%}%> 
+    </div>
+</div>
+<div class="container">
+    <!-- Gestione Film -->
+    <div class="row">
+        <div class="col-lg-4 col-md-4">
+            <legend>Descrizione</legend>
+            <p><%=filmBean.getDescrizione()%></p>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <legend>Durata</legend>
+            <%=filmBean.getDurata()%>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <legend>Locandina</legend>
+            <img src="images/<%=filmBean.getLocandina()%>"/>
+            <br/>
+            <br/>
+            <a href="<%=filmBean.getTrailer()%>" class="btn btn-primary">Guarda il trailer</a>
+        </div>   
     </div> 
     <!-- Gestione Commenti -->
     <% if (loggedIn) {%>

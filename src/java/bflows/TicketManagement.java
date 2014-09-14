@@ -53,7 +53,7 @@ public class TicketManagement extends BaseBean implements Serializable {
                 // recupero le date associate al film
                 List<DateTimeModel> date = ShowManager.getDate(tmp, this.getFirstDayOfTheWeek(),
                         this.getLastDayOfTheWeek());
-                FilmDate film = new FilmDate(tmp.getId_film(), tmp.getTitolo(), date);
+                FilmDate film = new FilmDate(tmp, date);
                 filmDate.add(film);
             }
             this.film = filmDate.toArray(new FilmDate[filmDate.size()]);
@@ -331,6 +331,18 @@ public class TicketManagement extends BaseBean implements Serializable {
             }
         }
         return titolo;
+    }
+    
+    public String FilmDate_Locandina(int id_film) {
+        FilmDate[] film = this.film;
+        String locandina = "";
+        for (FilmDate tmp : film) {
+            if (tmp.getId_film() == id_film) {
+                locandina = tmp.getLocandina();
+                break;
+            }
+        }
+        return locandina;
     }
 
     /**
@@ -725,6 +737,7 @@ class FilmDate {
 
     private int id_film;
     private String titolo;
+    private String locandina;
     private String[] date;
 
     /**
@@ -734,9 +747,10 @@ class FilmDate {
      * @param titolo Titolo del film
      * @param date Lista date e orari del film
      */
-    public FilmDate(int id_film, String titolo, List<DateTimeModel> date) {
-        this.setId_film(id_film);
-        this.setTitolo(titolo);
+    public FilmDate(FilmModel film, List<DateTimeModel> date) {
+        this.setId_film(film.getId_film());
+        this.setTitolo(film.getTitolo());
+        this.setLocandina(film.getLocandina());
 
         List<String> model = new ArrayList<>();
         String help = "2000-01-01";
@@ -786,6 +800,24 @@ class FilmDate {
      */
     public void setTitolo(String titolo) {
         this.titolo = titolo;
+    }
+
+    /**
+     * Get the value of locandina
+     *
+     * @return the value of locandina
+     */
+    public String getLocandina() {
+        return locandina;
+    }
+
+    /**
+     * Set the value of locandina
+     *
+     * @param locandina new value of locandina
+     */
+    public void setLocandina(String locandina) {
+        this.locandina = locandina;
     }
 
     /**
