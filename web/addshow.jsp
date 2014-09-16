@@ -110,7 +110,7 @@
         <br/>
         <div class="col-lg-10 col-md-10">
             <!-- Nav tabs -->
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs nav-justified">
                 <li class="active">
                     <a href="<%=href[0]%>" data-toggle="tab"><%=week[0]%></a>
                 </li>
@@ -158,7 +158,7 @@
                 </div>
                 <% for (int j = 1; j < week.length; j++) {%>        
                 <div class="tab-pane" id="<%=week[j]%>">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-striped">
                         <thead>
                             <tr class="info">
                                 <th>

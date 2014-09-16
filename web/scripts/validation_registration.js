@@ -4,9 +4,11 @@ form.addEventListener('submit', function(evt) {
     var pass1 = this.password.value;
     var pass2 = this.conf_password.value;
     if (pass1 !== pass2) {
+        passwordCheck();
         // blocco submit
         formBlock(evt);
     } else {
+        passwordCheck();
         // submit form
         return true;
     }
@@ -14,7 +16,7 @@ form.addEventListener('submit', function(evt) {
 
 var pass = form.password;
 pass.addEventListener('change', function() {
-    passwordCheck();
+   passwordCheck(); 
 });
 
 var conf_pass = form.conf_password;
@@ -27,8 +29,14 @@ function passwordCheck() {
     var pass1 = form.password.value;
     var pass2 = form.conf_password.value;
     if (pass1 !== pass2) {
-        form.conf_password.className = 'form-control error';
+        var div = form.conf_password.parentNode;
+        div.className = 'form-group has-feedback has-error';
+        var span = div.getElementsByClassName('glyphicon form-control-feedback');
+        span[0].className = 'glyphicon glyphicon-remove form-control-feedback';
     } else {
-        form.conf_password.className = 'form-control';
+        var div = form.conf_password.parentNode;
+        div.className = 'form-group has-feedback has-success';
+        var span = div.getElementsByClassName('glyphicon form-control-feedback');
+        span[0].className = 'glyphicon glyphicon-ok form-control-feedback';
     }
 }

@@ -27,10 +27,15 @@
         <title>Registrazione Star Cinema</title>
     </head>
     <body>
-        <div class="jumbotron">
-            <div class="container">
-                <h1>Registrazione</h1>
-            </div>
+        <div class="container">
+            <legend>Registrazione a Star Cinema</legend>
+            <p class="text-info">
+                Modulo di registrazione al sito Star Cinema. Ogni informazione è necessaria
+                per potersi registrare al sito, eccetto la carta di credito che può essere
+                inserita in un secondo momento.
+                Si ricorda che per fare qualunque acquisto nel sito, è necessario aver
+                registrato una carta di credito.
+            </p>
         </div>
         <% if (!loginBean.getMessage().equals("")) {%>
         <!-- Gestione Errori -->
@@ -42,61 +47,62 @@
         </div>
         <%}%>
         <div class="container">
-            <form id="registration" name="registrationForm" method="post" action="registration.jsp">
+            <form id="registration" class="col-lg-4 col-md-4" name="registrationForm" method="post" action="registration.jsp">
                 <input type="hidden" name="status" value="registrato" />
-                <div class="input-group">
+                <div class="form-group">
                     <%
                         String username = loginBean.getUsername() != null ? loginBean.getUsername() : "";
                     %>
-                    <span class="label label-info">Inserisci Username</span>
+                    <label class="control-label">Inserisci Username</label>
                     <input type="text" class="form-control" name="username" placeholder="Username" 
                            value="<%=username%>" required="required"/>
                 </div>
                 <br/>
-                <div class="input-group">
-                    <span class="label label-info">Inserisci Password</span>
+                <div class="form-group">
+                    <label class="control-label">Inserisci Password</label>
                     <input type="password" class="form-control" name="password" placeholder="Password" 
                            required="required"/>
                 </div>
                 <br/>
-                <div class="input-group">
-                    <span class="label label-info">Conferma Password</span>
+                <div class="form-group has-feedback">
+                    <label class="control-label">Conferma Password</label>
                     <input type="password" class="form-control" name="conf_password" placeholder="Password" 
                            required="required"/>
+                    <span class="glyphicon form-control-feedback"></span>
                 </div>
                 <br/>
-                <div class="input-group">
+                <div class="form-group">
                     <%
                     String name = loginBean.getName() != null ? loginBean.getName() : "";
                     %>
-                    <span class="label label-info">Inserisci Nome</span>
+                    <label class="control-label">Inserisci Nome</label>
                     <input type="text" class="form-control" name="name" placeholder="Nome" 
                            value="<%=name%>" required="required" />
                 </div>
                 <br/>
-                <div class="input-group">
+                <div class="form-group">
                     <%
                         String surname = loginBean.getSurname() != null ? loginBean.getSurname() : "";
                     %>
-                    <span class="label label-info">Inserisci Cognome</span>
+                    <label class="control-label">Inserisci Cognome</label>
                     <input type="text" class="form-control" name="surname" placeholder="Cognome" 
                            value="<%=surname%>" required="required" />
                 </div>
                 <br/>
-                <div class="input-group">
+                <div class="form-group">
                     <%
                         String email = loginBean.getEmail() != null ? loginBean.getEmail() : "";
                     %>
-                    <span class="label label-info">Inserisci E-mail</span>
+                    <label class="control-label">Inserisci E-mail</label>
                     <input type="email" class="form-control" name="email" placeholder="E-mail"  
                            value="<%=email%>" required="required"/>
                 </div>
                 <br/>
-                <div class="input-group">
+                <div class="form-group">
                     <%
                         String creditcard = loginBean.getCreditcard() != null ? loginBean.getCreditcard() : "";
                         %>
-                    <span class="label label-info">Inserisci Numero Carta di Credito</span>
+                    <label class="control-label">Inserisci Numero Carta di Credito</label>
                     <input type="number" class="form-control" name="creditcard" placeholder="Carta di Credito"
                            value="<%=creditcard%>"/>
                 </div>

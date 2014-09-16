@@ -72,7 +72,7 @@
                 <button form="adminForm" type="submit" class="btn btn-primary">Modifica Film</button>
             </form>
             <br/>
-            <form id="showForm" action="slotsala.jsp">
+            <form id="showForm" action="addshow.jsp">
                 <input type="hidden" name="id_film" value="<%=filmBean.getId_film()%>"/>
                 <button form="showForm" type="submit" class="btn btn-default">Aggiungi Spettacolo</button>
             </form>

@@ -16,7 +16,7 @@
 <div class="container">
     <legend>Programmazione Settimanale Star Cinema</legend>
     <!-- Navbar -->
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs nav-justified">
         <%
             String week[] = nowShowingBean.getWeek();
             for (int j = 0; j < week.length; j++) {

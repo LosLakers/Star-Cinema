@@ -107,6 +107,7 @@ public class TicketManagement extends BaseBean implements Serializable {
 
     /**
      * Aggiorno il ticket con le nuove informazioni
+     *
      * @throws java.lang.Exception Eccezione
      */
     public void updateTicket() throws Exception {
@@ -152,6 +153,7 @@ public class TicketManagement extends BaseBean implements Serializable {
 
     /**
      * Recupero tutti gli ingressi associati ad un utente
+     *
      * @throws exceptions.NotFoundDBException Eccezione
      * @throws java.sql.SQLException Eccezione
      */
@@ -332,7 +334,13 @@ public class TicketManagement extends BaseBean implements Serializable {
         }
         return titolo;
     }
-    
+
+    /**
+     * Recupero la locandina di un film in base a di_film
+     *
+     * @param id_film Id del film di cui voglio recuperare la locandina
+     * @return La locandina del film
+     */
     public String FilmDate_Locandina(int id_film) {
         FilmDate[] film = this.film;
         String locandina = "";
@@ -743,8 +751,7 @@ class FilmDate {
     /**
      * Costruttore della classe
      *
-     * @param id_film Identificativo del film
-     * @param titolo Titolo del film
+     * @param film Il film da inserire
      * @param date Lista date e orari del film
      */
     public FilmDate(FilmModel film, List<DateTimeModel> date) {
