@@ -19,17 +19,18 @@
             response.sendRedirect(redirect);
         } catch (Exception ex) {
         }
-    } else {
-        nowShowingBean.getShow();
-        nowShowingBean.populateTheater();
-        int num_sale = nowShowingBean.TheaterDate_Length();
-        String[] week = nowShowingBean.getWeek();
+    }
+
+    nowShowingBean.getShow();
+    nowShowingBean.populateTheater();
+    int num_sale = nowShowingBean.TheaterDate_Length();
+    String[] week = nowShowingBean.getWeek();
 %>
 
 <!-- Jumbotron -->
 <div class="jumbotron">
     <div class="container">
-        <h2>Sala - Data - Ora</h2>
+        <h2>Aggiorna Programmazione</h2>
         <p>
             Seleziona la sala, la data, l'ora di inizio e l'ora di fine del film che vuoi inserire.
             <br/>
@@ -91,15 +92,15 @@
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Inizio</label>
                     <div class="controls">
-                        <input type="time" name="ora_inizio" class="form-control" required="required"
-                               value="<%=nowShowingBean.getOra_inizio()%>"/>
+                        <input type="time" name="ora_inizio" class="form-control" placeholder="hh:mm" 
+                               required="required" value="<%=nowShowingBean.getOra_inizio()%>"/>
                     </div>
                 </div>
                 <div class="form-group col-lg-4 col-md-4">
                     <label class="control-label">Ora Fine</label>
                     <div class="controls">
-                        <input type="time" name="ora_fine" class="form-control" required="required"
-                               value="<%=nowShowingBean.getOra_fine()%>"/>
+                        <input type="time" name="ora_fine" class="form-control" placeholder="hh:mm" 
+                               required="required" value="<%=nowShowingBean.getOra_fine()%>"/>
                     </div>
                 </div>
             </div>
@@ -143,40 +144,14 @@
         <!-- Tab panes -->  
         <div class="col-lg-10 col-md-10">
             <div class="tab-content">
-                <div class="tab-pane active" id="<%=week[0]%>">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr class="info">
-                                <th>
-                                    Numero Sala
-                                </th>
-                                <th>
-                                    Orari in cui è occupata
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <%
-                                for (int j = 0; j < num_sale; j++) {
-                                    String[] inizio = nowShowingBean.TheaterDate_OraInizio(j + 1, week[0]);
-                                    String[] fine = nowShowingBean.TheaterDate_OraFine(j + 1, week[0]);
-                            %>
-                            <tr>
-                                <td>
-                                    Sala <%=j + 1%>
-                                </td>
-                                <td>
-                                    <% for (int p = 0; p < inizio.length; p++) {%>
-                                    <%=inizio[p]%> - <%=fine[p]%> |
-                                    <%}%>
-                                </td>
-                            </tr>
-                            <%}%>
-                        </tbody>
-                    </table>
-                </div>
-                <% for (int j = 1; j < week.length; j++) {%>        
-                <div class="tab-pane" id="<%=week[j]%>">
+                <%
+                    for (int j = 0; j < week.length; j++) {
+                        String active = "";
+                        if (j == 0) {
+                            active = "active";
+                        }
+                %>        
+                <div class="tab-pane <%=active%>" id="<%=week[j]%>">
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr class="info">
@@ -216,7 +191,6 @@
 <script src="scripts/nowshowing_script.js"></script>
 <script src="scripts/utility.js"></script>
 <%
-        }
     } else { // redirect per evitare che un non admin abbia accesso
         String redirect = "home.jsp";
         response.sendRedirect(redirect);

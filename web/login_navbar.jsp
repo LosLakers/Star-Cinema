@@ -142,13 +142,19 @@
                     </form>
                     <%} else {%>
                     <!-- Utente loggato -->
-                    <form class="navbar-form navbar-right" name="logoutForm" action="home.jsp" method="post">
-                        <input type="hidden" name="status" value="logout"/>
-                        <a href="javascript:;" class="btn btn-danger" onclick="parentNode.submit();">Disconnetti</a>
-                    </form>
-                    <form class="navbar-form navbar-right" name="profileForm" action="<%=profile%>" method="post">
-                        <a href="javascript:;" class="btn btn-primary" onclick="parentNode.submit();"><%=username%></a>
-                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <form action="<%=profile%>" class="navbar-form">
+                                <button class="btn btn-primary"><%=username%></button>
+                            </form>
+                        </li>
+                        <li>
+                            <form class="navbar-form navbar-right" name="logoutForm" action="home.jsp" method="post">
+                                <input type="hidden" name="status" value="logout"/>
+                                <a href="javascript:;" class="btn btn-danger" onclick="parentNode.submit();">Disconnetti</a>
+                            </form>
+                        </li>
+                    </ul>
                     <%}%>
                 </div>
             </div>

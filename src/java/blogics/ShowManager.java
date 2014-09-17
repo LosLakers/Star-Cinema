@@ -55,8 +55,12 @@ public class ShowManager {
                 LocalTime _inizio = resultSet.getTime("ora_inizio").toLocalTime();
                 LocalTime _fine = resultSet.getTime("ora_fine").toLocalTime();
 
+                // errore se il film inizia allo stesso orario di un altro
+                if (inizio.compareTo(_inizio) == 0) {
+                    throw new Exception();
+                }
                 // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
-                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine) && !inizio.equals(_inizio)) {
+                if (inizio.isAfter(_inizio) && inizio.isBefore(_fine)) {
                     throw new Exception();
                 }
                 // errore se il film è compreso nell'inizio di un altro film
@@ -157,8 +161,12 @@ public class ShowManager {
                     LocalTime _inizio = result.getTime("ora_inizio").toLocalTime();
                     LocalTime _fine = result.getTime("ora_fine").toLocalTime();
 
+                    // errore se il film inizia allo stesso orario di un altro
+                    if (inizio.compareTo(_inizio) == 0) {
+                        throw new Exception();
+                    }
                     // errore se un film inizia dopo un altro film ma prima della fine di quest'ultimo
-                    if (inizio.isAfter(_inizio) && inizio.isBefore(_fine) && !inizio.equals(_inizio)) {
+                    if (inizio.isAfter(_inizio) && inizio.isBefore(_fine)) {
                         throw new Exception();
                     }
                     // errore se il film è compreso nell'inizio di un altro film

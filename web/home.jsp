@@ -15,10 +15,11 @@
 </div>
 <div class="container">
     <!-- Acquisto Biglietti -->
-    <div>
-        <form id="ticketfilm" class="form-inline" action="addtickettime.jsp" method="get">
+    <div class="col-lg-4 col-md-4">
+        <legend>Acquista Ticket</legend>
+        <form id="ticketfilm" action="addtickettime.jsp" method="get">
             <!-- Selezione film -->
-            <div class="col-lg-4 col-md-4">
+            <div class="form-group">
                 <select name="id_film" class="form-control" required="required">
                     <option selected="selected" disabled="true">Acquista Biglietto per un Film...</option>
                     <%
@@ -30,7 +31,7 @@
                 </select>
             </div>
             <!-- Selezione data -->
-            <div class="col-lg-3 col-md-3">
+            <div class="form-group">
                 <select name="data" class="form-control" required="required" disabled="disabled">
                     <option selected="selected" disabled="true">Seleziona una data...</option>
                     <%
@@ -63,63 +64,64 @@
         <input type="hidden" id="<%=id_film[j]%>" value="<%=hidden%>"/>
         <%}%>
     </div>
-    <br/>
-    <!-- Film in Programmazione -->
-    <%
-        int elements = 5;
-        int list = id_film.length;
-        int num_page = list % elements == 0 ? list / elements : list / elements + 1;
-        if (num_page == 0) {
-            num_page = 1;
-        }
-        String[] pages = new String[num_page];
-        pages[0] = "page1";
-        for (int j = 1; j < num_page; j++) {
-            pages[j] = "page" + (j + 1);
-        }
-    %>
-    <legend>Questa Settimana</legend>
-    <!-- Tab panes -->
-    <div class="tab-content">
+    <div class="col-lg-8 col-md-8">
+        <!-- Film in Programmazione -->
         <%
-            String active = "";
-            for (int j = 0; j < num_page; j++) {
-                if (j == 0) {
-                    active = "active";
-                } else {
-                    active = "";
-                }
+            int elements = 3;
+            int list = id_film.length;
+            int num_page = list % elements == 0 ? list / elements : list / elements + 1;
+            if (num_page == 0) {
+                num_page = 1;
+            }
+            String[] pages = new String[num_page];
+            pages[0] = "page1";
+            for (int j = 1; j < num_page; j++) {
+                pages[j] = "page" + (j + 1);
+            }
         %>
-        <div class="tab-pane <%=active%>" id="<%=pages[j]%>">
+        <legend>Questa Settimana</legend>
+        <!-- Tab panes -->
+        <div class="tab-content">
             <%
-                int count;
-                if (list <= elements) {
-                    count = list;
-                } else {
-                    count = elements;
-                    list -= elements;
-                }
-                for (int i = 0; i < count; i++) {
-                    String locandina = ticketBean.FilmDate_Locandina(id_film[i + (j * elements)]);
-                    String href = "film.jsp?id_film=" + id_film[i + (j * elements)];
+                String active = "";
+                for (int j = 0; j < num_page; j++) {
+                    if (j == 0) {
+                        active = "active";
+                    } else {
+                        active = "";
+                    }
             %>
-            <a href="<%=href%>"><img src="images/<%=locandina%>"/></a>
-                <%}%>
-        </div>
-        <%}%>
-    </div>
-    <div class="row">
-        <!-- Pagination -->
-        <ul class="pagination">
-            <li class="active">
-                <a href="#page1" data-toggle="tab">1 <span class="sr-only">(current)</span></a>
-            </li>
-            <% for (int i = 1; i < num_page; i++) {%>
-            <li>
-                <a href="#<%=pages[i]%>" data-toggle="tab"><%=i + 1%> <span class="sr-only">(current)</span></a>
-            </li>
+            <div class="tab-pane <%=active%>" id="<%=pages[j]%>">
+                <%
+                    int count;
+                    if (list <= elements) {
+                        count = list;
+                    } else {
+                        count = elements;
+                        list -= elements;
+                    }
+                    for (int i = 0; i < count; i++) {
+                        String locandina = ticketBean.FilmDate_Locandina(id_film[i + (j * elements)]);
+                        String href = "film.jsp?id_film=" + id_film[i + (j * elements)];
+                %>
+                <a href="<%=href%>"><img src="images/<%=locandina%>"/></a>
+                    <%}%>
+            </div>
             <%}%>
-        </ul>
+        </div>
+        <div class="row">
+            <!-- Pagination -->
+            <ul class="pagination">
+                <li class="active">
+                    <a href="#page1" data-toggle="tab">1 <span class="sr-only">(current)</span></a>
+                </li>
+                <% for (int i = 1; i < num_page; i++) {%>
+                <li>
+                    <a href="#<%=pages[i]%>" data-toggle="tab"><%=i + 1%> <span class="sr-only">(current)</span></a>
+                </li>
+                <%}%>
+            </ul>
+        </div>
     </div>
     <br/>
     <br/>

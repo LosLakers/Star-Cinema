@@ -22,7 +22,7 @@
         }
     %>
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs nav-justified">
         <li class="active">
             <a href="<%=href[0]%>" data-toggle="tab"><%=week[0]%></a>
         </li>
@@ -61,7 +61,8 @@
                         <td class="col-lg-2 col-md-2">Sala <%=j + 1%></td>
                         <td>
                             <% for (int p = 0; p < inizio.length; p++) {%>
-                            <strong><%=film[p]%></strong> | <%=inizio[p]%> - <%=fine[p]%> | Posti <%=posti_disp[p]%> <->
+                            <strong><%=film[p]%></strong> | <%=inizio[p]%> - <%=fine[p]%> | Posti <%=posti_disp[p]%>
+                            <br/>
                             <%}%>
                         </td>
                     </tr>

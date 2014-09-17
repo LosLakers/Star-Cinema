@@ -6,13 +6,15 @@
     nowShowingBean.populate();
 %>
 
+<% if (isAdmin) {%>
 <div class="jumbotron">
     <div class="container">
-        <% if (isAdmin) {%>
-        <p><strong>Admin</strong> cliccando sull'orario, è possibile modificarne la programmazione dello spettacolo</p>
-        <%}%>
+        <legend>Per Amministratori del Sito</legend>
+        <p class="text-info">cliccando sull'orario, è possibile modificare la programmazione dello spettacolo</p>
     </div>
 </div>
+<%}%>
+<br/>
 <div class="container">
     <legend>Programmazione Settimanale Star Cinema</legend>
     <!-- Navbar -->
@@ -75,16 +77,17 @@
                                 for (int q = 0; q < oraInizio.length; q++) {
                                     if (isAdmin) {
                             %>
-                            <form class="col-lg-4 col-md-4" action="updateshow.jsp" method="post">
+                            <form action="updateshow.jsp" method="post">
                                 <input type="hidden" name="id_film" value="<%=nowShowingBean.FilmTheaterDate_IdFilm(p)%>" />
                                 <input type="hidden" name="id_tabella" value="<%=id_tabella[q]%>" />
                                 <a href="#" class="submit-link"><%=oraInizio[q]%>-<%=oraFine[q]%></a>
-                                ||
                             </form>
+                            <br/>
                             <%
                             } else {
                             %>
-                            <%=oraInizio[q]%>-<%=oraFine[q]%> <->
+                            <%=oraInizio[q]%>-<%=oraFine[q]%>
+                            <br/>
                             <%
                                     }
                                 }
@@ -96,7 +99,8 @@
                                 Integer[] posti = nowShowingBean.FilmTheaterDate_Posti(p, week[j]);
                                 for (int q = 0; q < num_sale.length; q++) {
                             %>
-                            Sala <%=num_sale[q]%> - <%=posti[q]%> || 
+                            Sala <%=num_sale[q]%> - <%=posti[q]%>
+                            <br/>
                             <%}%>
                         </td>
                     </tr>

@@ -13,7 +13,7 @@
 </div>
 <div class="container">
     <!-- Navbar -->
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs nav-justified">
         <%
             int sale = nowShowingBean.TheaterDate_Length();
             for (int j = 1; j <= sale; j++) {
@@ -68,7 +68,8 @@
                                 for (int k = 0; k < date.length; k++) {
                                     if (week[p].equals(date[k])) {
                             %>
-                            <strong><%=film[k]%></strong> | <%=orario[k]%> | Posti <%=posti_disp[k]%> <->
+                            <strong><%=film[k]%></strong> | <%=orario[k]%> | Posti <%=posti_disp[k]%>
+                            <br/>
                             <%
                                     }
                                 }
