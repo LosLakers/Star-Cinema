@@ -18,7 +18,7 @@ form.addEventListener('submit', function(evt) {
     } else {
         // blocco form
         formBlock(evt);
-        alert('ora inizio deve essere sempre minore di ora fine');
+        alert('Ora Inizio deve essere sempre minore di Ora Fine');
     }
 });
 
@@ -70,8 +70,14 @@ function controlTime() {
     fine = Date.parse('01/01/2001 ' + fine);
 
     if (inizio > fine) {
-        form.ora_inizio.className = 'form-control error';
+        var div = form.ora_inizio.parentNode;
+        div.className = 'form-group has-feedback has-error';
+        var span = div.getElementsByClassName('glyphicon form-control-feedback');
+        span[0].className = 'glyphicon glyphicon-remove form-control-feedback';
     } else {
-        form.ora_inizio.className = 'form-control';
+        var div = form.ora_inizio.parentNode;
+        div.className = 'form-group has-feedback has-success';
+        var span = div.getElementsByClassName('glyphicon form-control-feedback');
+        span[0].className = 'glyphicon glyphicon-ok form-control-feedback';
     }
 }

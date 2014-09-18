@@ -72,16 +72,17 @@
             <br/>
             <!-- Gestione Orario -->
             <div class="col-lg-12 col-md-12">
-                <div class="form-group col-lg-4 col-md-4">
-                    <label class="control-label">Ora Inizio</label>
-                    <div class="controls">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Ora Inizio</label>
                         <input type="time" name="ora_inizio" class="form-control" placeholder="hh:mm" 
                                required="required"/>
+                        <span class="glyphicon form-control-feedback"></span>
                     </div>
                 </div>
-                <div class="form-group col-lg-4 col-md-4">
-                    <label class="control-label">Ora Fine</label>
-                    <div class="controls">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Ora Fine</label>
                         <input type="time" name="ora_fine" class="form-control" placeholder="hh:mm" 
                                required="required"/>
                     </div>

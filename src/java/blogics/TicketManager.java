@@ -231,6 +231,45 @@ public class TicketManager {
         }
         return model;
     }
+
+    /**
+     * Recupero tutti i ticket associati ad un certo show
+     *
+     * @param show Lo show di riferimento
+     * @return La lista dei ticket
+     * @throws NotFoundDBException Eccezione
+     * @throws SQLException Eccezione
+     */
+    public static List<TicketModel> get(FilmTheaterDateModel show)
+            throws NotFoundDBException, SQLException {
+
+        DataBase database = DBService.getDataBase();
+        List<TicketModel> model = new ArrayList<>();
+        try {
+            FilmModel film = show.getFilm();
+            DateTimeModel data = show.getDate();
+            TheaterModel theater = show.getTheater();
+            String sql = "SELECT * "
+                    + "FROM `ingressi` AS I "
+                    + "JOIN `posti` AS P ON I.id_posto=P.id_posto "
+                    + "WHERE I.id_film='" + film.getId_film() + "' AND "
+                    + "I.id_data='" + data.getId_data() + "' AND "
+                    + "P.id_sala='" + theater.getId_sala() + "'";
+            ResultSet result = database.select(sql);
+            while (result.next()) {
+                TicketModel ticket = new TicketModel(result);
+                model.add(ticket);
+            }
+            result.close();
+            database.commit();
+        } catch (NotFoundDBException | SQLException ex) {
+            database.rollBack();
+            throw ex;
+        } finally {
+            database.close();
+        }
+        return model;
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Gestione Posti ">

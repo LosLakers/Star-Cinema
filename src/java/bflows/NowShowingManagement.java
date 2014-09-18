@@ -176,6 +176,9 @@ public class NowShowingManagement extends BaseBean implements Serializable {
                 throw new Exception();
             }
 
+            // recupero tutti i biglietti associati allo show
+            List<TicketModel> ticket = TicketManager.get(model);
+            
             DateTimeModel show = model.getDate();
             show.setData(LocalDate.parse(this.getData()));
             show.setOra_inizio(LocalTime.parse(this.getOra_inizio()));
@@ -189,7 +192,7 @@ public class NowShowingManagement extends BaseBean implements Serializable {
             model.setTheater(theater);
             model.setDate(show);
 
-            ShowManager.update(model);
+            ShowManager.update(model, ticket);
         } catch (Exception ex) {
             this.setAlert(Message.UPDATEERROR);
             throw ex;

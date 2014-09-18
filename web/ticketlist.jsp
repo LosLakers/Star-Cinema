@@ -1,3 +1,5 @@
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalTime"%>
 <%@page import="java.time.LocalDate"%>
 <%@include file="login_navbar.jsp" %>
 
@@ -48,16 +50,25 @@
                 <td><%=ticketBean.ticket_Posto(j)%></td>
                 <td>
                     <%
+                        /* 
+                         non devo poter modificare i biglietti di giorni precedenti ad oggi
+                         o con orari di inizio successivi all'istante in cui siamo
+                         */
                         LocalDate data = LocalDate.parse(ticketBean.ticket_Data(j));
                         LocalDate today = LocalDate.now();
-                        if (data.isEqual(today) || data.isAfter(today)) {
+                        if (data.compareTo(today) == 0 || data.isAfter(today)) {
+                            String[] orario = ticketBean.ticket_Orario(j).split("-");
+                            LocalTime inizio = LocalTime.parse(orario[0], DateTimeFormatter.ISO_LOCAL_TIME);
+                            LocalTime now = LocalTime.now();
+                            if (inizio.isAfter(now)) {
                     %>
                     <!-- Form di modifica ingresso -->
                     <form action="updatetickettime.jsp">
                         <input type="hidden" name="id_ingresso" value="<%=ticketBean.ticket_IdIngresso(j)%>" />
-                        <button type="submit" class="btn btn-default">Modifica</button>
+                        <button type="submit" class="btn btn-primary">Modifica</button>
                     </form>
                     <%
+                            }
                         }
                     %>
                 </td>

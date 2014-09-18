@@ -78,9 +78,9 @@
                 <% if (isAdmin) {%>
                 <th class="col-lg-1 col-md-1">Elimina</th>
                     <%}%>
-                <th>Titolo</th>
+                <th class="col-lg-5 col-md-5">Titolo</th>
                     <% if (isAdmin) {%>
-                <th>Azioni disponibili</th>
+                <th class="col-lg-6 col-md-6">Azioni disponibili</th>
                     <%}%>
             </tr>
         </thead>
@@ -98,11 +98,11 @@
                     <input type="checkbox" name="deleteFilm" value="<%=id_film%>" />
                 </td>
                 <%}%>
-                <td>
+                <td class="col-lg-5 col-md-5">
                     <a href="<%=href%>"><%=film_tit%></a>
                 </td>
                 <% if (isAdmin) {%>
-                <td>
+                <td class="col-lg-6 col-md-6">
                     <div class="row">
                         <form class="col-lg-3 col-md-3" action="updatefilm.jsp" method="get">
                             <input type="hidden" name="id_film" value="<%=id_film%>" />

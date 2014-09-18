@@ -52,9 +52,9 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="success">
-                        <th>Film</th>
-                        <th>Orari</th>
-                        <th>Sala - Posti Disponibili</th>
+                        <th class="col-lg-4 col-md-4">Film</th>
+                        <th class="col-lg-4 col-md-4">Orari</th>
+                        <th class="col-lg-4 col-md-4">Sala - Posti Disponibili</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,10 +66,10 @@
                                 String href = "film.jsp?id_film=" + nowShowingBean.FilmTheaterDate_IdFilm(p);
                     %>
                     <tr>
-                        <td>
+                        <td class="col-lg-4 col-md-4">
                             <a href="<%=href%>"><%=titolo%></a>
                         </td>
-                        <td>
+                        <td class="col-lg-4 col-md-4">
                             <%
                                 String[] oraInizio = nowShowingBean.FilmTheaterDate_OraInizio(p, week[j]);
                                 String[] oraFine = nowShowingBean.FilmTheaterDate_OraFine(p, week[j]);
@@ -82,10 +82,7 @@
                                 <input type="hidden" name="id_tabella" value="<%=id_tabella[q]%>" />
                                 <a href="#" class="submit-link"><%=oraInizio[q]%>-<%=oraFine[q]%></a>
                             </form>
-                            <br/>
-                            <%
-                            } else {
-                            %>
+                            <%} else {%>
                             <%=oraInizio[q]%>-<%=oraFine[q]%>
                             <br/>
                             <%
@@ -93,7 +90,7 @@
                                 }
                             %>
                         </td>
-                        <td>
+                        <td class="col-lg-4 col-md-4">
                             <%
                                 Integer[] num_sale = nowShowingBean.FilmTheaterDate_Sale(p, week[j]);
                                 Integer[] posti = nowShowingBean.FilmTheaterDate_Posti(p, week[j]);

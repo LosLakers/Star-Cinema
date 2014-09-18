@@ -120,9 +120,10 @@ public class ShowManager {
      * recuperata in precedenza
      *
      * @param model Il modello da inserire nel database
+     * @param ticket Tutti gli ingressi associati allo show
      * @throws Exception Eccezione
      */
-    public static void update(FilmTheaterDateModel model)
+    public static void update(FilmTheaterDateModel model, List<TicketModel> ticket)
             throws Exception {
 
         DateTimeModel show = model.getDate();
@@ -195,6 +196,14 @@ public class ShowManager {
                     + "`id_data`='" + show.getId_data() + "' "
                     + "WHERE `id_tabella`='" + model.getId_tabella() + "';";
             database.modify(sql);
+
+            // aggiorno i ticket con la nuova sala
+            for (TicketModel tmp : ticket) {
+                sql = "UPDATE `ingressi` SET "
+                        + "`id_data`='" + show.getId_data() + "' "
+                        + "WHERE `id_ingresso`='" + tmp.getId_ingresso() + "';";
+                database.modify(sql);
+            }
 
             // aggiornamento sala
             sql = "UPDATE `sale` SET "
