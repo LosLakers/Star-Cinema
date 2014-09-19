@@ -29,6 +29,8 @@ public class BaseBean implements Serializable {
         LOGINUNSUCCESS,
         LOGINERROR,
         SEARCHERROR,
+        SUBSCRIPTIONERROR,
+        TICKETADDERROR,
         TICKETLISTERROR,
         UPDATESUCCESS,
         UPDATEERROR,
@@ -111,6 +113,18 @@ public class BaseBean implements Serializable {
 
             case SEARCHERROR:
                 this.message = "Errore nella ricerca, riprovare. "
+                        + "Se il problema persiste contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+
+            case SUBSCRIPTIONERROR:
+                this.message = "Errore inserimento abbonamento, riprovare. "
+                        + "Se il problema persiste contattare un Amministratore";
+                this.messagetype = "alert-danger";
+                break;
+
+            case TICKETADDERROR:
+                this.message = "Errore inserimento biglietti, riprovare. "
                         + "Se il problema persiste contattare un Amministratore";
                 this.messagetype = "alert-danger";
                 break;

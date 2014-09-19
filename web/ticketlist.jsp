@@ -60,7 +60,7 @@
                             String[] orario = ticketBean.ticket_Orario(j).split("-");
                             LocalTime inizio = LocalTime.parse(orario[0], DateTimeFormatter.ISO_LOCAL_TIME);
                             LocalTime now = LocalTime.now();
-                            if (inizio.isAfter(now)) {
+                            if (inizio.isAfter(now) || data.compareTo(today) != 0) {
                     %>
                     <!-- Form di modifica ingresso -->
                     <form action="updatetickettime.jsp">

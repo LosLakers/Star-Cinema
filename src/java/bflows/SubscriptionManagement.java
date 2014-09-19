@@ -33,7 +33,7 @@ public class SubscriptionManagement extends BaseBean implements Serializable {
                 this.setNum_ticket(Constants.MAX_TICKETS_SUBSCRIPTION);
             }
         } catch (NotFoundDBException | SQLException ex) {
-            // da gestire
+            this.setAlert(Message.SUBSCRIPTIONERROR);
         }
     }
 
@@ -52,7 +52,7 @@ public class SubscriptionManagement extends BaseBean implements Serializable {
                 this.setId_abbonamento(subscription.getId_abbonamento());
             }
         } catch (NotFoundDBException | SQLException ex) {
-            // da gestire
+            this.setAlert(Message.SUBSCRIPTIONERROR);
         }
     }
 

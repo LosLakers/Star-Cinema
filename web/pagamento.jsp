@@ -5,29 +5,28 @@
 <jsp:setProperty name="ticketBean" property="*" />
 <%
     String status = request.getParameter("status");
-    Boolean errore = true;
     if (status != null && status.equals("addticket")) {
         try {
             ticketBean.addTicket();
-            errore = false;
         } catch (Exception ex) {
-            // gestione errore
         }
     }
     int topay = ticketBean.getTopay();
 %>
 
 <html>
-    <head></head>
+    <head>
+        <%@include file="default.html" %>
+        <title>Acquisto Ticket Star Cinema</title>
+        <link href="css/custom-theme.css" rel="stylesheet" type="text/css"/>
+    </head>
     <body>
-        <% if (errore) {%>
+        <% if (!ticketBean.getMessage().equals("")) {%>
         <!-- Gestione Errori -->
         <div class="container">
-            <div class="col-md-12 col-lg-12">
-                <div class="alert alert-danger alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-                    <p>Errore inserimento acquisto</p>
-                </div>
+            <div class="alert alert-dismissable <%=ticketBean.getMessagetype()%>">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                <p class="message"><%=ticketBean.getMessage()%></p>
             </div>
         </div>
         <%}%>

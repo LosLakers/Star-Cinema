@@ -19,8 +19,22 @@
 
 <!DOCTYPE html>
 <html>
-    <head></head>
+    <head>
+        <head>
+        <%@include file="default.html" %>
+        <title>Abbonamento Star Cinema</title>
+        <link href="css/custom-theme.css" rel="stylesheet" type="text/css"/>
+    </head>
     <body>
+        <% if (!subscriptionBean.getMessage().equals("")) {%>
+        <!-- Gestione Errori -->
+        <div class="container">
+            <div class="alert alert-dismissable <%=subscriptionBean.getMessagetype()%>">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                <p class="message"><%=subscriptionBean.getMessage()%></p>
+            </div>
+        </div>
+        <%}%>
         <% if (status.equals("addsubscription")) {%>
         <strong>Acquisto abbonamento avvenuto</strong>
         <a href="home.jsp">Home</a>

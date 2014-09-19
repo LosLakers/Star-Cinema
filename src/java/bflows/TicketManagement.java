@@ -101,7 +101,8 @@ public class TicketManagement extends BaseBean implements Serializable {
                 this.setTopay(id_ingresso.length);
             }
         } catch (Exception ex) {
-            // gestione eccezione
+            this.setAlert(Message.TICKETADDERROR);
+            throw ex;
         }
     }
 
