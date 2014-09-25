@@ -1,4 +1,4 @@
-Star_Cinema
+Star Cinema
 ===========
 
-University Project
+University Project for Web Engineering
